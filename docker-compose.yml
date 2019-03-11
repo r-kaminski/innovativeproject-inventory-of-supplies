@@ -16,6 +16,15 @@ services:
       - main
     depends_on:
       - db
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - frontendData:/html
+    networks:
+      - main
+    depends_on:
+      - app
   db:
     image: postgres
     environment:
@@ -29,9 +38,10 @@ services:
     image: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./backend/backend/static:/usr/share/nginx/backend/backend/static
+      - frontendData:/frontend:ro
     ports:
       - "80:80"
+      - 8080:8080
     networks:
       - main
     depends_on:
@@ -39,3 +49,5 @@ services:
 
 networks:
   main:
+volumes:
+  frontendData: 
