@@ -1,6 +1,6 @@
 version: "3.2"
 services:
-  app:
+  backend:
     build:
       context: ./backend
       args:
@@ -8,23 +8,26 @@ services:
         # default requirements set to development (will override Dockerfile's default value)
     environment:
       - DJANGO_SETTINGS_MODULE=backend.settings.development
-        #      - path=backend
     volumes:
-      - ./:/app
+      - ./backend:/backend
       # reload server on code changes -- user doesn't have to manually restart Django server each time they make changes
     networks:
       - main
+    ports:
+      - "8080:8001"
     depends_on:
       - db
   frontend:
     build:
       context: ./frontend
-    volumes:
-      - frontendData:/html
     networks:
       - main
-    depends_on:
-      - app
+    depends_on:    
+      - backend
+    volumes:
+      - ./frontend:/frontend
+    ports:
+      - 3000:3000
   db:
     image: postgres
     environment:
@@ -34,20 +37,5 @@ services:
       - main
     ports:
       - "5432:5432"
-  nginx:
-    image: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - frontendData:/frontend:ro
-    ports:
-      - "80:80"
-      - 8080:8080
-    networks:
-      - main
-    depends_on:
-      - app
-
 networks:
   main:
-volumes:
-  frontendData: 

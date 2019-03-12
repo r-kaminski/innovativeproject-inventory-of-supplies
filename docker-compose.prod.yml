@@ -1,0 +1,54 @@
+version: "3.2"
+services:
+  backend_prod:
+    build:
+      context: ./backend
+      args:
+        requirements: requirements/production.txt
+        # default requirements set to production (will override Dockerfile's default value)
+    environment:
+      - DJANGO_SETTINGS_MODULE=backend.settings.production
+    networks:
+      - main
+    volumes:
+      - backendStatic:/backend/backend/static
+    depends_on:
+      - db
+  frontend_prod:
+    container_name: frontend_prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    networks:
+      - main
+    depends_on:
+      - backend_prod
+    volumes:
+      - frontendData:/build
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    networks:
+      - main
+    ports:
+      - "5432:5432"
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - frontendData:/frontend:ro
+      - backendStatic:/backend/static:ro
+    ports:
+      - 80:80
+      - 8080:8080
+    networks:
+      - main
+    depends_on:
+      - frontend_prod
+networks:
+  main:
+volumes:
+  frontendData: 
+  backendStatic:
