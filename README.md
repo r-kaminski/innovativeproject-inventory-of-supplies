@@ -25,7 +25,7 @@ $ docker-compose up -d
 Command below will kill all docker containers assigned to this docker-compose.
 
 ```bash
-$ docker-compose kill
+$ docker-compose stop
 ```
 
 ## Interaction
@@ -42,7 +42,12 @@ $ docker-compose exec app python manage.py <command>
 
 Due to docker-compose configuration, the Django server is reloaded automatically every time a change to the code is made. 
 
-To interact with API through web browser, navigate to https://localhost/ or https://0.0.0.0/
+To interact with API through web browser, navigate to http://localhost:8080/ or http://0.0.0.0:8080/
+
+
+### Frontend
+
+To open application frontend navigate to http://localhost:3000/ or http://0.0.0.0:3000/
 
 
 ### Database
@@ -59,6 +64,14 @@ Keep in mind that if you want to see latest database structure, you might need t
 $ docker-compose exec app python manage.py makemigrations <app>
 $ docker-compose exec app python manage.py migrate
 ```
+
+## Production
+
+To build project for production use 
+```bash
+$ docker-compose -f docker-compose.prod.yml up
+```
+It will serve backend at port 8080 and frontend at port 80.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

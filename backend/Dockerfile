@@ -11,17 +11,15 @@ ARG requirements=requirements/production.txt
 # Set default settings production
 ENV DJANGO_SETTINGS_MODULE=backend.settings.production
 
-WORKDIR /app
+WORKDIR /backend
 
-COPY backend backend
-COPY manage.py /app/
-COPY /requirements/ /app/requirements/
+COPY . ./
 
 RUN pip install -r $requirements
 
 RUN python manage.py collectstatic --noinput
 
-WORKDIR /app/backend
+RUN chmod -R 755 /backend/backend/static
 
 EXPOSE 8001
 
