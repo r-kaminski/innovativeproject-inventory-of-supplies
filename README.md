@@ -2,6 +2,7 @@
 
 ### Prerequisites
 Install docker and docker-compose.
+Install yarn and expo.
 
 ### Run
 
@@ -72,6 +73,21 @@ To build project for production use
 $ docker-compose -f docker-compose.prod.yml up
 ```
 It will serve backend at port 8080 and frontend at port 80.
+
+
+## Mobile
+
+For development:
+
+```cd mobile``` - change directory
+
+```yarn``` - install dependencies
+
+```yarn start``` or ```sudo yarn start``` - run app
+
+For production:
+
+```expo build:android``` or ```sudo expo build:android```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
