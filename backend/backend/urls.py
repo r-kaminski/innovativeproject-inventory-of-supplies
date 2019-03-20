@@ -21,7 +21,7 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    path('api/rooms/', include('rooms.urls')),
 ]
 
 if settings.DEBUG:
