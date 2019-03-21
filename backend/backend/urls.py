@@ -31,8 +31,8 @@ urlpatterns = [
     url(r'^rest-auth/name-registration/', NameRegisterView.as_view(), name="rest_name_register"),
     url(r'^refresh-token/', refresh_jwt_token),
 
-    url(r'^api/users/', include('users.urls')),
-    url(r'^api/rooms/', include('rooms.urls')),
+    url(r'^api/users/', include('users.urls', namespace="users")),
+    url(r'^api/rooms/', include('rooms.urls', namespace="rooms")),
 ]
 
 if settings.DEBUG:
