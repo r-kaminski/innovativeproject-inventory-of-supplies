@@ -2,6 +2,8 @@ from .base import *
 
 ALLOWED_HOSTS = ['*']
 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 INSTALLED_APPS += [
         'debug_toolbar',
         ]
