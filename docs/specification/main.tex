@@ -1,0 +1,163 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\title{Projekt Zespołowy Wymagania  Funkcjonalne}
+\author{ }
+\date{March 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\begin{enumerate}
+\item System zawiera katalog przedmiotów, do którego można wstawiać nowe produkty, edytować lub usuwać już umieszczone w katalogu.
+\begin{itemize}
+\item Opis: Utworzona zostanie baza danych zawierająca produkty i użytkownik będzie mógł operować na własnościach tych obiektów o ile będzie miał odpowiednie uprawnienia.
+\item Pochodzenie funkcjonalności: Specyfikacja wysłana przez zleceniodawcę. 
+\item Kryterium satysfakcji: Zadanie zostanie w całości wykonane.
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\item Wyszukiwanie przedmiotów umieszczonych w katalogu: po nazwie, kategorii i kodzie QR.
+\begin{itemize}
+\item Opis:Stworzenie opcji przeszukiwania produktów z bazy danych z poziomu aplikacji użytkownika. 
+\item Pochodzenie funkcjonalności: Specyfikacja wysłana przez zleceniodawcę. 
+\item Kryterium satysfakcji: Utworzenie trzech działających implementacji wyszukiwania. 
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\item Drukowanie kodów QR znajdujących się w katalogu.
+\begin{itemize}
+\item Opis: Wydruk kodu QR przypisanego do przedmiotu znajdującego się w bazie danych. 
+\item Pochodzenie funkcjonalności: Specyfikacja wysłana przez zleceniodawcę. 
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\item Skanowanie i dodawanie nowych kodów QR do przedmiotów z katalogu.
+\begin{itemize}
+\item Opis: Skanowanie przy pomocy kamery telefonu, lub skanera podłączonego do komputera i dodanie uzyskanego skanu do przedmiotu znajdującego się w bazie danych.
+\item Pochodzenie funkcjonalności: Specyfikacja wysłana przez zleceniodawcę. 
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\item  Zgłaszanie usterek przedmiotów z katalogu, lub braku materiałów.
+\begin{itemize}
+\item Opis: Dodanie inforamcji do przedmiotu znajdującego się w bazie danych o jego stanie technicznym, lub poinformowanie innych użytkowników o niskim stanie zasobów.
+\item Pochodzenie funkcjonalności: zespół projektowy.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne.
+\end{itemize}
+\item  Rezerwacja stanowisk dostępnych w pracowni.
+\begin{itemize}
+\item Opis: Możliwość zgłaszania zainteresowania jednym z dostępnych stanowisk i zarezerwowanie wspomnianego stanowiska w określonych godzinach. Inni użytkownicy będą mogli wyświetlić dostępność stanowiska w dowolnym momencie.
+\item Funkcjonalność dodana przez: zespół projektowy.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne.
+\end{itemize}
+\item Lokalizowanie przedmiotów i stanowisk na mapie.
+\begin{itemize}
+\item Opis: Nałożenie na mapę pracowni wszystkich dostępnych urzadzeń i stanowisk i wyświetlanie tych informacji użytkownikowi, żeby wiedział gdzie ma dane narzędzie odłożyć po zakończonej pracy.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\item Poradnik dla użytkownika jak korzystać z systemu.
+\begin{itemize}
+\item Opis: Przygotowana wcześniej instrukacja jak korzystać z aplikacji i strony internetowej. Przedstawienie funkcjonalności w czytelny sposób.
+\item Funkcjonalność dodana przez: zespół projektowy.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne.
+\end{itemize}
+\item Podział na pokoje.
+\begin{itemize}
+\item Opis: Przydzielenie użytkowników do mniejszych przestrzeni roboczych. 
+\item Funkcjonalność dodana przez: zespół projektowy.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne.
+\end{itemize}
+\item Tworzenie pokoju i zarządzanie jego zawartością.
+\begin{itemize}
+\item Opis: Utworzenie instancji pokoju, który połączony jest z bazą dostępnych urządzeń i stanowisk. Użytkownicy przypisani są do odpowiednich pokoi i mają dostęp do tych zasobów.
+\item Funkcjonalność dodana przez: zespół projektowy.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne.
+\end{itemize}
+\item Możliwość dołączenia do istniejącego pokoju.
+\begin{itemize}
+\item Opis: Użytkownik może zostać przypisany do istniejącego pokoju.
+\item Funkcjonalność dodana przez: zespół projektowy.
+\item Kryterium satysfakcji: Zadanie w całośći wykonane.
+\item Wymóg: Opcjonalne.
+\end{itemize}
+\item Wykonanie inwentaryzacji przedmiotów znajdujących się w pokoju.
+\begin{itemize}
+\item Opis: Zestawienie przedmiotów znajdujących się w bazie danych przypisanej do pokoju wraz z ich stanem technicznym.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Obowiązkowe.
+\end{itemize}
+\item Wygenerowanie raportu z inwentaryzacji.
+\begin{itemize}
+\item Opis: Stworzenie dokumentu z przeprowadzonej inwentaryzacji pokoju. Dokument ten będzie miał określoną strukturę opisaną przez zleceniodawcę.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Obowiązkowe.
+\end{itemize}
+\item Przeglądanie opisu dowolnego przedmiotu z katalogu.
+\begin{itemize}
+\item Opis: Użytkownicy mają możliwość przeglądania dokładnego opisu przedmiotów znajdujących się w katalogu.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Obowiązkowe.
+\end{itemize}
+\item Komentarze
+\begin{itemize}
+\item Opis: Dodawanie komentarzy pod produktami z katalogu.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne
+\end{itemize}
+\item Zdjęcia narzędzi.
+\begin{itemize}
+\item Opis: Dodawanie zdjęć do przedmiotów. Zdjęcia powinny być hostowane przez zewnętrzny serwer.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne
+\end{itemize}
+\item System pozwala na wykonanie backupu.
+\begin{itemize}
+\item Opis: Możliwość stworzenia kopii zapasowej bazy danych
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne
+\end{itemize}
+\item Generowanie zestawienia w pliku arkusza kalkulacyjnego
+\begin{itemize}
+\item Opis: Możliwość wyeksportowania danych z aplikacji do arkusza w formacie .csv
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne
+\end{itemize}
+\item Importowanie zestawienia z pliku arkusza kalkulacyjnego
+\begin{itemize}
+\item Opis: Importowanie danych do aplikacji z arkusza w formacie .csv
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane.
+\item Wymóg: Opcjonalne
+\end{itemize}
+\item Podział na klasy użytkowników.
+\begin{itemize}
+\item Opis: System ma wspierać role użytkowników, którzy mogą mieć różne uprawnienia.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Wprowadzenie roli użytkownika i super użytkownika
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\item Logowanie i rejestrowanie użytkownika do systemu.
+\begin{itemize}
+\item Opis: Użytkownik ma możliwość zalogowania się na swoje konto, oraz stworzenia nowego konta.
+\item Funkcjonalność dodana przez: Specyfikacja wysłana przez zleceniodawcę.
+\item Kryterium satysfakcji: Zadanie w całości wykonane. Logowanie zrealizowane w sposób spełniający wymagania bezpieczeństwa.
+\item Wymóg: Obowiązkowe
+\end{itemize}
+\end{enumerate}
+\end{document}
