@@ -6,80 +6,75 @@ from rest_framework import status
 from .models import User
 from .views import UserListView, UserDetailsView
 
+
 class UserTests(APITestCase):
 
-	@classmethod
-	def setUp(cls):
-		cls.testuser = User.objects.create_user(
+    @classmethod
+    def setUp(cls):
+        cls.testuser = User.objects.create_user(
             username='testuser',
             password='testpassword')
 
-		cls.testadmin = User.objects.create_superuser(
-			username='admin',
+        cls.testadmin = User.objects.create_superuser(
+            username='admin',
             email='admin@admin.com',
             password='testadminpassword')
 
-		cls.testuser.save()
-		cls.testadmin.save()
-		cls.factory = APIRequestFactory()
+        cls.testuser.save()
+        cls.testadmin.save()
+        cls.factory = APIRequestFactory()
 
+    def test_user_details(self):
+        """
+        Test user details view.
+        Existing user credentials are used to authenticate the request.
+        """
+        url = reverse("users:user-details", args=[self.testuser.pk])
+        request = self.factory.get(url)
+        force_authenticate(request, user=self.testuser)
+        response = UserDetailsView.as_view()(request, pk=self.testuser.pk)
 
-	def test_user_details(self):
-		"""
-		Test user details view.
-		Existing user credentials are used to authenticate the request.
-		"""
-		#request = self.factory.get('/api/users/<pk>/')
-		url = reverse("users:user-details", args=[self.testuser.pk])
-		request = self.factory.get(url)
-		force_authenticate(request, user=self.testuser)
-		response = UserDetailsView.as_view()(request, pk=self.testuser.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_user_details_unauthenticated(self):
+        """
+        Test user details view.
+        No authentication is performed.
+        """
+        url = reverse("users:user-details", args=[self.testuser.pk])
+        request = self.factory.get(url)
+        response = UserDetailsView.as_view()(request, pk=self.testuser.pk)
 
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-	def test_user_details_unauthenticated(self):
-		"""
-		Test user details view.
-		No authentication is performed.
-		"""
-		url = reverse("users:user-details", args=[self.testuser.pk])
-		request = self.factory.get(url)
-		response = UserDetailsView.as_view()(request, pk=self.testuser.pk)
+    def test_user_list_as_superuser(self):
+        """
+        Test users list view.
+        Existing superuser credentials are used to authenticate the request.
+        """
+        request = self.factory.get('/api/users/')
+        force_authenticate(request, user=self.testadmin)
+        response = UserListView.as_view()(request)
 
-		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_user_list_as_user(self):
+        """
+        Test user list view.
+        Existing user credentials are used, but they should be insufficient.
+        """
+        request = self.factory.get('/api/users/')
+        force_authenticate(request, user=self.testuser)
+        response = UserListView.as_view()(request)
 
-	def test_user_list_as_superuser(self):
-		"""
-		Test users list view.
-		Existing superuser credentials are used to authenticate the request.
-		"""
-		request = self.factory.get('/api/users/')
-		force_authenticate(request, user=self.testadmin)
-		response = UserListView.as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_user_list_unauthenticated(self):
+        """
+        Test user list view.
+        No authentication is performed.
+        """
+        request = self.factory.get('/api/users/')
+        response = UserListView.as_view()(request)
 
-
-	def test_user_list_as_user(self):
-		"""
-		Test user list view.
-		Existing user credentials are used, but they should be insufficient.
-		"""
-		request = self.factory.get('/api/users/')
-		force_authenticate(request, user=self.testuser)
-		response = UserListView.as_view()(request)
-
-		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-
-	def test_user_list_unauthenticated(self):
-		"""
-		Test user list view.
-		No authentication is performed.
-		"""
-		request = self.factory.get('/api/users/')
-		response = UserListView.as_view()(request)
-
-		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

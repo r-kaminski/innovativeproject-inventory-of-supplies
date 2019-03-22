@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
     'JWT_ALLOW_REFRESH': True,
+    'JWT_AUTH_COOKIE': 'JWT_TOKEN',
 }
 
 REST_USE_JWT = True
@@ -61,6 +62,7 @@ REST_USE_JWT = True
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     )
 }
 
