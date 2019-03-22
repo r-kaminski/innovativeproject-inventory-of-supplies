@@ -40,6 +40,11 @@ urlpatterns = [
 
 if settings.DEBUG:
     import debug_toolbar
+    from rest_framework.documentation import include_docs_urls
+
+    API_TITLE = 'Inventory of supplies API'
+    API_DESCRIPTION = 'REST API for inventory of supplies in technology workspace'
     urlpatterns = [
-        url('__debug__/', include(debug_toolbar.urls)),
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+        url(r'^docs/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION)),
     ] + urlpatterns

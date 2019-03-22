@@ -1,3 +1,23 @@
+Table of Contents
+=================
+
+<!--ts-->
+   * [Table of contents](#table-of-contents)
+   * [How to run](#how-to-run)
+      * [Prerequisites](#prerequisites)
+      * [Run](#run)
+      * [Exit](#exit)
+   * [Interaction](#interaction)
+      * [API](#api)
+      * [Browsable API documentation](#browsable-api-documentation)
+      * [Backend](#backend)
+      * [Frontend](#frontend)
+      * [Database](#database)
+   * [Production](#production)
+   * [Mobile](#mobile)
+   * [License](#license)
+<!--te-->
+
 ## How to run
 
 ### Prerequisites
@@ -64,6 +84,35 @@ curl -X GET http://localhost:8080/api/users/1/ -H "Authorization: JWT eyJ0eXAiOi
 
 ```
 
+### Browsable API documentation
+Head to http://localhost:8080/docs/. You will be able to view API endpoints and try them out. Keep in mind that permissions are applied and mocking a request to some of them will require authentication.
+
+To authenticate, use the default admin account (username: admin, password: admin) that is created automatically for development.
+
+First, go to obtain-token endpoint and press "Interact":  
+<p align="center">
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/obtain-token-view.png" alt="Obtain token view"/>
+</p>
+
+Then, input the default admin's account credentials into form fields and press "Send request". A token in JSON format should be generated. Copy it's value.  
+<p align="center">
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/obtain-token-login.png" alt="Obtain token login"/>
+</p>
+
+On the bottom-left of the page, press the "Authentication" tab to draw out the possible options and choose "token":  
+<p align="center">
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/docs-auth.png" alt="Docs authentication"/>
+</p>
+
+Lastly, fill out the Token Authentication form:
+```bash
+Scheme: JWT
+Token: <put your token here>
+```
+<p align="center">
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/docs-token.png" alt="Docs token"/>
+</p>
+Your browsable API docs session should be authenticated now. With admin privileges you should be able to test out all the endpoints with built-in mock feature.
 
 ### Backend
 
