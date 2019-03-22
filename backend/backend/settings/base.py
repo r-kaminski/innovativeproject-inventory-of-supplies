@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'rooms.apps.RoomsConfig',
+    'supplies.apps.SuppliesConfig',
 ]
 
 MIDDLEWARE = [

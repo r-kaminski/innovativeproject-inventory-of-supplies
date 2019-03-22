@@ -22,6 +22,7 @@ from django.conf.urls import url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/rooms/', include('rooms.urls')),
+    path('api/supplies/', include('supplies.urls')),
 ]
 
 if settings.DEBUG:
