@@ -20,7 +20,9 @@ RUN pip install -r $requirements
 RUN python manage.py collectstatic --noinput
 
 RUN chmod -R 755 /backend/backend/static
+RUN chmod 755 /backend/docker-entrypoint.sh
 
 EXPOSE 8001
 
+ENTRYPOINT ["/backend/docker-entrypoint.sh"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]

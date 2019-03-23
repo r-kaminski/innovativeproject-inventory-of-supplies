@@ -4,5 +4,5 @@ from .models import Supply
 
 class SupplySerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id', 'name', 'state')
+        fields = ('id', 'name', 'state', 'description')
         model = Supply
