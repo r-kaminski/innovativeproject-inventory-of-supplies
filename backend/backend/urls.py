@@ -16,7 +16,7 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include
 from django.conf.urls import url
 from rest_framework_jwt.views import refresh_jwt_token, obtain_jwt_token
 
@@ -36,6 +36,7 @@ urlpatterns = [
 
     url(r'^api/users/', include('users.urls', namespace="users")),
     url(r'^api/rooms/', include('rooms.urls', namespace="rooms")),
+    url(r'^api/supplies/', include('supplies.urls')),
 ]
 
 if settings.DEBUG:

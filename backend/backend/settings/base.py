@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
 
     'rooms.apps.RoomsConfig',
+    'supplies.apps.SuppliesConfig',
     'users.apps.UsersConfig',
     'authentication.apps.AuthenticationConfig',
 ]
