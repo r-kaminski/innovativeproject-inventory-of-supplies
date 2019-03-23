@@ -1,0 +1,15 @@
+sudo: required
+language: minimal
+dist: xenial
+
+services:
+  - docker
+
+install:
+  - docker-compose pull
+  - docker-compose build
+
+script:
+  - |
+    docker-compose run -e DJANGO_SETTINGS_MODULE=backend.settings.testing \
+    --no-deps --rm backend python manage.py test
