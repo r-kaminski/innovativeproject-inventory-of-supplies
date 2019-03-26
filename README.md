@@ -13,7 +13,6 @@ Table of Contents
       * [Backend](#backend)
       * [Frontend](#frontend)
       * [Database](#database)
-   * [Production](#production)
    * [Mobile](#mobile)
    * [License](#license)
 <!--te-->
@@ -91,17 +90,17 @@ To authenticate, use the default admin account (username: admin, password: admin
 
 First, go to obtain-token endpoint and press "Interact":  
 <p align="center">
-  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/obtain-token-view.png" alt="Obtain token view"/>
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/master/docs/images/obtain-token-view.png" alt="Obtain token view"/>
 </p>
 
 Then, input the default admin's account credentials into form fields and press "Send request". A token in JSON format should be generated. Copy it's value.  
 <p align="center">
-  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/obtain-token-login.png" alt="Obtain token login"/>
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/master/docs/images/obtain-token-login.png" alt="Obtain token login"/>
 </p>
 
 On the bottom-left of the page, press the "Authentication" tab to draw out the possible options and choose "token":  
 <p align="center">
-  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/docs-auth.png" alt="Docs authentication"/>
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/master/docs/images/docs-auth.png" alt="Docs authentication"/>
 </p>
 
 Lastly, fill out the Token Authentication form:
@@ -110,7 +109,7 @@ Scheme: JWT
 Token: <put your token here>
 ```
 <p align="center">
-  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/browsable-api/docs/images/docs-token.png" alt="Docs token"/>
+  <img src="https://github.com/nokia-wroclaw/innovativeproject-inventory-of-supplies/raw/master/docs/images/docs-token.png" alt="Docs token"/>
 </p>
 Your browsable API docs session should be authenticated now. With admin privileges you should be able to test out all the endpoints with built-in mock feature.
 
@@ -122,7 +121,7 @@ To run Django manage.py command, use instruction:
 $ docker-compose exec backend python manage.py <command>
 ```
 
-Create admin account:
+Create admin account (keep in mind that admin:admin account is created automatically):
 
 ```bash
 $ docker-compose exec backend python manage.py createsuperuser
@@ -156,15 +155,6 @@ $ docker-compose exec db psql -h localhost -p 5432 -U postgres postgres
 Password for user postgres: postgres
 $ \dt # show tables
 ```
-
-## Production
-
-To build project for production use 
-```bash
-$ docker-compose -f docker-compose.prod.yml up
-```
-It will serve backend at port 8080 and frontend at port 80.
-
 
 ## Mobile
 
