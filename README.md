@@ -60,7 +60,7 @@ Authentication uses JSON Web Tokens. To authenticate your request, you will need
 This can be done by either registration:
 
 ```bash
-curl -X POST -d "username=testuser&password1=testpassword&password2=testpassword&email=test@email.com&first_name=John&last_name=Doe" http://localhost:8080/rest-auth/name-registration/
+curl -X POST -d "username=testuser&password1=testpassword&password2=testpassword&email=test@email.com&first_name=John&last_name=Doe" http://localhost/rest-auth/name-registration/
 
 # Returns:
 # {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJ1c2VybmFtZSI6InRlc3R1c2VyMjExIiwiZXhwIjoxNTUzMjAyMDk1LCJlbWFpbCI6InRlc3QzMkBlbWFpbC5jb20iLCJvcmlnX2lhdCI6MTU1MzE5ODQ5NX0.PI_csWibxJ13UfmF1ePRXmc_0tlCULJgbPSfo8f763o","user":{"pk":1,"username":"testuser","email":"test@email.com","first_name":"John","last_name":"Doe"}}
@@ -69,7 +69,7 @@ curl -X POST -d "username=testuser&password1=testpassword&password2=testpassword
 
 or login:
 ```bash
-curl -X POST -d "username=testuser&password=testpassword" http://localhost:8080/rest-auth/login/
+curl -X POST -d "username=testuser&password=testpassword" http://localhost/rest-auth/login/
 
 # Returns:
 # {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNTUzMjAyMTgyLCJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwib3JpZ19pYXQiOjE1NTMxOTg1ODJ9.zSd3NyP3rDcmP_CCZCwL8oqjctWMdVAO5w6OKTDUAJ0","user":{"pk":1,"username":"testuser","email":"test@email.com","first_name":"","last_name":""}}
@@ -77,7 +77,7 @@ curl -X POST -d "username=testuser&password=testpassword" http://localhost:8080/
 
 Finally use the access token you authenticate your request:
 ```bash
-curl -X GET http://localhost:8080/api/users/1/ -H "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNTUzMjAyMTgyLCJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwib3JpZ19pYXQiOjE1NTMxOTg1ODJ9.zSd3NyP3rDcmP_CCZCwL8oqjctWMdVAO5w6OKTDUAJ0"
+curl -X GET http://localhost/api/users/1/ -H "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNTUzMjAyMTgyLCJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwib3JpZ19pYXQiOjE1NTMxOTg1ODJ9.zSd3NyP3rDcmP_CCZCwL8oqjctWMdVAO5w6OKTDUAJ0"
 
 # Returns:
 # {"username":"testuser","email":"test@email.com","first_name":"","last_name":""}
@@ -85,7 +85,7 @@ curl -X GET http://localhost:8080/api/users/1/ -H "Authorization: JWT eyJ0eXAiOi
 ```
 
 ### Browsable API documentation
-Head to http://localhost:8080/docs/. You will be able to view API endpoints and try them out. Keep in mind that permissions are applied and mocking a request to some of them will require authentication.
+Head to http://localhost/docs/. You will be able to view API endpoints and try them out. Keep in mind that permissions are applied and mocking a request to some of them will require authentication.
 
 To authenticate, use the default admin account (username: admin, password: admin) that is created automatically for development.
 
@@ -130,19 +130,29 @@ $ docker-compose exec backend python manage.py createsuperuser
 
 Due to docker-compose configuration, the Django server is reloaded automatically every time a change to the code is made. 
 
-To interact with API through web browser, navigate to http://localhost:8080/ or http://0.0.0.0:8080/
+To interact with API through web browser, navigate to http://localhost/api or http://0.0.0.0/api
 
+To execute tests run:
+
+```bash
+$ docker-compose exec backend python manage.py test
+```
 
 ### Frontend
 
-To open application frontend navigate to http://localhost:3000/ or http://0.0.0.0:3000/
+To open application frontend navigate to http://localhost/ or http://0.0.0.0/
 
+To install new packages use:
+
+```bash
+$ docker-compose exec frontend npm i package-name --save
+```
 
 ### Database
 To interact with database run:
 
 ```bash
-$ psql -h localhost -p 5432 -U postgres postgres
+$ docker-compose exec db psql -h localhost -p 5432 -U postgres postgres
 Password for user postgres: postgres
 $ \dt # show tables
 ```
