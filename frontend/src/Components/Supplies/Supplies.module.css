@@ -25,10 +25,8 @@ header{
     color: rgb(173, 171, 171);
 }
 
-.tablePlaceholder{
+.table{
     grid-column: 2 / span 1;
     grid-row: 2 / span 1;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.1);
+
 }
