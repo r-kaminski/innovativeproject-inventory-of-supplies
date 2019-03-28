@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import styles from './Supplies.module.css';
 import { getItems } from '../../DummyInventoryApi';
+import CustomToolbar from './CustomToolbar/CustomToolbar'
 
 
 class Supplies extends Component{
@@ -9,40 +10,38 @@ class Supplies extends Component{
         super(props);
 
         this.state = {
-            data:[
-                [1, "czarny worek", "idealny", "opis"],
-                [2, "lina", "dobry", "opis"],
-                [3, "taśma izolacyjna", "idealny", "brak opisu"],
-                [4, "łopata", "idealny", "brak opisu"],
-                [5, "ręcznik", "zły", "also opis"]
-            ]
+            data: []
         };
     }
 
     columns = [
         {
-            name: "ID",
+            name: "id",
+            label: "ID",
             options: {
                 filter: false,
                 sort: true
             }
         }, 
         {
-            name: "Nazwa",
+            name: "name",
+            label: "Nazwa",
             options: {
                 filter: false,
                 sort: true
             }
         },
         {
-            name: "Stan",
+            name: "state",
+            label: "Stan",
             options: {
                 filter: true,
                 sort: true
             }
         },
         {
-            name: "Opis",
+            name: "description",
+            label: "Opis",
             options: {
                 filter: false,
                 sort: false
@@ -52,40 +51,25 @@ class Supplies extends Component{
     
     options = {
         filterType: 'dropdown',
+        customToolbar: () => {
+            return(
+                <CustomToolbar />
+            )
+        }
     };
 
     componentDidMount(){
-        getItems().then((data) => this.setState({data : data}));
-
-    //     let token;
-    //     getToken().then(
-    //         (token) => {
-    //             if(token){
-    //                 let response = fetch(
-    //                     `${API_URL}/supplies/`, {
-    //                         method: 'GET',
-    //                         headers: {
-    //                             'Accept': 'application/json',
-    //                             'Content-Type': 'application/json',
-    //                             'Authorization': `JWT ${token}`,
-    //                         }
-    //                     }
-    //                 );
-    //                 return response;
-    //             }
-    //         }
-    //     ).then((res) => {
-    //         let resJson = res.json();
-    //         let newData = [];
-    //         resJson.map((item) => {
-    //             newData.push([item.id, item.name, item.state, item.description]);
-    //         })
-    //         this.setState({data : newData});
-    //     });
+        try{
+            getItems().then((data) => {
+                this.setState({data : data})
+            });
+        }catch(error){
+            console.error(error);
+        }
+        
     }
 
     render(){
-        //console.log(styles.pagewrapper)
         return(
             <div className={styles.wrapper}>
                 <header>
@@ -93,10 +77,11 @@ class Supplies extends Component{
                 </header>
                 <MUIDataTable
                         className={styles.table}
-                        title={"Supplies"}
+                        title={"Wypozażenie"}
                         data={this.state.data}
                         columns={this.columns}
-                        options={this.options} />
+                        options={this.options}
+                         />
             </div>            
         );
     };

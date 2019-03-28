@@ -4,13 +4,37 @@ export const getItems = async () => {
     let token = await getToken();
     try{
         let response = await fetch(
-            `${API_URL}/supplies/`, {
-                method: 'GET',
+            `${API_URL}/api/supplies/`, {
                 headers: new Headers({
+                    'Authorization': `JWT ${token}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }),
-                body: JSON.stringify({token : token})
+                })
+            }
+        );
+
+        let reponseJSON = await response.json();
+        //console.log(reponseJSON);
+        return reponseJSON;
+    }catch(err){
+        console.error(err);
+    }
+}
+
+export const insertItem = async (item) => {
+    let token = await getToken();
+    let headers = new Headers({
+        'Authorization': `JWT ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    });
+
+    try{
+        let response = await fetch(
+            `${API_URL}/api/supplies/`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(item)
             }
         );
 
