@@ -20,7 +20,7 @@ from django.urls import include
 from django.conf.urls import url
 from rest_framework_jwt.views import refresh_jwt_token, obtain_jwt_token
 
-from authentication.views import NameRegisterView
+from authentication.views import NameRegisterView, LogoutView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -33,6 +33,7 @@ urlpatterns = [
         NameRegisterView.as_view(), name="rest_name_register"),
     url(r'^refresh-token/', refresh_jwt_token),
     url(r'^obtain-token/', obtain_jwt_token),
+    url(r'^remove-token/', LogoutView.as_view()),
 
     url(r'^api/users/', include('users.urls', namespace="users")),
     url(r'^api/rooms/', include('rooms.urls', namespace="rooms")),
