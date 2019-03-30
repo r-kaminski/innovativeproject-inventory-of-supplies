@@ -2,7 +2,7 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import AddCircleOutlineIcon from "@material-ui/icons/Add";
-import { withStyles } from "@material-ui/core/styles";
+//import { withStyles } from "@material-ui/core/styles";
 import AddItemDialog from "./AddItemDialog";
 
 // const styles = theme => ({
@@ -43,7 +43,7 @@ class CustomToolbar extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    //const { classes } = this.props;
 
     return (
       <React.Fragment>

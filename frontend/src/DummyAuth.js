@@ -48,7 +48,7 @@ export const getToken = async () => {
     let token = sessionStorage.getItem('secure_token');
     try{
         
-        if(!token || token == null){
+        if(token == null || token == "undefined"){
             console.log("Trying to obtain token!")
             token = await obtainToken();
         }else{

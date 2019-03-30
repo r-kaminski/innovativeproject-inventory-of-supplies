@@ -5,14 +5,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import styles from './AddItemDialog.module.css';
-import { insertItem } from '../../../DummyInventoryApi';
+import styles from './DialogEditItem.module.css';
+import { partialUpdateItem } from '../DummyInventoryApi';
 
-export default class AddItemDialog extends React.Component {
+class DialogEditItem extends React.Component {
   constructor(props){
     super(props);
 
     this.state = {
+      id: '',
       name : '',
       state : '',
       description : ''
@@ -37,28 +38,35 @@ export default class AddItemDialog extends React.Component {
         //do sth
         break;
     }
-  }
+  };
 
-  onClickAdd = () => {
-    let item = {
+  onClickUpdate = () => {
+    let itemBody = {
       name : this.state.name,
       state : this.state.state,
       description: this.state.description
     }
 
-    insertItem(item).then(()=>console.log("Dodano z powodzeniem!")).catch((error)=>console.error(error));
+    partialUpdateItem(this.props.item.id, itemBody).then(()=>{this.props.onUpdateSuccess()})
+    .catch((err)=>{this.props.onUpdateFail(); console.error(err)});
 
-    this.props.onPressCancel();
+    this.props.onCancel()
+  };
+
+  onEnterPrepareView = () => {
+    this.setState(this.props.item);
   }
 
   render() {
     return (
         <Dialog
           open={this.props.open}
-          //onClose={this.props.handleClose}
+          onEnter={this.onEnterPrepareView}
+          onClose={this.props.onClosing}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Nowy element</DialogTitle>
+
           <DialogContent>
             <div className={styles.dialogContentWrapper}>
               <TextField
@@ -88,20 +96,28 @@ export default class AddItemDialog extends React.Component {
               />
             </div>
           </DialogContent>
+
           <DialogActions>
-            <Button onClick={this.props.onPressCancel} color="primary">
-              Cancel
+          <Button onClick={this.props.onCancel} color="primary">
+              Anuluj
             </Button>
-            <Button onClick={this.onClickAdd}  color="primary">
-              Add
+            <Button onClick={this.onClickUpdate}  color="primary">
+              Zapisz
             </Button>
           </DialogActions>
+
         </Dialog>
     );
   }
 }
 
-AddItemDialog.defaultProps = {
+DialogEditItem.defaultProps = {
   open : false,
-  onPressCancel : () => {}
+  item: {name:"spoko", state:"tak", descrition: "ok"},
+  onClosing : ()=>void(0),
+  onUpdateSuccess : ()=>void(0),
+  onUpdateFail : ()=>void(0),
+  onCancel : ()=>void(0),
 }
+
+export default DialogEditItem;
