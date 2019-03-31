@@ -1,10 +1,12 @@
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 from rest_framework import status
+from rest_framework.request import Request
+from django.http import HttpRequest
 from users.models import User
 
 from .models import Supply
-from .views import SupplyListView, SupplyDetailsView
+from .views import SupplyListView, SupplyDetailsView, SearchSupplyView
 
 
 class SupplyTests(TestCase):
@@ -144,3 +146,38 @@ class SupplyTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         # data should not change
         self.assertEqual(Supply.objects.get(id=id).state, oldstate)
+
+
+class SearchSupplyTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.testuser1 = User.objects.create_user(
+            username='testuser1',
+            password='testpassword1')
+        Supply(name="testSupply1").save()
+        Supply(name="testSupply2").save()
+        Supply(name="testSupply3").save()
+        Supply(name="testSupply4").save()
+        Supply(name="testSupply5").save()
+        cls.factory = APIRequestFactory()
+
+    def test_searching(self):
+        request = self.factory.get('/api/supplies/search/?name=test')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 5)
+
+        request = self.factory.get('/api/supplies/search/?name=y1')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 1)
+
+        request = self.factory.get('/api/supplies/search/?name=tet')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 0)
+
+    def test_without_authentication(self):
+        request = self.factory.get('/api/supplies/search/?name=test')
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
