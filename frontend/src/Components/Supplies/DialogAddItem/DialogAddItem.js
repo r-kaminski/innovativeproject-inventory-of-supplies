@@ -5,10 +5,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import styles from './AddItemDialog.module.css';
-import { insertItem } from '../../../DummyInventoryApi';
+import styles from './DialogAddItem.module.css';
+import { insertItem } from '../../../API/InventoryAPI';
 
-export default class AddItemDialog extends React.Component {
+export default class DialogAddItem extends React.Component {
   constructor(props){
     super(props);
 
@@ -39,6 +39,14 @@ export default class AddItemDialog extends React.Component {
     }
   }
 
+  clearState = ()=>{
+    this.setState({
+      name : '',
+      state : '',
+      description : ''
+    })
+  };
+
   onClickAdd = () => {
     let item = {
       name : this.state.name,
@@ -46,16 +54,23 @@ export default class AddItemDialog extends React.Component {
       description: this.state.description
     }
 
-    insertItem(item).then(()=>console.log("Dodano z powodzeniem!")).catch((error)=>console.error(error));
+    insertItem(item)
+      .then((res)=>{
+        this.props.onSuccess();
+      })
+      .catch((error)=>{
+        this.props.onFailure();
+        console.error(error)
+      });
 
-    this.props.onPressCancel();
+    this.clearState();
+    this.props.onCancel();
   }
 
   render() {
     return (
         <Dialog
           open={this.props.open}
-          //onClose={this.props.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Nowy element</DialogTitle>
@@ -89,7 +104,7 @@ export default class AddItemDialog extends React.Component {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.props.onPressCancel} color="primary">
+            <Button onClick={this.props.onCancel} color="primary">
               Cancel
             </Button>
             <Button onClick={this.onClickAdd}  color="primary">
@@ -101,7 +116,9 @@ export default class AddItemDialog extends React.Component {
   }
 }
 
-AddItemDialog.defaultProps = {
+DialogAddItem.defaultProps = {
   open : false,
-  onPressCancel : () => {}
+  onSuccess : () => void(0),
+  onFailure : () => void(0),
+  onCancel : () => void(0)
 }

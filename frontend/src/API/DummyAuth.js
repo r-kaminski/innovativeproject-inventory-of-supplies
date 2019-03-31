@@ -2,7 +2,6 @@ export const API_URL = 'http://localhost';
 
 export const obtainToken = async () => {
     try {
-        console.log("> obtainToken")
         let response = await fetch(
             `${API_URL}/obtain-token/`, {
                 method: 'POST',
@@ -36,7 +35,6 @@ export const refreshToken = async (token) => {
             }
         );
         let responseJson = await response.json();
-        //console.log(responseJson)
         return responseJson.token;
     } catch (error) {
         console.error(error);
@@ -44,22 +42,17 @@ export const refreshToken = async (token) => {
 };
 
 export const getToken = async () => {
-    console.log("> getToken")
     let token = sessionStorage.getItem('secure_token');
     try{
         
         if(token == null || token == "undefined"){
-            console.log("Trying to obtain token!")
             token = await obtainToken();
         }else{
-            console.log("Trying to refersh token! " + token)
             token = await refreshToken(token);
             sessionStorage.setItem('secure_token', token);
         }
-        //console.log(token)
         return token;
     }catch(error){
-        console.log("> getToken : error")
         console.error(error);
     }
 }

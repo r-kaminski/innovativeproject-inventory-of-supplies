@@ -13,9 +13,7 @@ export const getItems = async () => {
             }
         );
 
-        let reponseJSON = await response.json();
-        //console.log(reponseJSON);
-        return reponseJSON;
+        return response;
     }catch(err){
         console.error(err);
     }
@@ -38,8 +36,7 @@ export const insertItem = async (item) => {
             }
         );
 
-        let reponseJSON = response.json();
-        return reponseJSON;
+        return response;
     }catch(err){
         console.error(err);
     }
@@ -61,15 +58,13 @@ export const deleteItem = async (itemId) => {
             }
         );
 
-        let reponseJSON = response.json();
-        return reponseJSON;
+        return response;
     }catch(err){
         console.error(err);
     }
 }
 
 export const partialUpdateItem = async (itemId, itemBody) => {
-    console.log("partialUpdate");
     let token = await getToken();
     
     let headers = new Headers({
@@ -77,8 +72,6 @@ export const partialUpdateItem = async (itemId, itemBody) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     });
-    
-    console.log(itemBody)
 
     try{
         let response = await fetch(
@@ -89,13 +82,8 @@ export const partialUpdateItem = async (itemId, itemBody) => {
             }
         );
 
-        console.log("tag");
-        //let reponseJSON = await response.json();
-
-        console.log(response);
         return response;
     }catch(err){
-        console.log("partialUpdate catch")
         console.error(err);
     }
 }

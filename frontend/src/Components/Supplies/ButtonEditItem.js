@@ -7,7 +7,7 @@ class ButtonEditItem extends React.Component{
     
     render(){
         return(
-            <Tooltip title={"Usuń"}>
+            <Tooltip title={"Edytuj"}>
               <IconButton onClick={this.props.onClick}>
                 <EditIcon />
               </IconButton>
