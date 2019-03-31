@@ -1,12 +1,14 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import {Platform} from 'react-native';
+import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ToolsScreen from "../screens/ToolsScreen";
+import ToolView from "../screens/ToolView";
+import ToolEdit from "../screens/ToolEdit";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -28,6 +30,8 @@ HomeStack.navigationOptions = {
 
 const ToolsStack = createStackNavigator({
   Tools: ToolsScreen,
+    Tool: {screen: ToolView},
+    ToolEdit: {screen: ToolEdit},
 });
 
 ToolsStack.navigationOptions = {
@@ -73,8 +77,8 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  ToolsStack,
+    ToolsStack,
+    HomeStack,
   LinksStack,
   SettingsStack,
 });
