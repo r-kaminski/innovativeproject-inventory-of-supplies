@@ -1,5 +1,4 @@
-from django.test import TestCase
-from rest_framework.test import APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, force_authenticate, APITestCase
 from rest_framework import status
 from rest_framework.request import Request
 from django.http import HttpRequest
@@ -9,7 +8,7 @@ from .models import Supply
 from .views import SupplyListView, SupplyDetailsView, SearchSupplyView
 
 
-class SupplyTests(TestCase):
+class CRUDSupplyTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.testuser1 = User.objects.create_user(
@@ -25,6 +24,10 @@ class SupplyTests(TestCase):
         cls.factory = APIRequestFactory()
         cls.testsupply = Supply(name='test supply', state='abc')
         cls.testsupply.save()
+        Supply(name="testSupply2").save()
+        Supply(name="testSupply3").save()
+        Supply(name="testSupply4").save()
+        Supply(name="testSupply5").save()
 
     def test_creating_supply_admin(self):
         """
@@ -147,8 +150,91 @@ class SupplyTests(TestCase):
         # data should not change
         self.assertEqual(Supply.objects.get(id=id).state, oldstate)
 
+    def test_ordering_by_name_asc(self):
+        request = self.factory.get(
+            '/api/supplies/?order=name')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        self.assertEqual(
+            response.data['results'][0]['name'], "test supply")
+        self.assertEqual(
+            response.data['results'][1]['name'], "testSupply{}".format(2))
+        self.assertEqual(
+            response.data['results'][2]['name'], "testSupply{}".format(3))
+        self.assertEqual(
+            response.data['results'][3]['name'], "testSupply{}".format(4))
+        self.assertEqual(
+            response.data['results'][4]['name'], "testSupply{}".format(5))
 
-class SearchSupplyTests(TestCase):
+    def test_ordering_by_name_desc(self):
+        request = self.factory.get(
+            '/api/supplies/?order=-name')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        self.assertEqual(
+            response.data['results'][0]['name'], "testSupply{}".format(5))
+        self.assertEqual(
+            response.data['results'][1]['name'], "testSupply{}".format(4))
+        self.assertEqual(
+            response.data['results'][2]['name'], "testSupply{}".format(3))
+        self.assertEqual(
+            response.data['results'][3]['name'], "testSupply{}".format(2))
+        self.assertEqual(
+            response.data['results'][4]['name'], "test supply")
+
+    def test_ordering_by_id_asc(self):
+        request = self.factory.get(
+            '/api/supplies/?order=id')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        for i in range(1, 5):
+            self.assertTrue(
+                response.data['results'][i]['id']-response.data['results'][i-1]['id'] > 0)
+
+    def test_ordering_by_id_desc(self):
+        request = self.factory.get(
+            '/api/supplies/?order=-id')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        for i in range(1, 5):
+            self.assertTrue(
+                response.data['results'][i]['id']-response.data['results'][i-1]['id'] < 0)
+
+    def test_default_page(self):
+        request = self.factory.get(
+            '/api/supplies/?order=name&page_size=2')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(response.data['results'][0]['name'], 'test supply')
+        self.assertEqual(response.data['results'][1]['name'], 'testSupply2')
+
+    def test_page_in_parameter(self):
+        request = self.factory.get(
+            '/api/supplies/?order=name&page_size=2&page=2')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(response.data['results'][0]['name'], 'testSupply3')
+        self.assertEqual(response.data['results'][1]['name'], 'testSupply4')
+
+    def test_unfull_page(self):
+        request = self.factory.get(
+            '/api/supplies/?order=name&page_size=2&page=3')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['name'], 'testSupply5')
+
+    def test_wrong_page(self):
+        request = self.factory.get(
+            '/api/supplies/?order=name&page_size=2&page=4')
+        force_authenticate(request, user=self.testuser1)
+        response = SupplyListView().as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class SearchSupplyTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.testuser1 = User.objects.create_user(
@@ -161,21 +247,92 @@ class SearchSupplyTests(TestCase):
         Supply(name="testSupply5").save()
         cls.factory = APIRequestFactory()
 
-    def test_searching(self):
-        request = self.factory.get('/api/supplies/search/?name=test')
-        force_authenticate(request, user=self.testuser1)
-        response = SearchSupplyView().as_view()(request)
-        self.assertEqual(len(response.data['results']), 5)
-
+    def test_searching_single_result(self):
         request = self.factory.get('/api/supplies/search/?name=y1')
         force_authenticate(request, user=self.testuser1)
         response = SearchSupplyView().as_view()(request)
         self.assertEqual(len(response.data['results']), 1)
 
+    def test_searching_multiple_results(self):
+        request = self.factory.get('/api/supplies/search/?name=test')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 5)
+
+    def test_searching_no_results(self):
         request = self.factory.get('/api/supplies/search/?name=tet')
         force_authenticate(request, user=self.testuser1)
         response = SearchSupplyView().as_view()(request)
         self.assertEqual(len(response.data['results']), 0)
+
+    def test_ordering_by_name_asc(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=name')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        for i in range(5):
+            self.assertEqual(
+                response.data['results'][i]['name'], "testSupply{}".format(i+1))
+
+    def test_ordering_by_name_desc(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=-name')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        for i in range(5):
+            self.assertEqual(
+                response.data['results'][i]['name'], "testSupply{}".format(5-i))
+
+    def test_ordering_by_id_asc(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=id')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        for i in range(1, 5):
+            self.assertTrue(
+                response.data['results'][i]['id']-response.data['results'][i-1]['id'] > 0)
+
+    def test_ordering_by_id_desc(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=-id')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        for i in range(1, 5):
+            self.assertTrue(
+                response.data['results'][i]['id']-response.data['results'][i-1]['id'] < 0)
+
+    def test_default_page(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=name&page_size=2')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(response.data['results'][0]['name'], 'testSupply1')
+        self.assertEqual(response.data['results'][1]['name'], 'testSupply2')
+
+    def test_page_in_parameter(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=name&page_size=2&page=2')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(response.data['results'][0]['name'], 'testSupply3')
+        self.assertEqual(response.data['results'][1]['name'], 'testSupply4')
+
+    def test_unfull_page(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=name&page_size=2&page=3')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['name'], 'testSupply5')
+
+    def test_wrong_page(self):
+        request = self.factory.get(
+            '/api/supplies/search/?name=test&order=name&page_size=2&page=4')
+        force_authenticate(request, user=self.testuser1)
+        response = SearchSupplyView().as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_without_authentication(self):
         request = self.factory.get('/api/supplies/search/?name=test')
