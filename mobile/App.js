@@ -1,17 +1,15 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {AppLoading, Asset, Font, Icon} from 'expo';
+import {AppLoading, Font, Icon} from 'expo';
 import AppNavigator from './navigation/AppNavigator';
-import {LoginPage} from "./screens/LoginPage";
-import {autoLogin, clearSession} from "./services/AuthService";
+import LoginPage from "./screens/LoginPage";
+import {autoLogin} from "./services/AuthService";
 import ButtonsRow from "./components/ButtonsRow";
 
 export default class App extends React.Component {
     state = {
         isLoadingComplete: false,
         signedIn: false,
-        name: "",
-        photoUrl: ""
     };
 
     componentDidMount() {
@@ -34,14 +32,16 @@ export default class App extends React.Component {
             );
         } else {
             return (
-                <View style={styles.container}>
-                    {this.state.signedIn ? (
-                            [<ButtonsRow onPressLogout={this.logout} key={"1"}/>,
-                                <AppNavigator key={"2"}/>]
-                        )
-                        : (
-                            <LoginPage signIn={this.onPressSignIn}/>
-                        )}
+                <View style={styles.appContainer}>
+                    <View style={styles.container}>
+                        {this.state.signedIn ? (
+                                [<ButtonsRow onPressLogout={this.logout} key={"1"}/>,
+                                    <AppNavigator key={"2"}/>]
+                            )
+                            : (
+                                <LoginPage signIn={this.onPressSignIn}/>
+                            )}
+                    </View>
                 </View>
             );
         }
@@ -52,19 +52,6 @@ export default class App extends React.Component {
     };
 
     onPressSignIn = () => {
-        //logowanie google
-        // signIn().then((result) => {
-        //         if (result.type === "success") {
-        //             this.setState({
-        //                 signedIn: true,
-        //                 name: result.user.name,
-        //                 photoUrl: result.user.photoUrl
-        //             })
-        //         } else {
-        //             console.log("cancelled")
-        //         }
-        //     }
-        // )
         this.setState({
             signedIn: true,
         })
@@ -72,10 +59,6 @@ export default class App extends React.Component {
 
     _loadResourcesAsync = async () => {
         return Promise.all([
-            Asset.loadAsync([
-                require('./assets/images/robot-dev.png'),
-                require('./assets/images/robot-prod.png'),
-            ]),
             Font.loadAsync({
                 // This is the font that we are using for our tab bar
                 ...Icon.Ionicons.font,
@@ -98,8 +81,14 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    appContainer: {
+        // marginTop: 20,
+        backgroundColor: "#00295c",
+        flex: 1,
+    },
     container: {
         marginTop: 20,
         flex: 1,
+        //backgroundColor: "#00295c",
     },
 });
