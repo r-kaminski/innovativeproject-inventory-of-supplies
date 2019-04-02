@@ -1,25 +1,16 @@
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
-import Touchable from 'react-native-platform-touchable';
+import {RefreshControl, ScrollView, StyleSheet} from 'react-native';
 import {getSupplies, postSupply} from "../services/SuppliesService";
-import {Button} from "react-native-elements";
+import {Button, ListItem} from "react-native-elements";
 
-
-export default class LinksScreen extends React.Component {
+export default class SuppliesScreen extends React.Component {
 
     state = {
         isShowingText: true,
         "count": 1,
         "next": null,
         "previous": null,
-        "results": [
-            {
-                "description": "to jest opis narzedzia",
-                "id": 1,
-                "name": "mlotek",
-                "state": "deaeaq",
-            },
-        ],
+        "results": [],
         "total_pages": 1,
         refreshing: false,
     };
@@ -60,22 +51,17 @@ export default class LinksScreen extends React.Component {
             >
 
                 {this.state.results.map((supply, index) => {
-                    return <Touchable
-                        key={supply.id ? supply.id : supply.name + index}
-                        style={styles.option}
-                        background={Touchable.Ripple('#ccc', false)}
-                        onPress={() => this._handlePressTool(supply.id)}>
-                        <View style={{flexDirection: 'row'}}>
-                            <View style={styles.optionTextContainer}>
-                                <Text style={styles.optionText}>
-                                    {supply.name}
-                                </Text>
-                            </View>
-                        </View>
-                    </Touchable>
+                    return <ListItem
+                        style={styles.listItem}
+                        key={index}
+                        leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
+                        title={supply.name}
+                        subtitle={supply.description}
+                        onPress={() => this._handlePressTool(supply.id)}
+                    />
                 })}
 
-                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Dodaj nowy pokój"}
+                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Dodaj nowe narządzie"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>
 
             </ScrollView>
@@ -120,4 +106,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginTop: 1,
     },
+    listItem: {
+        borderBottomWidth: 1,
+        borderColor: '#d0d0d0'
+    }
 });

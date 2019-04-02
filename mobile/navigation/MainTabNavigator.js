@@ -6,9 +6,9 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import ToolsScreen from "../screens/ToolsScreen";
+import SuppliesScreen from "../screens/SuppliesScreen";
 import SupplyScreen from "../screens/SupplyScreen";
-import ToolEdit from "../screens/ToolEdit";
+import SupplyEdit from "../screens/SupplyEdit";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -29,13 +29,13 @@ HomeStack.navigationOptions = {
 };
 
 const ToolsStack = createStackNavigator({
-  Tools: ToolsScreen,
+    Narzędzia: SuppliesScreen,
     Tool: {screen: SupplyScreen},
-    ToolEdit: {screen: ToolEdit},
+    ToolEdit: {screen: SupplyEdit},
 });
 
 ToolsStack.navigationOptions = {
-  tabBarLabel: 'Tools',
+    tabBarLabel: 'Narzędzia',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

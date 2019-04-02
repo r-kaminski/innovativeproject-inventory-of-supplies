@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Image, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 
 
-export default class ToolEdit extends React.Component {
+export default class SupplyEdit extends React.Component {
 
     state = {
         isShowingText: true,

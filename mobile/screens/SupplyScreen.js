@@ -1,12 +1,13 @@
 import React from 'react';
 import {Button, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {getSupply} from "../services/SuppliesService";
 
 
 export default class SupplyScreen extends React.Component {
 
     state = {
         isShowingText: true,
-        tool:
+        supply:
             {
                 id: "345876",
                 name: "młotek",
@@ -16,6 +17,15 @@ export default class SupplyScreen extends React.Component {
             }
     };
 
+    componentDidMount() {
+        getSupply(this.props.navigation.getParam("id")).then((res) => {
+            {
+                console.log(res)
+                this.setState({supply: res})
+            }
+        })
+    }
+
 
     static navigationOptions = {
         title: 'Narzędzia',
@@ -23,11 +33,11 @@ export default class SupplyScreen extends React.Component {
 
     onPressEditTool = () => {
         const {navigate} = this.props.navigation;
-        navigate('ToolEdit')
+        navigate('SupplyEdit')
     }
 
     render() {
-        const {tool} = this.state
+        const {supply} = this.state
         return (
             <ScrollView style={styles.container}>
                 <View style={{
@@ -55,13 +65,19 @@ export default class SupplyScreen extends React.Component {
                     </View>
                     <View style={styles.optionTextContainer}>
                         <Text style={styles.optionText}>
-                            {tool.name}
+                            {supply.id}
                         </Text>
                         <Text style={styles.optionText}>
-                            {tool.id}
+                            {supply.name}
                         </Text>
                         <Text style={styles.optionText}>
-                            {tool.localization}
+                            {supply.state}
+                        </Text>
+                        <Text style={styles.optionText}>
+                            {supply.description}
+                        </Text>
+                        <Text style={styles.optionText}>
+                            {supply.localization}
                         </Text>
 
                     </View>
