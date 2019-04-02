@@ -1,13 +1,13 @@
 import React from 'react';
 import {RefreshControl, ScrollView, StyleSheet} from 'react-native';
-import {getSupplies, postSupply} from "../services/SuppliesService";
+import {getSupplies} from "../services/SuppliesService";
 import {Button, ListItem} from "react-native-elements";
 
 export default class SuppliesScreen extends React.Component {
 
     state = {
         isShowingText: true,
-        "count": 1,
+        "count": 0,
         "next": null,
         "previous": null,
         "results": [],
@@ -36,7 +36,7 @@ export default class SuppliesScreen extends React.Component {
 
 
     static navigationOptions = {
-        title: 'Narzędzia',
+        header: null
     };
 
     render() {
@@ -69,42 +69,23 @@ export default class SuppliesScreen extends React.Component {
     }
 
     onPressNavigateToAddNewSupply = () => {
-        postSupply({name: "Szuflada", state: "dobry", description: "opisik"})
-            .then(() => this._onRefresh())
+        const {navigate} = this.props.navigation;
+        navigate('SupplyAdd', {onRefresh: () => this._onRefresh()})
     }
 
     _handlePressTool = (id) => {
         const {navigate} = this.props.navigation;
-        navigate('Tool', {id: id})
+        navigate('Supply', {id: id})
     };
 }
+
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 15,
         backgroundColor: '#fff',
         borderColor: 'red',
         borderWidth: 1,
-    },
-    optionsTitleText: {
-        fontSize: 16,
-        marginLeft: 15,
-        marginTop: 9,
-        marginBottom: 12,
-    },
-    optionIconContainer: {
-        marginRight: 9,
-    },
-    option: {
-        backgroundColor: '#fdfdfd',
-        paddingHorizontal: 15,
-        paddingVertical: 15,
-        borderBottomColor: '#EDEDED',
-    },
-    optionText: {
-        fontSize: 15,
-        marginTop: 1,
     },
     listItem: {
         borderBottomWidth: 1,

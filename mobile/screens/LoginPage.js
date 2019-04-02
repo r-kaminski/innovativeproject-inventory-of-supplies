@@ -15,8 +15,6 @@ export default class LoginPage extends React.Component {
             <ScrollView contentContainerStyle={{flexGrow: 1, alignItems: "center", justifyContent: "center"}}
                         keyboardShouldPersistTaps='handled'
             >
-                {/*<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>*/}
-                {/*<View style={styles.container}>*/}
                 <View style={styles.wrapper}>
                     <Text style={styles.header}>Logowanie</Text>
                     <Input
@@ -26,7 +24,6 @@ export default class LoginPage extends React.Component {
                         inputStyle={{color: 'white'}}
                         onChange={(e) => {
                             this.setState({login: e.nativeEvent.text})
-                            console.log(e.nativeEvent.text)
                         }}
                         value={this.state.login}
                     />
@@ -37,16 +34,8 @@ export default class LoginPage extends React.Component {
                         leftIconContainerStyle={{paddingRight: 8}}
                         inputStyle={{color: 'white'}}
                         secureTextEntry
-                        // leftIcon={
-                        //     <Icon
-                        //         name='user'
-                        //         size={18}
-                        //         color='#ff0000'
-                        //     />
-                        // }
                         onChange={(e) => {
                             this.setState({password: e.nativeEvent.text})
-                            console.log(e.nativeEvent.text)
                         }}
                         value={this.state.password}
                         errorMessage={this.state.error ? "Niepoprawny login lub hasło" : null}
@@ -61,9 +50,6 @@ export default class LoginPage extends React.Component {
                     )
                 }} title={"zaloguj"}
                         color={"#40c1ac"}/>
-
-                {/*</View>*/}
-                {/*</TouchableWithoutFeedback>*/}
             </ScrollView>
         )
     }

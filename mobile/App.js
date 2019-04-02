@@ -36,7 +36,7 @@ export default class App extends React.Component {
                     <View style={styles.container}>
                         {this.state.signedIn ? (
                                 [<ButtonsRow onPressLogout={this.logout} key={"1"}/>,
-                                    <AppNavigator key={"2"}/>]
+                                    <AppNavigator style={styles.appNavigator} key={"2"}/>]
                             )
                             : (
                                 <LoginPage signIn={this.onPressSignIn}/>
@@ -89,6 +89,11 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 20,
         flex: 1,
-        //backgroundColor: "#00295c",
     },
+    appNavigator: {
+        borderWidth: 1,
+        borderColor: "green",
+        padding: 10,
+        margin: 10
+    }
 });

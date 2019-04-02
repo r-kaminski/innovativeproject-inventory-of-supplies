@@ -55,10 +55,12 @@ export async function getSupply(id) {
 }
 
 export async function updateSupply(id, supply) {
-    let headers = setHeaders()
+    console.log(supply)
+    let headers = null
+    await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/supplies/update/${id}`, {
+            `${API_URL}/api/supplies/${id}/`, {
                 method: 'PUT',
                 headers: headers,
                 body: JSON.stringify(supply)

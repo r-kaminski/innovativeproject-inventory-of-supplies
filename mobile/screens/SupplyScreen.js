@@ -7,122 +7,129 @@ export default class SupplyScreen extends React.Component {
 
     state = {
         isShowingText: true,
-        supply:
-            {
-                id: "345876",
-                name: "młotek",
-                container: false,
-                localization: "A1",
-                contains: []
-            }
+        supply: null
     };
 
     componentDidMount() {
+        this.reload();
+    }
+
+
+    reload() {
         getSupply(this.props.navigation.getParam("id")).then((res) => {
             {
-                console.log(res)
                 this.setState({supply: res})
             }
         })
     }
 
-
     static navigationOptions = {
-        title: 'Narzędzia',
+        header: null
     };
 
     onPressEditTool = () => {
         const {navigate} = this.props.navigation;
-        navigate('SupplyEdit')
+        navigate('SupplyEdit', {supply: this.state.supply, onGoBack: () => this.reload()})
     }
 
     render() {
         const {supply} = this.state
         return (
-            <ScrollView style={styles.container}>
-                <View style={{
-                    flexDirection: 'column',
-                    // justifyContent: 'center',
-                    // alignItems: 'center',
-                    borderColor: 'red',
-                    borderWidth: 1,
-                    padding: 20
-                }}>
-                    <View style={{
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderColor: 'red',
-                        borderBottomWidth: 1,
-                        padding: 20
-                    }}>
-                        <Image
-                            source={{uri: 'https://via.placeholder.com/150'}}
-                            resizeMode="contain"
-                            fadeDuration={0}
-                            style={styles.image}
-                        />
-                    </View>
-                    <View style={styles.optionTextContainer}>
-                        <Text style={styles.optionText}>
-                            {supply.id}
-                        </Text>
-                        <Text style={styles.optionText}>
+            <View style={styles.container}>
+                <ScrollView style={styles.container}>
+                    {this.state.supply && <View style={styles.mainView}>
+                        <View style={styles.imageContainer}>
+                            <Image
+                                source={{uri: 'https://via.placeholder.com/150'}}
+                                resizeMode="contain"
+                                fadeDuration={0}
+                                style={styles.image}
+                            />
+                        </View>
+                        <Text style={styles.optionsTitleText}>
                             {supply.name}
                         </Text>
-                        <Text style={styles.optionText}>
-                            {supply.state}
-                        </Text>
-                        <Text style={styles.optionText}>
-                            {supply.description}
-                        </Text>
-                        <Text style={styles.optionText}>
-                            {supply.localization}
-                        </Text>
+                        <View style={styles.row}>
 
-                    </View>
-                </View>
+                            <View style={{paddingRight: 8}}>
+                                <Text style={styles.descriptionText}>
+                                    id:
+                                </Text>
+
+                                <Text style={styles.descriptionText}>
+                                    stan:
+                                </Text>
+                                <Text style={styles.descriptionText}>
+                                    opis:
+                                </Text>
+                                <Text style={styles.descriptionText}>
+                                    {supply.localization}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={styles.optionText}>
+                                    {supply.id}
+                                </Text>
+
+                                <Text style={styles.optionText}>
+                                    {supply.state}
+                                </Text>
+                                <Text style={styles.optionText}>
+                                    {supply.description}
+                                </Text>
+                                <Text style={styles.optionText}>
+                                    {supply.localization}
+                                </Text>
+                            </View>
+
+
+                        </View>
+                    </View>}
+
+                </ScrollView>
                 <Button onPress={() => this.onPressEditTool()} title={"Edytuj"}
                         color={"#098584"}/>
-            </ScrollView>
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    mainView: {
+        paddingRight: 20,
+        paddingLeft: 20
+    },
+    imageContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // borderColor: 'red',
+        // borderBottomWidth: 1,
+        padding: 20
+    },
     image: {
-        width: 100,
-        height: 100,
-        marginTop: 1,
-        alignItems: 'center'
+        width: 150,
+        height: 150,
     },
     container: {
         flex: 1,
-        // paddingTop: 15,
         backgroundColor: '#fff',
+        maxHeight: "100%"
     },
-    // container: {
-    //   flex: 1,
-    //   paddingTop: 15,
-    // },
     optionsTitleText: {
-        fontSize: 16,
-        marginLeft: 15,
-        marginTop: 9,
+        fontSize: 18,
         marginBottom: 12,
-    },
-    optionIconContainer: {
-        marginRight: 9,
-    },
-    option: {
-        backgroundColor: '#fdfdfd',
-        paddingHorizontal: 15,
-        paddingVertical: 15,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#EDEDED',
     },
     optionText: {
         fontSize: 15,
         marginTop: 1,
     },
+    descriptionText: {
+        fontSize: 15,
+        marginTop: 1,
+        color: '#808080'
+    },
+    row: {
+        flexDirection: 'row',
+    }
 });

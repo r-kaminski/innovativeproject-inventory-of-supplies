@@ -9,6 +9,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import SuppliesScreen from "../screens/SuppliesScreen";
 import SupplyScreen from "../screens/SupplyScreen";
 import SupplyEdit from "../screens/SupplyEdit";
+import SupplyAdd from "../screens/SupplyAdd";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -29,9 +30,10 @@ HomeStack.navigationOptions = {
 };
 
 const ToolsStack = createStackNavigator({
-    Narzędzia: SuppliesScreen,
-    Tool: {screen: SupplyScreen},
-    ToolEdit: {screen: SupplyEdit},
+    Supplies: SuppliesScreen,
+    Supply: {screen: SupplyScreen},
+    SupplyEdit: {screen: SupplyEdit},
+    SupplyAdd: {screen: SupplyAdd},
 });
 
 ToolsStack.navigationOptions = {

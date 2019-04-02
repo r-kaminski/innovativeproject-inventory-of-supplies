@@ -1,14 +1,18 @@
 import React from 'react';
 import {Button, Image, ScrollView, StyleSheet, View} from 'react-native';
 import {Input} from "react-native-elements";
-import {updateSupply} from "../services/SuppliesService";
+import {postSupply} from "../services/SuppliesService";
 
 
 export default class SupplyEdit extends React.Component {
 
     state = {
         isShowingText: true,
-        supply: this.props.navigation.getParam("supply")
+        supply: {
+            name: "",
+            state: "",
+            description: ""
+        }
     };
 
 
@@ -18,13 +22,13 @@ export default class SupplyEdit extends React.Component {
 
     onPressSave = () => {
         const {goBack} = this.props.navigation;
-        this.props.navigation.state.params.onGoBack();
         const newSupply = {
             name: this.state.supply.name,
             state: this.state.supply.state,
             description: this.state.supply.description
         }
-        updateSupply(this.state.supply.id, newSupply)
+        postSupply(newSupply)
+            .then(() => this.props.navigation.state.params.onRefresh())
         goBack()
     }
 
@@ -51,12 +55,6 @@ export default class SupplyEdit extends React.Component {
                         />
                         <View style={styles.row}>
                             <View style={{flex: 1}}>
-
-                                <Input inputStyle={styles.optionText}
-                                       value={supply.id.toString()}
-                                       label={"Id"}
-                                       editable={false}
-                                />
 
                                 <Input inputStyle={styles.optionText}
                                        onChange={(e) => {
