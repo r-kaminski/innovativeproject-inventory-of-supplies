@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 
 
-export default class ToolView extends React.Component {
+export default class SupplyScreen extends React.Component {
 
     state = {
         isShowingText: true,

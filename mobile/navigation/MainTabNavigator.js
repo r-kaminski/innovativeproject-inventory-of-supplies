@@ -7,7 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ToolsScreen from "../screens/ToolsScreen";
-import ToolView from "../screens/ToolView";
+import SupplyScreen from "../screens/SupplyScreen";
 import ToolEdit from "../screens/ToolEdit";
 
 const HomeStack = createStackNavigator({
@@ -30,7 +30,7 @@ HomeStack.navigationOptions = {
 
 const ToolsStack = createStackNavigator({
   Tools: ToolsScreen,
-    Tool: {screen: ToolView},
+    Tool: {screen: SupplyScreen},
     ToolEdit: {screen: ToolEdit},
 });
 

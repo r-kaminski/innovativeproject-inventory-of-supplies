@@ -1,44 +1,47 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Touchable from 'react-native-platform-touchable';
+import {getSupplies, postSupply} from "../services/SuppliesService";
+import {Button} from "react-native-elements";
 
 
 export default class LinksScreen extends React.Component {
 
     state = {
         isShowingText: true,
-        tools: [
+        "count": 1,
+        "next": null,
+        "previous": null,
+        "results": [
             {
-                id: "1234567",
-                name: "szafa",
-                container: true,
-                localization: "A1",
-                contains: ["123", "345"]
+                "description": "to jest opis narzedzia",
+                "id": 1,
+                "name": "mlotek",
+                "state": "deaeaq",
             },
-            {
-                id: "123",
-                name: "szuflada 1",
-                container: true,
-                localization: "A1",
-                contains: []
-            },
-            {
-                id: "345",
-                name: "szuflada 2",
-                container: true,
-                localization: "A1",
-                contains: []
-            },
-            {
-                id: "345876",
-                name: "młotek",
-                container: false,
-                localization: "A1",
-                contains: []
-            }
-
-        ]
+        ],
+        "total_pages": 1,
+        refreshing: false,
     };
+
+    componentDidMount() {
+        this._onRefresh()
+    }
+
+    _onRefresh = () => {
+        this.setState({refreshing: true});
+        this.fetchData().then(() => {
+            this.setState({refreshing: false});
+        });
+    }
+
+    async fetchData() {
+        await getSupplies({page: 1, page_size: 10}).then((res) => {
+            {
+                this.setState(res)
+            }
+        })
+    }
 
 
     static navigationOptions = {
@@ -47,27 +50,41 @@ export default class LinksScreen extends React.Component {
 
     render() {
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this._onRefresh}
+                            />
+                        }
+            >
 
-                {this.state.tools.map((tool) => {
+                {this.state.results.map((supply, index) => {
                     return <Touchable
-                        key={tool.id}
+                        key={supply.id ? supply.id : supply.name + index}
                         style={styles.option}
                         background={Touchable.Ripple('#ccc', false)}
-                        onPress={() => this._handlePressTool(tool.id)}>
+                        onPress={() => this._handlePressTool(supply.id)}>
                         <View style={{flexDirection: 'row'}}>
                             <View style={styles.optionTextContainer}>
                                 <Text style={styles.optionText}>
-                                    {tool.name}
+                                    {supply.name}
                                 </Text>
                             </View>
                         </View>
                     </Touchable>
                 })}
 
+                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Dodaj nowy pokój"}
+                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
 
             </ScrollView>
         );
+    }
+
+    onPressNavigateToAddNewSupply = () => {
+        postSupply({name: "Szuflada", state: "dobry", description: "opisik"})
+            .then(() => this._onRefresh())
     }
 
     _handlePressTool = (id) => {
