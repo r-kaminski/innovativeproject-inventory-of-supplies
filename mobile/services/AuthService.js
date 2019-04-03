@@ -5,7 +5,6 @@ import {API_URL} from "../api";
 export const refreshToken = async (token) => {
 
     try {
-        console.log('token in refres ', token);
         let response = await fetch(
             `${API_URL}/refresh-token/`, {
                 method: 'POST',
@@ -17,7 +16,6 @@ export const refreshToken = async (token) => {
             }
         );
         let responseJson = await response.json();
-        console.log(responseJson)
         return responseJson.token;
     } catch (error) {
         console.error(error);
@@ -47,23 +45,7 @@ export const setHeaders = async (headers) => {
 }
 
 
-export const signIn = async () => {
-    //logowanie google
-    // try {
-    //     const result = await Expo.Google.logInAsync({
-    //         androidClientId: "837959349595-frmntvqs95o0hiab24hadkhf0jkhffaq.apps.googleusercontent.com",
-    //         scopes: ["profile", "email"]
-    //     })
-    //     if (result.type === "success") {
-    //         // await SecureStore.setItemAsync('secure_token', result.accessToken);
-    //     } else {
-    //         console.log("cancelled")
-    //     }
-    //     return result;
-    //
-    // } catch (e) {
-    //     console.log("error", e)
-    // }
+export const signIn = async (login, password) => {
     try {
         let response = await fetch(
             `${API_URL}/obtain-token/`, {
@@ -73,13 +55,16 @@ export const signIn = async () => {
                     'Content-Type': 'application/json',
                 },
 
-                body: JSON.stringify({username: 'admin', password: 'admin'})
+                body: JSON.stringify({username: login, password: password})
             }
         );
-        let responseJson = await response.json();
-        await SecureStore.setItemAsync('secure_token', responseJson.token)
-
-        return responseJson;
+        if (response.status >= 400) {
+            return false;
+        } else {
+            let responseJson = await response.json();
+            responseJson.token && await SecureStore.setItemAsync('secure_token', responseJson.token)
+            return true;
+        }
     } catch (error) {
         console.error(error);
     }
@@ -100,5 +85,14 @@ export const autoLogin = async () => {
             await SecureStore.setItemAsync('secure_token', newToken)
             return true;
         })
+    }
+}
+
+export const clearSession = async () => {
+    try {
+        await SecureStore.deleteItemAsync('secure_token');
+        return true;
+    } catch (exception) {
+        return false;
     }
 }
