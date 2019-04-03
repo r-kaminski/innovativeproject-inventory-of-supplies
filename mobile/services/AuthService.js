@@ -5,7 +5,6 @@ import {API_URL} from "../api";
 export const refreshToken = async (token) => {
 
     try {
-        console.log('token in refres ', token);
         let response = await fetch(
             `${API_URL}/refresh-token/`, {
                 method: 'POST',
@@ -17,7 +16,6 @@ export const refreshToken = async (token) => {
             }
         );
         let responseJson = await response.json();
-        console.log(responseJson)
         return responseJson.token;
     } catch (error) {
         console.error(error);
@@ -61,34 +59,15 @@ export const signIn = async (login, password) => {
             }
         );
         if (response.status >= 400) {
-            // throw response;
-            // return Promise.reject(response)
             return false;
         } else {
             let responseJson = await response.json();
-            console.log(response, responseJson)
             responseJson.token && await SecureStore.setItemAsync('secure_token', responseJson.token)
             return true;
         }
     } catch (error) {
         console.error(error);
     }
-
-    // fetch(
-    //         `${API_URL}/obtain-token/`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //
-    //             body: JSON.stringify({username: login, password: password})
-    //         }
-    //     ).then(async (res) => {
-    //         console.log("res ", res)
-    //         await SecureStore.setItemAsync('secure_token', res.json().token)
-    //     }
-    // ).error((err) => console.log("błąd: ", err))
 }
 
 

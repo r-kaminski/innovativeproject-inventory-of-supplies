@@ -1,5 +1,5 @@
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
 import {getSupplies} from "../services/SuppliesService";
 import {Button, ListItem} from "react-native-elements";
 
@@ -56,7 +56,14 @@ export default class SuppliesScreen extends React.Component {
                         key={index}
                         leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
                         title={supply.name}
-                        subtitle={supply.description}
+                        subtitle={
+                            <Text style={styles.subtitle}
+                                  ellipsizeMode={'tail'}
+                                  numberOfLines={1}
+                            >{supply.description}</Text>
+                        }
+
+                        // subtitle={supply.description}
                         onPress={() => this._handlePressTool(supply.id)}
                     />
                 })}
@@ -90,5 +97,9 @@ const styles = StyleSheet.create({
     listItem: {
         borderBottomWidth: 1,
         borderColor: '#d0d0d0'
+    },
+    subtitle: {
+        color: '#d0d0d0',
+
     }
 });
