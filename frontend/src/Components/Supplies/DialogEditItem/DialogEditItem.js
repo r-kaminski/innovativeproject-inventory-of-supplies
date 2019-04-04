@@ -57,13 +57,7 @@ class DialogEditItem extends React.Component {
     };
 
     partialUpdateItem(this.props.item.id, itemBody)
-      .then((res)=>{
-        if(res.ok){
-          this.props.onSuccess();
-        }else{
-          this.props.onFailure();
-        }
-      })
+      .then(()=>this.props.onSuccess())
       .catch((err)=>{
         this.props.onFailure(); 
         console.error(err);

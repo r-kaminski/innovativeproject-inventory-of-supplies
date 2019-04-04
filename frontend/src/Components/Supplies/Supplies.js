@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import styles from './Supplies.module.css';
-import { getItems, deleteItem } from '../../API/InventoryAPI';
 import CustomToolbar from './CustomToolbar/CustomToolbar'
 import ButtonRemoveItem from './ButtonRemoveItem';
 import ButtonEditItem from './ButtonEditItem';
 import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
-import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
+import { obtainToken } from '../../API/DummyAuth';
+import { getItems, deleteItem } from '../../API/InventoryAPI';
 
 
-class Supplies extends Component{
+export default class Supplies extends React.Component{
     constructor(props){
         super(props);
 
@@ -27,17 +28,11 @@ class Supplies extends Component{
     }
 
     updateData = () => {
-        try{
-            getItems().then((res) => {
-                if(res.ok){
-                    res.json().then((data)=>{
-                        this.setState({data : data})
-                    });
-                }
-            });
-        }catch(error){
-            console.error(error);
-        }
+        getItems().catch((err)=>{
+                console.error(err);
+            }).then((res)=>{
+                this.setState({data : res.data});
+            })
     }
 
     onClickAddItem = () => {
@@ -47,10 +42,16 @@ class Supplies extends Component{
     }
 
     onClickDeleteRow = (rowId) => {
-        try{
-            deleteItem(this.state.data[rowId].id).then((res)=>{
-                if(res.ok){
-                    let newData = [...this.state.data];
+        deleteItem(this.state.data[rowId].id)
+            .catch((err)=>{
+                console.error(err);
+                this.setState({
+                    openSnackbar : true,
+                    snackbarMessage : "Wystąpił błąd!",
+                    snackbarVariant : "error"
+                });
+            }).then((res)=>{
+                let newData = [...this.state.data];
                     newData.splice(rowId,1);
 
                     this.setState({
@@ -59,19 +60,7 @@ class Supplies extends Component{
                         snackbarMessage : "Usunięto pomyślnie!",
                         snackbarVariant : "success"
                     });
-                }else{
-                    this.setState({
-                        openSnackbar : true,
-                        snackbarMessage : "Wystąpił błąd!",
-                        snackbarVariant : "error"
-                    });
-                }
             });
-
-            
-        }catch(error){
-            console.error(error);
-        }
     }
 
     onClickEditRow = (rowId) => {
@@ -82,42 +71,74 @@ class Supplies extends Component{
     }
 
     onClickDeleteSelected = (rowsDeleted) => {
-        try{
-            let allOk = true;
-            let someOk = true;
-            for(let key in rowsDeleted){
-                deleteItem(this.state.data[key].id).then((res)=>{
-                    allOk = allOk && res.ok;
-                    someOk = someOk || res.ok;
+        let allOk = true;
+        let someOk = false;
+        for(let key in rowsDeleted){
+            deleteItem(this.state.data[key].id)
+                .catch((err)=>{
+                    console.error(err);
+                    allOk = false;
+                }).then((res)=>{
+                    someOk = true;
                 });
-            }
+        }
 
-            if(allOk){
-                this.setState({
-                    snackbarMessage : "Usunięto pomyślnie!",
-                    snackbarVariant : "success",
-                    openSnackbar : true
-                })
-            }else if(someOk){
-                this.setState({
-                    snackbarMessage : "Wystąpił częściowy błąd!",
-                    snackbarVariant : "error",
-                    openSnackbar : true
-                })
-            }else{
-                this.setState({
-                    snackbarMessage : "Wystąpił błąd!",
-                    snackbarVariant : "error",
-                    openSnackbar : true
-                })
-            }
-        }catch(error){
-            console.error(error);
+        if(allOk){
+            this.setState({
+                snackbarMessage : "Usunięto pomyślnie!",
+                snackbarVariant : "success",
+                openSnackbar : true
+            })
+        }else if(someOk){
+            this.setState({
+                snackbarMessage : "Wystąpił częściowy błąd!",
+                snackbarVariant : "error",
+                openSnackbar : true
+            })
+        }else{
+            this.setState({
+                snackbarMessage : "Wystąpił błąd!",
+                snackbarVariant : "error",
+                openSnackbar : true
+            })
         }
     }
 
+    showSnackbar = (type, message) => {
+        switch (type){
+            case "success":
+                this.setState({
+                    snackbarMessage : message,
+                    snackbarVariant : "success",
+                    openSnackbar : true
+                });
+                break;
+            case "error":
+                this.setState({
+                    snackbarMessage : message,
+                    snackbarVariant : "error",
+                    openSnackbar : true
+                });
+                break;
+            default:
+                console.error(`Snackbar type: '${type}' not supported!`)
+                break;
+        }
+        
+    };
+
+    showErrorSnackbar = (message) => {
+        
+    }
+
     componentDidMount(){
-        this.updateData();
+        //TODO(1)
+        //This may change on merge with master
+        //Only dummy auth in inventory-maintainment branch
+        //this.updateData() is obligatory
+        obtainToken()
+            .catch((err)=>console.error(err))
+            .then(()=>this.updateData());
     }
 
 
@@ -128,7 +149,7 @@ class Supplies extends Component{
             label: "ID",
             options: {
                 filter: false,
-                sort: true
+                sort: false
             }
         }, 
         {
@@ -136,15 +157,15 @@ class Supplies extends Component{
             label: "Nazwa",
             options: {
                 filter: false,
-                sort: true
+                sort: false
             }
         },
         {
             name: "state",
             label: "Stan",
             options: {
-                filter: true,
-                sort: true
+                filter: false,
+                sort: false
             }
         },
         {
@@ -177,7 +198,12 @@ class Supplies extends Component{
     ];
     
     options = {
-        filterType: 'dropdown',
+        filter: false,
+        sort: false,
+        search: false,
+        print: false,
+        download: false,
+        viewColumns: false,
         customToolbar: () => (<CustomToolbar onClickAddItem={()=>this.onClickAddItem()}/>),
         onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
     };
@@ -200,18 +226,10 @@ class Supplies extends Component{
                     open={this.state.openDialogAdd}
                     onCancel={()=>this.setState({openDialogAdd : false})}
                     onSuccess={()=>{
-                        this.updateData()
-                        this.setState({
-                            snackbarMessage : "Dodano pomyślnie!",
-                            snackbarVariant : "success",
-                            openSnackbar : true
-                        })
+                        this.updateData();
+                        this.showSnackbar("success", "Dodano pomyślnie!");
                     }}
-                    onFailure={()=>{this.setState({
-                        snackbarMessage : "Wystąpił błąd!",
-                        snackbarVariant : "error",
-                        openSnackbar : true
-                    })}}
+                    onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
                     />
 
                 <DialogEditItem
@@ -219,29 +237,21 @@ class Supplies extends Component{
                     item={this.state.itemToEdit}
                     onCancel={()=>{this.setState({openDialogEdit : false})}}
                     onSuccess={()=>{
-                        this.updateData()
-                        this.setState({
-                            snackbarMessage : "Zapisano pomyślnie!",
-                            snackbarVariant : "success",
-                            openSnackbar : true
-                        })
+                        this.updateData();
+                        this.showSnackbar("success", "Zapisano pomyślnie!");
                     }}
-                    onFailure={()=>{this.setState({
-                        snackbarMessage : "Wystąpił błąd!",
-                        snackbarVariant : "error",
-                        openSnackbar : true
-                    })}}
+                    onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
                 />
 
                 <Snackbar
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                        }}
-                        open={this.state.openSnackbar}
-                        autoHideDuration={4000}
-                        onClose={()=>this.setState({openSnackbar : false})}
-                        >
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={4000}
+                    onClose={()=>this.setState({openSnackbar : false})}
+                    >
                         <SnackbarContentWrapper
                             onClose={()=>this.setState({openSnackbar : false})}
                             variant={this.state.snackbarVariant}
@@ -252,5 +262,3 @@ class Supplies extends Component{
         );
     };
 }
-
-export default Supplies;
