@@ -132,13 +132,7 @@ export default class Supplies extends React.Component{
     }
 
     componentDidMount(){
-        //TODO(1)
-        //This may change on merge with master
-        //Only dummy auth in inventory-maintainment branch
-        //this.updateData() is obligatory
-        obtainToken()
-            .catch((err)=>console.error(err))
-            .then(()=>this.updateData());
+        this.updateData();
     }
 
 

@@ -1,12 +1,15 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import {Platform} from 'react-native';
+import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import ToolsScreen from "../screens/ToolsScreen";
+import SuppliesScreen from "../screens/SuppliesScreen";
+import SupplyScreen from "../screens/SupplyScreen";
+import SupplyEdit from "../screens/SupplyEdit";
+import SupplyAdd from "../screens/SupplyAdd";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -27,11 +30,14 @@ HomeStack.navigationOptions = {
 };
 
 const ToolsStack = createStackNavigator({
-  Tools: ToolsScreen,
+    Supplies: SuppliesScreen,
+    Supply: {screen: SupplyScreen},
+    SupplyEdit: {screen: SupplyEdit},
+    SupplyAdd: {screen: SupplyAdd},
 });
 
 ToolsStack.navigationOptions = {
-  tabBarLabel: 'Tools',
+    tabBarLabel: 'Narzędzia',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -73,8 +79,8 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  ToolsStack,
+    ToolsStack,
+    HomeStack,
   LinksStack,
   SettingsStack,
 });
