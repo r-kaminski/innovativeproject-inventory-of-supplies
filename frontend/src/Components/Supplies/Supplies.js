@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import MUIDataTable from "mui-datatables";
 import styles from './Supplies.module.css';
 import CustomToolbar from './CustomToolbar/CustomToolbar'
@@ -8,7 +8,6 @@ import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
-import { obtainToken } from '../../API/DummyAuth';
 import { getItems, deleteItem } from '../../API/InventoryAPI';
 
 
@@ -28,10 +27,11 @@ export default class Supplies extends React.Component{
     }
 
     updateData = () => {
-        getItems().catch((err)=>{
+        getItems()
+            .catch((err)=>{
                 console.error(err);
             }).then((res)=>{
-                this.setState({data : res.data});
+                this.setState({data : res.data.results});
             })
     }
 
