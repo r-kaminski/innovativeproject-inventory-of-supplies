@@ -48,7 +48,7 @@ def CreatePrintable(request):
             X += 248
             itemCount += 1
             if itemCount % 10 == 0:  # next line
-                Y += 295
+                Y += 293  # originally 295, but the text gets cut off at the last line
                 X = 0
 
         codes.save(finalImage, format="PNG")
