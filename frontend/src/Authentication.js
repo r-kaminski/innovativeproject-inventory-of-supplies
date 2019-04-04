@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
 import Fade from '@material-ui/core/Fade';
+import { withSnackbar } from 'notistack';
 import './Authentication.css'
 
 class Authentication extends Component {
@@ -20,7 +21,9 @@ class Authentication extends Component {
             password2: "",
             register: false,
             fade: false,
-            size: this.sizes.login
+            size: this.sizes.login,
+            snackbar: { open: false },
+            mode: 'login',
         };
     }
 
@@ -41,39 +44,87 @@ class Authentication extends Component {
         return this.state.username.length > 0 && this.state.email.length > 0 && this.state.password1.length > 0 && this.state.password2.length > 0;
     }
 
-    changeScreen() {
+    pushNotification(message, type) {
+        this.setState({ snackbar: { open: true, message: message, type: type } });
+    }
+
+    changeScreen(nextMode) {
         this.setState({
             username: "",
             email: "",
             password1: "",
             password2: "",
-            fade: true
+            fade: true,
         });
-        let newSize = this.state.register ? this.sizes.login : this.sizes.register;
+        let newSize;
+        if (nextMode === 'register') {
+            newSize = this.sizes.register;
+        } else if (nextMode === 'login') {
+            newSize = this.sizes.login;
+        }
         this.setState({ size: newSize });
 
         setTimeout(() => {
-            this.setState({ fade: false, register: !this.state.register });
+            this.setState({ fade: false });
         }, this.fadeTimeout.exit);
+        this.setState({ mode: nextMode });
+    }
+
+    async handleRegistration(event) {
+        event.preventDefault();
+        try {
+            let response = await authService.registerToken({
+                username: this.state.username,
+                email: this.state.email,
+                password1: this.state.password1,
+                password2: this.state.password2
+            });
+            if (response.status === 201) {
+                this.props.enqueueSnackbar('registered successfully', { variant: 'info' });
+                this.changeScreen();
+            }
+        } catch (error) {
+            for (let message of Object.values(error.response.data)) {
+                this.props.enqueueSnackbar(message, { variant: 'error' });
+            }
+        }
+    }
+
+    async handleLogin(event) {
+        event.preventDefault();
+        try {
+            await authService.loginToken({
+                username: this.state.username,
+                password: this.state.password1
+            });
+        } catch (error) {
+            for (let message of Object.values(error.response.data)) {
+                this.props.enqueueSnackbar(message, { variant: 'error' });
+            }
+        }
+    }
+
+    currentMode() {
+        return this.state.mode;
     }
 
     renderForm() {
-        if (!this.state.register) {
+        if (this.currentMode() === 'login') {
             return (
-                <form>
+                <form onSubmit={this.handleLogin.bind(this)}>
                     <FormControl className="fields" fullWidth>
                         <InputLabel htmlFor="username">Username</InputLabel>
-                        <Input className="Input" placeholder="Username" type="text" name="username" value={this.state.username} onChange={(event) => this.setState({ username: event.target.value })} />
+                        <Input className="Input" autoComplete="section-login username" placeholder="Username" type="text" name="username" value={this.state.username} onChange={(event) => this.setState({ username: event.target.value })} />
                     </FormControl>
                     <FormControl className="fields" fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input placeholder="Password" type="password" name="password" value={this.state.password1} onChange={(event) => this.setState({ password1: event.target.value })} />
+                        <Input placeholder="Password" autoComplete="section-login current-password" type="password" name="password" value={this.state.password1} onChange={(event) => this.setState({ password1: event.target.value })} />
                     </FormControl>
 
-                    <Button type="submit" variant="contained" className="buttons" fullWidth color="primary" disabled={!this.validateLoginForm()} onClick={() => authService.loginToken(this.state)}>Log in</Button>
+                    <Button type="submit" variant="contained" className="buttons" fullWidth color="primary" disabled={!this.validateLoginForm()}>Log in</Button>
 
                     <Grid className="bottomFields" container item direction="row" justify="center" alignItems="center" alignContent="center" spacing={16}>
-                        <Grid item className="bottomButtons" onClick={(event) => this.changeScreen()}>I'm new here</Grid>
+                        <Grid item className="bottomButtons" onClick={(event) => this.changeScreen('register')}>I'm new here</Grid>
                         <Grid item className="separator">|</Grid>
                         <Grid item className="bottomButtons">Forgot password</Grid>
                     </Grid>
@@ -81,27 +132,27 @@ class Authentication extends Component {
             )
         } else {
             return (
-                <form>
+                <form autoComplete="off" onSubmit={this.handleRegistration.bind(this)}>
                     <FormControl className="fields" fullWidth>
                         <InputLabel htmlFor="username">Username</InputLabel>
-                        <Input className="Input" placeholder="Username" type="text" name="username" value={this.state.username} onChange={(event) => this.setState({ username: event.target.value })} />
+                        <Input className="Input" placeholder="Username" type="text" value={this.state.username} onChange={(event) => this.setState({ username: event.target.value })} />
                     </FormControl>
                     <FormControl className="fields" fullWidth>
                         <InputLabel htmlFor="email">e-mail</InputLabel>
-                        <Input placeholder="e-mail" type="email" name="email" value={this.state.email} onChange={(event) => this.setState({ email: event.target.value })} />
+                        <Input autoComplete="url" placeholder="e-mail" name="email" type="email" value={this.state.email} onChange={(event) => this.setState({ email: event.target.value })} />
                     </FormControl>
                     <FormControl className="fields" fullWidth>
-                        <InputLabel htmlFor="password1">Password</InputLabel>
-                        <Input placeholder="Password" type="password" name="password2" value={this.state.password1} onChange={(event) => this.setState({ password1: event.target.value })} />
+                        <InputLabel>Password</InputLabel>
+                        <Input autoComplete="new-password" placeholder="Password" type="password" value={this.state.password1} onChange={(event) => this.setState({ password1: event.target.value })} />
                     </FormControl>
                     <FormControl className="fields" fullWidth>
                         <InputLabel htmlFor="password2">Repeat password</InputLabel>
-                        <Input placeholder="Repeat password" type="password" name="password1" value={this.state.password2} onChange={(event) => this.setState({ password2: event.target.value })} />
+                        <Input autoComplete="new-password" placeholder="Repeat password" type="password" value={this.state.password2} onChange={(event) => this.setState({ password2: event.target.value })} />
                     </FormControl>
 
-                    <Button type="submit" variant="contained" className="buttons" fullWidth color="primary" disabled={!this.validateRegisterForm()} onClick={() => authService.registerToken(this.state)}>Register</Button>
+                    <Button type="submit" variant="contained" className="buttons" fullWidth color="primary" disabled={!this.validateRegisterForm()}>Register</Button>
                     <Grid className="bottomFields" container item direction="row" justify="center" alignItems="center" alignContent="center" spacing={16}>
-                        <Grid item className="bottomButtons" onClick={(event) => this.changeScreen()}>Go back to login</Grid>
+                        <Grid item className="bottomButtons" onClick={(event) => this.changeScreen('login')}>Go back to login</Grid>
                     </Grid>
                 </form>
             )
@@ -109,9 +160,9 @@ class Authentication extends Component {
     }
 
     render() {
+        this.currentMode()
         return (
             <div className="wrapper">
-                {/* < Paper className="Login" style={{ height: this.state.size }} > */}
                 < Paper className="Login" style={{ transition: `height ${this.fadeTimeout.exit}ms`, height: this.state.size }} >
                     <Grid container direction="column" justify="center" spacing={8}>
                         <Grid item xs={12}>
@@ -127,9 +178,8 @@ class Authentication extends Component {
                         {this.renderForm()}
                     </Fade>
                 </Paper>
-
             </div>
         )
     }
 }
-export default Authentication;
+export default withSnackbar(Authentication);

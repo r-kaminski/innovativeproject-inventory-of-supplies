@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-
+import { SnackbarProvider } from 'notistack';
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Route,
     Switch,
     Redirect
@@ -12,14 +12,16 @@ import Authentication from './Authentication';
 class App extends Component {
     render() {
         return (
-            <Router>
-                <div className="container">
-                    <Switch>
-                        <Route exact path="/Authentication" component={Authentication} />
-                        <Redirect from="/" to="/Authentication" />
-                    </Switch>
-                </div>
-            </Router>
+            <SnackbarProvider maxSnack={3}>
+                <Router>
+                    <div className="container">
+                        <Switch>
+                            <Route path="/Authentication" component={Authentication} />
+                            <Redirect from="/" to="/Authentication" />
+                        </Switch>
+                    </div>
+                </Router>
+            </SnackbarProvider>
         );
     }
 }

@@ -39,13 +39,12 @@
     padding: 20px 0;
 
     font-family: 'Roboto', sans-serif;
-    font-size: 70px;
+    font-size: 69px;
     font-weight: 200;
-    /* color: rgb(173, 171, 171); */
     color:rgb(64, 81, 181);
 }
 .subtitle{
     padding: 0 0;
     text-align: center;
-    font-size: 18px;
+    font-size: 24px;
 }
