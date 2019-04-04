@@ -28,10 +28,10 @@ export default class Supplies extends React.Component{
 
     updateData = () => {
         getItems()
-            .catch((err)=>{
-                console.error(err);
-            }).then((res)=>{
+            .then((res)=>{
                 this.setState({data : res.data.results});
+            }).catch((err)=>{
+                console.error(err);
             })
     }
 
@@ -43,14 +43,7 @@ export default class Supplies extends React.Component{
 
     onClickDeleteRow = (rowId) => {
         deleteItem(this.state.data[rowId].id)
-            .catch((err)=>{
-                console.error(err);
-                this.setState({
-                    openSnackbar : true,
-                    snackbarMessage : "Wystąpił błąd!",
-                    snackbarVariant : "error"
-                });
-            }).then((res)=>{
+            .then((res)=>{
                 let newData = [...this.state.data];
                     newData.splice(rowId,1);
 
@@ -60,6 +53,13 @@ export default class Supplies extends React.Component{
                         snackbarMessage : "Usunięto pomyślnie!",
                         snackbarVariant : "success"
                     });
+            }).catch((err)=>{
+                console.error(err);
+                this.setState({
+                    openSnackbar : true,
+                    snackbarMessage : "Wystąpił błąd!",
+                    snackbarVariant : "error"
+                });
             });
     }
 
@@ -75,11 +75,11 @@ export default class Supplies extends React.Component{
         let someOk = false;
         for(let key in rowsDeleted){
             deleteItem(this.state.data[key].id)
-                .catch((err)=>{
+                .then((res)=>{
+                    someOk = true;
+                }).catch((err)=>{
                     console.error(err);
                     allOk = false;
-                }).then((res)=>{
-                    someOk = true;
                 });
         }
 
