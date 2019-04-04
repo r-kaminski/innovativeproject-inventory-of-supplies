@@ -1,10 +1,6 @@
 from pyqrcode import QRCode
-from django.shortcuts import render
-import pdfkit
 import io
 from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -16,7 +12,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-# TODO: Basically everything
+# TODO: Classes and urls.py file
 
 
 @api_view(["GET"])
