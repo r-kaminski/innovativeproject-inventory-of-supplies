@@ -97,6 +97,7 @@ class Authentication extends Component {
                 username: this.state.username,
                 password: this.state.password1
             });
+            this.props.history.push('/supplies');
         } catch (error) {
             for (let message of Object.values(error.response.data)) {
                 this.props.enqueueSnackbar(message, { variant: 'error' });

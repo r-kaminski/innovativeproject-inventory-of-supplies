@@ -7,6 +7,10 @@ import {
     Redirect
 } from 'react-router-dom';
 
+import './App.css';
+import Supplies from './Components/Supplies/Supplies';
+
+
 import Authentication from './Authentication';
 
 class App extends Component {
@@ -17,8 +21,9 @@ class App extends Component {
                     <div className="container">
                         <Switch>
                             <Route path="/Authentication" component={Authentication} />
-                            <Redirect from="/" to="/Authentication" />
+                            <Redirect exact from="/" to="/Authentication" />                            
                         </Switch>
+                        <Route exact path="/Supplies" component={Supplies} />
                     </div>
                 </Router>
             </SnackbarProvider>

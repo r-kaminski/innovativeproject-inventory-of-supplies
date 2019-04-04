@@ -1,0 +1,4 @@
+.dialogContentWrapper{
+    display: flex;
+    flex-direction: column;
+}
