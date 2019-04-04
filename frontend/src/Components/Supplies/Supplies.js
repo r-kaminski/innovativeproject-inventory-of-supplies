@@ -127,15 +127,9 @@ export default class Supplies extends React.Component{
         
     };
 
-    showErrorSnackbar = (message) => {
-        
-    }
-
     componentDidMount(){
         this.updateData();
     }
-
-
 
     columns = [
         {
@@ -167,7 +161,12 @@ export default class Supplies extends React.Component{
             label: "Opis",
             options: {
                 filter: false,
-                sort: false
+                sort: false,
+                customBodyRender: (value, tableMeta) => {
+                    if(value.length > 20)
+                        return value.slice(0, 17)+'...';
+                    return value;
+                }
             }
         },
         {
