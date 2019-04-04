@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import authService from './services/authService'
+import authService from '../../services/authService'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import Button from '@material-ui/core/Button'
