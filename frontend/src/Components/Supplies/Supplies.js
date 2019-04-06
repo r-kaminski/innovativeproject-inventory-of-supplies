@@ -8,7 +8,7 @@ import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
-import { getItems, deleteItem } from '../../API/InventoryAPI';
+import { getItems, deleteItem } from '../../services/inventoryService';
 
 
 export default class Supplies extends React.Component{

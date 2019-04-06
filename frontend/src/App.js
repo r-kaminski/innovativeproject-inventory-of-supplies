@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
+import { SnackbarProvider } from 'notistack';
+import {HashRouter as Router,Route,Switch,Redirect} from 'react-router-dom';
+
 import './App.css';
 import Supplies from './Components/Supplies/Supplies';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-
-import Authentication from './Authentication';
+import Authentication from './Components/Authentication/Authentication';
 
 class App extends Component {
-render() {
-    return (
-        <Router>
-         <div className="App">
-          <Route exact path="/Authentication" component={Authentication} />
-          <Route exact path="/Supplies" component={Supplies} />
-         </div>
-        </Router>
+    render() {
+        return (
+            <SnackbarProvider maxSnack={3}>
+                <Router>
+                    <div className="container">
+                        <Switch>
+                            <Route path="/Authentication" component={Authentication} />
+                            <Redirect exact from="/" to="/Authentication" />                            
+                        </Switch>
+                        <Route exact path="/Supplies" component={Supplies} />
+                    </div>
+                </Router>
+            </SnackbarProvider>
         );
     }
 }
