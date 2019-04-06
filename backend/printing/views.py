@@ -21,7 +21,7 @@ def CreatePrintable(request):
         # A4 page dimensions in pixels @ 300 dpi, QR code will be 248 px x 248 px + 47 px for text
         # ~110 qr codes per page
 
-        codes = Image.new('RGB', (2480, 3508))
+        codes = Image.new('RGB', (2480, 3508), (255,255,255))
         draw = ImageDraw.Draw(codes)
         font = ImageFont.truetype("Consolas Bold.ttf", 40)  # .tff file might be needed, as well as path
 
@@ -42,7 +42,7 @@ def CreatePrintable(request):
 
             qrcodeimage = Image.open(buffer).resize((248, 248))
             codes.paste(qrcodeimage, (X, Y))  # paste code into image
-            draw.text((X, Y + 248), str(qrid), (255, 255, 255), font=font)  # draw text under code
+            draw.text((X, Y + 248), str(qrid), (0, 0, 0), font=font)  # draw text under code
 
             # calulate new position
             X += 248
