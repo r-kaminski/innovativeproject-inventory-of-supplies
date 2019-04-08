@@ -24,3 +24,4 @@ class PrintQueueView(generics.ListCreateAPIView):
 class PrintQueueDeleteView(generics.DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PrintSerializer
+    queryset = PrintQueue.objects.all()

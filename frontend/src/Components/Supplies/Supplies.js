@@ -4,14 +4,18 @@ import styles from './Supplies.module.css';
 import CustomToolbar from './CustomToolbar/CustomToolbar'
 import ButtonRemoveItem from './ButtonRemoveItem';
 import ButtonEditItem from './ButtonEditItem';
+import ButtonPrintItem from './ButtonPrintItem';
 import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import { getItems, deleteItem } from '../../services/inventoryService';
+import PrintService from '../../services/PrintService';
+import { withSnackbar } from 'notistack';
 
 
-export default class Supplies extends React.Component{
+
+class Supplies extends React.Component{
     constructor(props){
         super(props);
 
@@ -104,6 +108,15 @@ export default class Supplies extends React.Component{
         }
     }
 
+    onClickPrint(rowId) {
+        try{
+            PrintService.addToQueue(this.state.data[rowId].id);
+            this.props.enqueueSnackbar('Added to print queue', { variant: 'info' });
+        } catch {
+            this.props.enqueueSnackbar('Failed to add to print queue', { variant: 'error' });
+        }
+    }
+
     showSnackbar = (type, message) => {
         switch (type){
             case "success":
@@ -183,6 +196,9 @@ export default class Supplies extends React.Component{
                             <ButtonEditItem 
                             onClick={()=>this.onClickEditRow(tableMeta.rowIndex)}
                             />
+                            <ButtonPrintItem 
+                            onClick={()=>this.onClickPrint(tableMeta.rowIndex)}
+                            />
                         </React.Fragment>
                     );
         }, 
@@ -197,7 +213,7 @@ export default class Supplies extends React.Component{
         print: false,
         download: false,
         viewColumns: false,
-        customToolbar: () => (<CustomToolbar onClickAddItem={()=>this.onClickAddItem()}/>),
+        customToolbar: () => (<CustomToolbar onClickAddItem={()=>this.onClickAddItem()} onClickPrint={()=>this.props.history.push('/printing')}/>),
         onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
     };
 
@@ -255,3 +271,5 @@ export default class Supplies extends React.Component{
         );
     };
 }
+
+export default withSnackbar(Supplies);
