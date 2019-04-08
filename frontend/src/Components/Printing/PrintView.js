@@ -115,7 +115,7 @@ class PrintView extends Component {
 
                 <MUIDataTable
                     className={styles.table}
-                    title={"Wyposażenie"}
+                    title={"Print QR codes"}
                     data={this.state.data}
                     columns={this.columns}
                     options={this.options} />
