@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'supplies.apps.SuppliesConfig',
     'users.apps.UsersConfig',
     'authentication.apps.AuthenticationConfig',
+    'inventories.apps.InventoriesConfig',
 ]
 
 JWT_AUTH = {
