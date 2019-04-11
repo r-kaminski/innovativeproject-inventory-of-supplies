@@ -11,13 +11,11 @@ class App extends Component {
         return (
             <SnackbarProvider maxSnack={3}>
                 <Router>
-                    <div className="container">
-                        <Switch>
-                            <Route path="/Authentication" component={Authentication} />
-                            <Redirect exact from="/" to="/Authentication" />                            
-                        </Switch>
-                        <Route exact path="/Supplies" component={Supplies} />
-                    </div>
+                    <Switch>
+                        <Route path="/Authentication" component={Authentication} />
+                        <Redirect exact from="/" to="/Authentication" />                            
+                    </Switch>
+                    <Route exact path="/Supplies" component={Supplies} />
                 </Router>
             </SnackbarProvider>
         );
