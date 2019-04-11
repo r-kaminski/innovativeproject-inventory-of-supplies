@@ -1,5 +1,9 @@
 from django.urls import path
+from .views import InventoryReportCreateView
 
+urlpatterns = [
+    path('create', InventoryReportCreateView.as_view())
+]
 # /api/inventories/ in backend.urls
 
 # '/reports' - list InventoryReport objects (List)
