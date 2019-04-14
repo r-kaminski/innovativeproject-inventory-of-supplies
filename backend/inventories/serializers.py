@@ -2,13 +2,37 @@ from rest_framework import serializers
 from .models import InventoryReport, InventorySupply
 
 from supplies.models import Supply
+from supplies.serializers import SupplySerializer, SupplyHeaderSerializer
+
+
+class InventorySupplySerializer(serializers.ModelSerializer):
+    supply = SupplySerializer(source='inventory_supply', many=False, read_only=True)
+
+    class Meta:
+        model = InventorySupply
+        fields = ('id','supply', 'is_checked')
+
+class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
+    """
+    This header serializer is used in case of listing contents of particular InventoryReport (not InventorySupply)
+    Instead of serializing all details of a supply (supplies.models.Supply), only ID and name is serialized
+    The rest of details can be accessed by 'inventories/supplies/<int:pk>' with ID provided by this serializer
+    This will future-proof that adding more details to supply (e.g. image) won't attach unnecessary data to InventoryReport details view
+    """
+    supply_header = SupplyHeaderSerializer(source='inventory_supply', many=False, read_only=True)
+
+    class Meta:
+        model = InventorySupply
+        fields = ('id', 'supply_header', 'is_checked')
 
 class InventoryReportSerializer(serializers.ModelSerializer):
+    supplies = InventorySupplyHeaderSerializer(source='inventory_supplies', many=True, read_only=True)
+
     class Meta:
         model = InventoryReport
-        fields = ('id', 'date', 'name', 'inventory_supplies',)
+        fields = ('id', 'date', 'name', 'supplies',)
         extra_kwargs = {
-            'inventory_supplies': {'required': False},
+            'supplies': {'required': False},
             'date': {'required': False},
         }
 
@@ -24,7 +48,3 @@ class InventoryReportSerializer(serializers.ModelSerializer):
         return report
 
 
-class InventorySupplySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InventorySupply
-        fields = ('id','inventory_supply', 'is_checked', 'inventory_report')
