@@ -8,18 +8,18 @@ class PrintCustomToolbar extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Tooltip title={"Print"}>          
+        <Tooltip title={"Print QR codes"}>
           <IconButton onClick={this.props.onClickPrint}>
             <PrintIcon />
           </IconButton>
-        </Tooltip>  
+        </Tooltip>
       </React.Fragment>
     );
   }
 }
 
 PrintCustomToolbar.defaultProps = {
-  onClickAddItem : () => void(0),
+  onClickAddItem: () => void (0),
 }
 
 export default PrintCustomToolbar;
