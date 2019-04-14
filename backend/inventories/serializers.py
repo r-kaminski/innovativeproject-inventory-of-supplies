@@ -16,7 +16,7 @@ class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
     """
     This header serializer is used in case of listing contents of particular InventoryReport (not InventorySupply)
     Instead of serializing all details of a supply (supplies.models.Supply), only ID and name is serialized
-    The rest of details can be accessed by 'inventories/supplies/<int:pk>' with ID provided by this serializer
+    The rest of details can be accessed by '/api/inventories/supplies/<int:pk>' with ID provided by this serializer
     This will future-proof that adding more details to supply (e.g. image) won't attach unnecessary data to InventoryReport details view
     """
     supply_header = SupplyHeaderSerializer(source='inventory_supply', many=False, read_only=True)

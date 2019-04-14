@@ -5,8 +5,8 @@ from supplies.models import Supply
 class InventoryReport(models.Model):
     """
     InventoryReport holds one-to-many relationship with InventorySupply objects
-    List of InventorySupply objects can be referenced by 'supplies'
-    E.g.: InventoryReport.objects.get(pk=1).supplies
+    List of InventorySupply objects can be referenced by 'inventory_supplies.all()' attribute
+    E.g.: InventoryReport.objects.get(pk=1).inventory_supplies.all()
     """
     date = models.DateField(default=datetime_date.today)
     name = models.CharField(max_length=50)
