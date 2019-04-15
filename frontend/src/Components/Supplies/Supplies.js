@@ -17,6 +17,9 @@ export default class Supplies extends React.Component{
 
         this.state = {
             data: [],
+            pageNumber : 1,
+            itemsPerPage : 10,
+            totalItemCount: 0,
             itemToEdit: {},
             openDialogEdit : false,
             openDialogAdd : false,
@@ -26,12 +29,28 @@ export default class Supplies extends React.Component{
         };
     }
 
-    updateData = () => {
-        getItems()
+    updateData = (pageNumber, itemsPerPage) => {
+        if(pageNumber === undefined){
+            pageNumber = this.state.pageNumber;
+            itemsPerPage = this.state.itemsPerPage;
+        }else if(itemsPerPage === undefined){
+            itemsPerPage = this.state.itemsPerPage;
+        }
+
+        getItems(pageNumber, itemsPerPage)
             .then((res)=>{
-                this.setState({data : res.data.results});
+                this.setState({
+                    data : res.data.results,
+                    totalItemCount : res.data.count,
+                });
             }).catch((err)=>{
-                console.error(err);
+                if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
+                    this.setState({
+                        pageNumber: this.state.pageNumber - 1
+                    },this.updateData);
+                }else{
+                    console.error(err);
+                }
             })
     }
 
@@ -44,11 +63,8 @@ export default class Supplies extends React.Component{
     onClickDeleteRow = (rowId) => {
         deleteItem(this.state.data[rowId].id)
             .then((res)=>{
-                let newData = [...this.state.data];
-                    newData.splice(rowId,1);
-
+                    this.updateData();
                     this.setState({
-                        data: newData,
                         openSnackbar : true,
                         snackbarMessage : "Usunięto pomyślnie!",
                         snackbarVariant : "success"
@@ -83,6 +99,8 @@ export default class Supplies extends React.Component{
                 });
         }
 
+        this.updateData();
+
         if(allOk){
             this.setState({
                 snackbarMessage : "Usunięto pomyślnie!",
@@ -102,6 +120,22 @@ export default class Supplies extends React.Component{
                 openSnackbar : true
             })
         }
+    }
+
+    onChangePage = (pageNumber) => {
+        pageNumber += 1;
+        this.setState({
+            pageNumber : pageNumber
+        });
+        this.updateData(pageNumber);
+    }
+
+    onChangeRowsPerPage = (changeRowsPerPage) => {
+        this.setState({
+            pageNumber : 1,
+            itemsPerPage : changeRowsPerPage
+        })
+        this.updateData(1, changeRowsPerPage);
     }
 
     showSnackbar = (type, message) => {
@@ -190,18 +224,30 @@ export default class Supplies extends React.Component{
         }
     ];
     
-    options = {
-        filter: false,
-        sort: false,
-        search: false,
-        print: false,
-        download: false,
-        viewColumns: false,
-        customToolbar: () => (<CustomToolbar onClickAddItem={()=>this.onClickAddItem()}/>),
-        onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
-    };
+
 
     render(){
+        const {data, itemsPerPage, totalItemCount}  = this.state;
+
+        const options = {
+            filter: false,
+            sort: false,
+            search: false,
+            print: false,
+            download: false,
+            viewColumns: false,
+            serverSide: true,
+
+            pagination: true,
+            count: totalItemCount,
+            rowsPerPage: itemsPerPage,
+            onChangePage: this.onChangePage,
+            onChangeRowsPerPage: this.onChangeRowsPerPage,
+
+            customToolbar: () => (<CustomToolbar onClickAddItem={()=>this.onClickAddItem()}/>),
+            onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
+        };
+
         return(
             <div className={styles.wrapper}>
                 <header>
@@ -211,9 +257,9 @@ export default class Supplies extends React.Component{
                 <MUIDataTable
                     className={styles.table}
                     title={"Wyposażenie"}
-                    data={this.state.data}
+                    data={data}
                     columns={this.columns}
-                    options={this.options} />
+                    options={options} />
 
                 <DialogAddItem
                     open={this.state.openDialogAdd}
