@@ -12,6 +12,7 @@ class InventorySupplySerializer(serializers.ModelSerializer):
         model = InventorySupply
         fields = ('id','supply', 'is_checked')
 
+
 class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
     """
     This header serializer is used in case of listing contents of particular InventoryReport (not InventorySupply)
@@ -24,6 +25,27 @@ class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventorySupply
         fields = ('id', 'supply_header', 'is_checked')
+
+
+class InventoryReportListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the purpose of listing all InventoryReport objects
+    It doesn't contain details about it's supplies, and provides only representational form
+    """
+    supplies_total = serializers.SerializerMethodField()
+    supplies_checked_out = serializers.SerializerMethodField()
+
+    class Meta:
+        model = InventoryReport
+        fields = ('id', 'date', 'name', 'supplies_total', 'supplies_checked_out',)
+
+    def get_supplies_total(self, obj):
+        return obj.inventory_supplies.all().count()
+
+    def get_supplies_checked_out(self, obj):
+        return obj.inventory_supplies.all().exclude(is_checked=False).count()
+
+
 
 class InventoryReportSerializer(serializers.ModelSerializer):
     supplies = InventorySupplyHeaderSerializer(source='inventory_supplies', many=True, read_only=True)

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .models import Supply
 from .serializers import SupplySerializer
 from .permissions import IsAuthenticatedReadOnly
-from .pagination import SuppliesResultSetPagination
+from backend.pagination import ResultSetPagination
 
 
 class SupplyListView(generics.ListCreateAPIView):
@@ -19,7 +19,7 @@ class SupplyListView(generics.ListCreateAPIView):
     """
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
     serializer_class = SupplySerializer
-    pagination_class = SuppliesResultSetPagination
+    pagination_class = ResultSetPagination
 
     def get(self, request):
         if 'order' in request.query_params:
@@ -45,7 +45,7 @@ class SupplyDetailsView(generics.RetrieveUpdateDestroyAPIView):
 class SearchSupplyView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = SupplySerializer
-    pagination_class = SuppliesResultSetPagination
+    pagination_class = ResultSetPagination
 
     def get(self, request):
         """
