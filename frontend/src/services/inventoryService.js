@@ -12,7 +12,7 @@ export const getItems = ({pageNumber : page, itemsPerPage : page_size}={}) => {
     });
 }
 
-export const serachItems = ({serachPhase : name = "", pageNumber: page, itemsPerPage: page_size}={}) => {
+export const searchItems = ({searchPhase : name = "", pageNumber: page, itemsPerPage: page_size}={}) => {
     let params = {};
     params.name = name;
     if(page !== undefined) params.page = page;
@@ -20,7 +20,7 @@ export const serachItems = ({serachPhase : name = "", pageNumber: page, itemsPer
 
     return axios({
         method: 'get',
-        url: '/api/supplies/search/',
+        url: '/api/supplies/search',
         params : params
     });
 }

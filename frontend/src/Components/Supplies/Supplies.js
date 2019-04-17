@@ -8,7 +8,7 @@ import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
-import { getItems, deleteItem, serachItems } from '../../services/inventoryService';
+import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
 import SearchTool from './SearchTool/SearchTool';
 
 
@@ -38,7 +38,7 @@ export default class Supplies extends React.Component{
         if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
         if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-        if(searchPhase === undefined){
+        if(searchPhase === undefined || searchPhase === ""){
             getItems({pageNumber, itemsPerPage})
                 .then((res)=>{
                     this.setState({
@@ -55,17 +55,17 @@ export default class Supplies extends React.Component{
                     }
                 });
         }else{
-            serachItems({searchPhase, pageNumber, itemsPerPage})
+            searchItems({searchPhase, pageNumber, itemsPerPage})
                 .then((res)=>{
                     this.setState({
                         data : res.data.results,
                         totalItemCount : res.data.count,
                     });
                 }).catch((err)=>{
-                    if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
-                        this.setState({
-                            pageNumber: this.state.pageNumber - 1
-                        },this.updateData);
+                    if(err.response.data.detail === "Invalid page." && pageNumber > 1){
+                        pageNumber -= 1;
+                        this.setState({pageNumber: pageNumber});
+                        this.updateData({searchPhase, pageNumber, itemsPerPage});
                     }else{
                         console.error(err);
                     }
@@ -158,15 +158,16 @@ export default class Supplies extends React.Component{
     }
 
     onSearchOpen = () => {
-        console.log("onOpen");
+        this.setState({search : true})
     }
 
     onSearchChange = (searchPhase) => {
-        console.log("onChange");
+        this.updateData({searchPhase});
     }
 
     onSearchClose = () => {
-        console.log("onClose");
+        this.setState({serachPhase: "", search: false});
+        this.updateData({searchPhase: undefined});
     }
 
     showSnackbar = (type, message) => {

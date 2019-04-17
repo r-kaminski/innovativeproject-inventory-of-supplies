@@ -1,19 +1,20 @@
 .toolbar{
     height: 48px;
     max-width: 48px;
-    width: auto;
+    width: 500px;
     display: inline-flex;
     flex-direction: row;
     justify-content: flex-end;
     overflow: hidden;
 
     border-radius: 24px;
-    /* transition: background-color 1s ease, max-width 5s ease; */
+    background-color: rgba(0,0,0,0.0);
+    transition: max-width 300ms ease, background-color 300ms ease;
 }
 
 .active{
-    background: rgba(0, 0, 0, 0.08);
-    max-width: 300px;
+    background-color: rgba(0, 0, 0, 0.08);
+    max-width: 290px;
 }
 
 .padding12px{
