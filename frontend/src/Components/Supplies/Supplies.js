@@ -9,6 +9,7 @@ import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import { getItems, deleteItem, serachItems } from '../../services/inventoryService';
+import SearchTool from './SearchTool/SearchTool';
 
 
 export default class Supplies extends React.Component{
@@ -156,12 +157,16 @@ export default class Supplies extends React.Component{
         this.updateData({pageNumber: 1, itemsPerPage: changeRowsPerPage});
     }
 
-    onSearch = (text) => {
-        console.log("well, im here");
+    onSearchOpen = () => {
+        console.log("onOpen");
     }
 
-    onSearchOpen = () => {
-        console.log("please, close as well");
+    onSearchChange = (searchPhase) => {
+        console.log("onChange");
+    }
+
+    onSearchClose = () => {
+        console.log("onClose");
     }
 
     showSnackbar = (type, message) => {
@@ -258,7 +263,7 @@ export default class Supplies extends React.Component{
         const options = {
             filter: false,
             sort: false,
-            search: true,
+            search: false,
             onSearchChange: this.onSearch,
             onSearchOpen: this.onSearchOpen,
             print: false,
@@ -272,7 +277,16 @@ export default class Supplies extends React.Component{
             onChangePage: this.onChangePage,
             onChangeRowsPerPage: this.onChangeRowsPerPage,
 
-            customToolbar: () => (<ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>),
+            customToolbar: () => (
+                <div className={styles.toolbar}>
+                    <ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>                    
+                    <SearchTool 
+                        onOpen={this.onSearchOpen}
+                        onChange={this.onSearchChange}
+                        onClose={this.onSearchClose}
+                        />
+                </div>
+            ),
             onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
         };
 

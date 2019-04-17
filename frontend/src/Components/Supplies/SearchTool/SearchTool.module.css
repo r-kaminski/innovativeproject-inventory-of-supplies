@@ -1,0 +1,37 @@
+.toolbar{
+    height: 48px;
+    max-width: 48px;
+    width: auto;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    overflow: hidden;
+
+    border-radius: 24px;
+    /* transition: background-color 1s ease, max-width 5s ease; */
+}
+
+.active{
+    background: rgba(0, 0, 0, 0.08);
+    max-width: 300px;
+}
+
+.padding12px{
+    padding: 12px 0 12px 12px;
+}
+
+.textInput{
+    font: inherit;
+    border: none;
+    border-bottom: 1px solid black;
+    line-height: 1em;
+    margin: 0 8px;
+    padding: 0 4px;
+    height: 24px;
+    align-self: center;
+    background: transparent;
+}
+
+.textInput:focus{
+    outline: none;
+}
