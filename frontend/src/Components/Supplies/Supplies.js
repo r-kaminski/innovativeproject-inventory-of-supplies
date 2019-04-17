@@ -21,8 +21,8 @@ export default class Supplies extends React.Component{
             pageNumber : 1,
             itemsPerPage : 10,
             totalItemCount: 0,
-            serach: false,
-            serachPhase: "",
+            search: false,
+            searchPhase: "",
             itemToEdit: {},
             openDialogEdit : false,
             openDialogAdd : false,
@@ -33,12 +33,18 @@ export default class Supplies extends React.Component{
     }
 
     updateData = ({searchPhase, pageNumber, itemsPerPage} = {}) => {
+        console.log(searchPhase);
+        console.log(this.state.search);
         //if any of parameters not provided, use params of last update from state
         if(searchPhase === undefined && this.state.search) searchPhase = this.state.searchPhase;
         if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
         if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
+        console.log(this.state.searchPhase);
+        console.log(searchPhase);
+
         if(searchPhase === undefined || searchPhase === ""){
+            console.log("hereee");
             getItems({pageNumber, itemsPerPage})
                 .then((res)=>{
                     this.setState({
@@ -162,11 +168,12 @@ export default class Supplies extends React.Component{
     }
 
     onSearchChange = (searchPhase) => {
+        this.setState({searchPhase});
         this.updateData({searchPhase});
     }
 
     onSearchClose = () => {
-        this.setState({serachPhase: "", search: false});
+        this.setState({searchPhase: "", search: false});
         this.updateData({searchPhase: undefined});
     }
 
