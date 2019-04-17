@@ -1,6 +1,10 @@
 from pyqrcode import QRCode
+from django.shortcuts import render
+import pdfkit
 import io
 from django.http import HttpResponse
+from django.template import loader
+from django.shortcuts import get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -12,21 +16,25 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-# TODO: Classes and urls.py file
+# TODO: Basically everything
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 def CreatePrintable(request):
     try:
         # A4 page dimensions in pixels @ 300 dpi, QR code will be 248 px x 248 px + 47 px for text
         # ~110 qr codes per page
 
-        codes = Image.new('RGB', (2480, 3508), (255,255,255))
-        draw = ImageDraw.Draw(codes)
-        font = ImageFont.truetype("Consolas Bold.ttf", 40)  # .tff file might be needed, as well as path
-
         # get items ids
         idList = request.GET.getlist('id')
+
+        # check if the number of ids is lower or equal to 110, which is max amount of codes per page
+        if len(idList) > 110:
+            return Response("", status.HTTP_400_BAD_REQUEST)
+
+        codes = Image.new('RGB', (2480, 3508), (255, 255, 255))
+        draw = ImageDraw.Draw(codes)
+        font = ImageFont.truetype("Consolas Bold.ttf", 40)  # .tff file might be needed, as well as path
 
         finalImage = io.BytesIO()
 
@@ -36,7 +44,7 @@ def CreatePrintable(request):
 
         X = Y = itemCount = 0;
         for qrid in idList:
-            buffer = io.BytesIO()  # here, otherwise qr codes are the same. Will look for better alternative if needed
+            buffer = io.BytesIO()  # here, otherwise qr codes are the same
             qr = QRCode(qrid)
             qr.png(buffer, scale=6)
 
@@ -44,7 +52,7 @@ def CreatePrintable(request):
             codes.paste(qrcodeimage, (X, Y))  # paste code into image
             draw.text((X, Y + 248), str(qrid), (0, 0, 0), font=font)  # draw text under code
 
-            # calulate new position
+            # calculate new position
             X += 248
             itemCount += 1
             if itemCount % 10 == 0:  # next line
