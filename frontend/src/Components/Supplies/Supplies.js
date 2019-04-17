@@ -8,9 +8,11 @@ import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
-import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
+import { getItems, deleteItem, searchItems, createReport } from '../../services/inventoryService';
 import SearchTool from './SearchTool/SearchTool';
 import ButtonReport from './ButtonReport/ButtonReport';
+import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
+import DialogNewReport from './DialogNewReport/DialogNewReport';
 
 
 export default class Supplies extends React.Component{
@@ -27,6 +29,7 @@ export default class Supplies extends React.Component{
             itemToEdit: {},
             openDialogEdit : false,
             openDialogAdd : false,
+            openDialogNewReport : false,
             openSnackbar : false,
             snackbarMessage : "",
             snackbarVariant : "info"
@@ -284,6 +287,10 @@ export default class Supplies extends React.Component{
             customToolbar: () => (
                 <div className={styles.toolbar}>
                     <ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>
+                    <ButtonNewReport onClick={()=>{
+                        this.setState({openDialogNewReport : true});
+                        //console.log("szmek");
+                        }} /> 
                     <ButtonReport onClick={()=>{this.props.history.push('/reports');}} />        
                     <SearchTool 
                         onOpen={this.onSearchOpen}
@@ -325,6 +332,16 @@ export default class Supplies extends React.Component{
                     onSuccess={()=>{
                         this.updateData();
                         this.showSnackbar("success", "Zapisano pomyślnie!");
+                    }}
+                    onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
+                />
+
+                <DialogNewReport
+                    open={this.state.openDialogNewReport}
+                    //item={this.state.itemToEdit}
+                    onCancel={()=>{this.setState({openDialogNewRaport : false})}}
+                    onSuccess={()=>{
+                        this.props.history.push('/reports');
                     }}
                     onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
                 />

@@ -82,7 +82,7 @@ export const createReport = async ({name, date}) =>  {
 
     return axios({
         method: 'post',
-        url: '/api/inventories/create/',
+        url: '/api/inventories/create',
         data: data
     });
 }
@@ -92,6 +92,6 @@ export const deleteReport = async (reportId) => {
 
     return axios({
         method: 'delete',
-        url: `/api/inventories/remove/${reportId}/`
+        url: `/api/inventories/remove/${reportId}`
     });
 }

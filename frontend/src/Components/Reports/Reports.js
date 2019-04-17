@@ -4,6 +4,7 @@ import styles from './Reports.module.css';
 import MUIDataTable from "mui-datatables";
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
+import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 
 import { getReports, deleteReport } from '../../services/inventoryService';
 
@@ -63,6 +64,25 @@ export default class Reports extends React.Component{
         this.updateData({pageNumber: 1, itemsPerPage: changeRowsPerPage});
     }
 
+    onClickDeleteRow = (rowId) => {
+        deleteReport(this.state.data[rowId].id)
+            .then((res)=>{
+                    this.updateData();
+                    this.setState({
+                        openSnackbar : true,
+                        snackbarMessage : "Usunięto pomyślnie!",
+                        snackbarVariant : "success"
+                    });
+            }).catch((err)=>{
+                console.error(err);
+                this.setState({
+                    openSnackbar : true,
+                    snackbarMessage : "Wystąpił błąd!",
+                    snackbarVariant : "error"
+                });
+            });
+    }
+
     showSnackbar = (type, message) => {
         switch (type){
             case "success":
@@ -110,6 +130,20 @@ export default class Reports extends React.Component{
         {
             name: "supplies_checked_out",
             label: "Confirmed",
+        },
+        {
+
+            options: {
+                filter: false,
+                sort: false,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <ButtonRemoveItem 
+                            onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
+                        />
+                    );
+                }, 
+            }
         }
     ];
     

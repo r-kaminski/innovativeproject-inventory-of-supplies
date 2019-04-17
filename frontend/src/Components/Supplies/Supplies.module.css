@@ -34,7 +34,10 @@ header{
 
 .toolbar{
     height: 48px;
+    margin: 0;
+    padding: 0 8px;
     display: inline-flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
 }

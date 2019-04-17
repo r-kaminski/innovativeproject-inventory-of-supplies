@@ -9,7 +9,9 @@ class ButtonAddItem extends React.Component {
 
     return (
       <React.Fragment>
-        <Tooltip title={"Nowa pozycja"}>
+        <Tooltip 
+          title="Nowa pozycja"
+          placement="bottom-start">
           <IconButton onClick={this.props.onClickAddItem}>
             <AddCircleOutlineIcon />
           </IconButton>

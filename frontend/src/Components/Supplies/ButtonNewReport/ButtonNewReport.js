@@ -1,18 +1,18 @@
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import ReportIcon from "@material-ui/icons/LibraryBooks";
+import NewReportIcon from "@material-ui/icons/LibraryAdd";
 
-class ButtonReport extends React.Component {
+class ButtonNewReport extends React.Component {
 
   render() {
 
     return (
         <Tooltip 
-          title="Show reports"
+          title="New report"
           placement="bottom-start">
           <IconButton onClick={this.props.onClick}>
-            <ReportIcon />
+            <NewReportIcon />
           </IconButton>
         </Tooltip>
     );
@@ -20,8 +20,8 @@ class ButtonReport extends React.Component {
 
 }
 
-ButtonReport.defaultProps = {
+ButtonNewReport.defaultProps = {
   onClick : () => void(0),
 }
 
-export default ButtonReport;
+export default ButtonNewReport;
