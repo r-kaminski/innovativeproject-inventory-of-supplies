@@ -13,7 +13,7 @@ from PIL import ImageFont
 def CreatePrintable(request):
     try:
         # A4 page dimensions in pixels @ 300 dpi, QR code will be 248 px x 248 px + 47 px for text
-        # ~110 qr codes per page
+        # 110 qr codes per page
 
         # get items ids
         idList = request.GET.getlist('id')
@@ -24,7 +24,7 @@ def CreatePrintable(request):
         
         codes = Image.new('RGB', (2480, 3508), (255, 255, 255))
         draw = ImageDraw.Draw(codes)
-        # font = ImageFont.truetype("Consolas Bold.tff", 40)
+        
         # using default PIL font until the issue with reading font from file is resolved
         font = ImageFont.load_default()
         finalImage = io.BytesIO()
