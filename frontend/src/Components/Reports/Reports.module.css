@@ -1,0 +1,30 @@
+.wrapper{
+    min-height: 100%;
+
+    display: grid;
+    grid-template-rows: 160px 1fr 160px;
+    grid-template-columns: 15vh 1fr 15vh;
+
+    background: #eee;
+}
+
+header{
+    grid-column: 1 / span 3;
+    grid-row: 1 / span 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 60px;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 80px;
+    font-weight: 100;
+    color: rgb(173, 171, 171);
+}
+
+.table{
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+}
