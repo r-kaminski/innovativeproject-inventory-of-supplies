@@ -33,18 +33,13 @@ export default class Supplies extends React.Component{
     }
 
     updateData = ({searchPhase, pageNumber, itemsPerPage} = {}) => {
-        console.log(searchPhase);
-        console.log(this.state.search);
         //if any of parameters not provided, use params of last update from state
         if(searchPhase === undefined && this.state.search) searchPhase = this.state.searchPhase;
         if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
         if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-        console.log(this.state.searchPhase);
-        console.log(searchPhase);
-
         if(searchPhase === undefined || searchPhase === ""){
-            console.log("hereee");
+
             getItems({pageNumber, itemsPerPage})
                 .then((res)=>{
                     this.setState({

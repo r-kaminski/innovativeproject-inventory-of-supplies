@@ -5,6 +5,8 @@ import MUIDataTable from "mui-datatables";
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 
+import { getReports, deleteReport } from '../../services/inventoryService';
+
 
 
 export default class Reports extends React.Component{
@@ -24,8 +26,25 @@ export default class Reports extends React.Component{
         };
     }
 
-    updateData = () => {
-        
+    updateData = ({pageNumber, itemsPerPage}={}) => {
+        if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
+        if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
+
+        getReports({pageNumber, itemsPerPage})
+                .then((res)=>{
+                    this.setState({
+                        data : res.data.results,
+                        totalItemCount : res.data.count,
+                    });
+                }).catch((err)=>{
+                    if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
+                        let prevPage = this.state.pageNumber - 1;
+                        this.setState({pageNumber: prevPage});
+                        this.updateData({pageNumber: prevPage});
+                    }else{
+                        console.error(err.response.data);
+                    }
+                });
     }
 
     onChangePage = (pageNumber) => {
@@ -67,6 +86,7 @@ export default class Reports extends React.Component{
     };
 
     componentDidMount(){
+
         this.updateData();
     }
 
@@ -84,11 +104,11 @@ export default class Reports extends React.Component{
             label: "Name",
         },
         {
-            name: "total_count",
+            name: "supplies_total",
             label: "Quantity",
         },
         {
-            name: "recorded_count",
+            name: "supplies_checked_out",
             label: "Confirmed",
         }
     ];
@@ -145,4 +165,8 @@ export default class Reports extends React.Component{
             </div>            
         );
     };
+}
+
+Reports.defaultProps = {
+    reportId : -1,
 }
