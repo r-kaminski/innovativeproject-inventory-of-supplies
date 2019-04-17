@@ -9,7 +9,6 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-
 @api_view(["GET"])
 def CreatePrintable(request):
     try:
@@ -22,11 +21,12 @@ def CreatePrintable(request):
         # check if the number of ids is lower or equal to 110, which is max amount of codes per page
         if len(idList) > 110:
             return Response("", status.HTTP_400_BAD_REQUEST)
-
+        
         codes = Image.new('RGB', (2480, 3508), (255, 255, 255))
         draw = ImageDraw.Draw(codes)
-        font = ImageFont.truetype("Consolas Bold.ttf", 40)
-
+        # font = ImageFont.truetype("Consolas Bold.tff", 40)
+        # using default PIL font until the issue with reading font from file is resolved
+        font = ImageFont.load_default()
         finalImage = io.BytesIO()
 
         # str to int
