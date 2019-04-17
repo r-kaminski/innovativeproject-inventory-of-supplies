@@ -1,25 +1,16 @@
 from pyqrcode import QRCode
-from django.shortcuts import render
-import pdfkit
 import io
 from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.decorators import api_view
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from .models import QRCodePrint
-from .serializers import QRPrintSerializer
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-# TODO: Basically everything
 
-
-@api_view(["POST"])
+@api_view(["GET"])
 def CreatePrintable(request):
     try:
         # A4 page dimensions in pixels @ 300 dpi, QR code will be 248 px x 248 px + 47 px for text
@@ -34,7 +25,7 @@ def CreatePrintable(request):
 
         codes = Image.new('RGB', (2480, 3508), (255, 255, 255))
         draw = ImageDraw.Draw(codes)
-        font = ImageFont.truetype("Consolas Bold.ttf", 40)  # .tff file might be needed, as well as path
+        font = ImageFont.truetype("Consolas Bold.ttf", 40)
 
         finalImage = io.BytesIO()
 
