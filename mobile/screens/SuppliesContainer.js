@@ -1,7 +1,7 @@
 import React from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
 import {getSupplies} from "../services/SuppliesService";
-import {Button, ListItem} from "react-native-elements";
+import {ListItem} from "react-native-elements";
 
 export default class SuppliesContainer extends React.Component {
 
@@ -82,17 +82,8 @@ export default class SuppliesContainer extends React.Component {
                         onPress={() => this._handlePressTool(supply.id)}
                     />
                 })}
-
-                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Dodaj nowe narządzie"}
-                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
-
             </ScrollView>
         );
-    }
-
-    onPressNavigateToAddNewSupply = () => {
-        const {navigate} = this.props.navigation;
-        navigate('SupplyAdd', {onRefresh: () => this._onRefresh()})
     }
 
     _handlePressTool = (id) => {

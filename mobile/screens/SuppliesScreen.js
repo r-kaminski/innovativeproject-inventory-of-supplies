@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import SuppliesContainer from "./SuppliesContainer";
-import {Icon, Input} from "react-native-elements";
+import {Button, Icon, Input} from "react-native-elements";
 
 export default class SuppliesScreen extends React.Component {
 
@@ -21,6 +21,11 @@ export default class SuppliesScreen extends React.Component {
         header: null
     };
 
+    onPressNavigateToAddNewSupply = () => {
+        const {navigate} = this.props.navigation;
+        navigate('SupplyAdd', {onRefresh: () => this._onRefresh()})
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -35,12 +40,17 @@ export default class SuppliesScreen extends React.Component {
                             type='font-awesome'
                             size={25}
                             color="black"
-                            onPress={() => console.log("click")}
+                            onPress={() => {
+                                this.props.navigation.navigate('Scanner')
+                            }}
                         />
 
                     </View>
                 </View>
                 <SuppliesContainer/>
+
+                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Add new supply"}
+                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
             </View>
         )
     }
