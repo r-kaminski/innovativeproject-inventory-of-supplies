@@ -10,6 +10,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
 import SearchTool from './SearchTool/SearchTool';
+import ButtonReport from './ButtonReport/ButtonReport';
 
 
 export default class Supplies extends React.Component{
@@ -282,7 +283,8 @@ export default class Supplies extends React.Component{
 
             customToolbar: () => (
                 <div className={styles.toolbar}>
-                    <ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>                    
+                    <ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>
+                    <ButtonReport onClick={()=>{this.props.history.push('/reports');}} />        
                     <SearchTool 
                         onOpen={this.onSearchOpen}
                         onChange={this.onSearchChange}
@@ -301,7 +303,7 @@ export default class Supplies extends React.Component{
 
                 <MUIDataTable
                     className={styles.table}
-                    title={"Wyposażenie"}
+                    title={"Supplies"}
                     data={data}
                     columns={this.columns}
                     options={options} />
