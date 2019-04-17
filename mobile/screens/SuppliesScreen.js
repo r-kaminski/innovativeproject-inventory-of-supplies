@@ -1,11 +1,12 @@
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
-import {getSupplies} from "../services/SuppliesService";
-import {Button, ListItem} from "react-native-elements";
+import {StyleSheet, View} from 'react-native';
+import SuppliesContainer from "./SuppliesContainer";
+import {Button, Icon, Input} from "react-native-elements";
 
 export default class SuppliesScreen extends React.Component {
 
     state = {
+        pageSize: 8,
         isShowingText: true,
         "count": 0,
         "next": null,
@@ -15,75 +16,44 @@ export default class SuppliesScreen extends React.Component {
         refreshing: false,
     };
 
-    componentDidMount() {
-        this._onRefresh()
-    }
-
-    _onRefresh = () => {
-        this.setState({refreshing: true});
-        this.fetchData().then(() => {
-            this.setState({refreshing: false});
-        });
-    }
-
-    async fetchData() {
-        await getSupplies({page: 1, page_size: 10}).then((res) => {
-            {
-                this.setState(res)
-            }
-        })
-    }
-
 
     static navigationOptions = {
         header: null
     };
-
-    render() {
-        return (
-            <ScrollView style={styles.container}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={this._onRefresh}
-                            />
-                        }
-            >
-
-                {this.state.results.map((supply, index) => {
-                    return <ListItem
-                        style={styles.listItem}
-                        key={index}
-                        leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
-                        title={supply.name}
-                        subtitle={
-                            <Text style={styles.subtitle}
-                                  ellipsizeMode={'tail'}
-                                  numberOfLines={1}
-                            >{supply.description}</Text>
-                        }
-
-                        // subtitle={supply.description}
-                        onPress={() => this._handlePressTool(supply.id)}
-                    />
-                })}
-
-                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Dodaj nowe narządzie"}
-                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
-
-            </ScrollView>
-        );
-    }
 
     onPressNavigateToAddNewSupply = () => {
         const {navigate} = this.props.navigation;
         navigate('SupplyAdd', {onRefresh: () => this._onRefresh()})
     }
 
-    _handlePressTool = (id) => {
-        const {navigate} = this.props.navigation;
-        navigate('Supply', {id: id})
-    };
+    render() {
+        return (
+            <View style={styles.container}>
+                <View style={styles.searchbar}>
+                    <View style={{flex: 1}}>
+                        <Input style={styles.search} value={this.state.search}
+                               placeholder={"Search..."}/>
+                    </View>
+                    <View style={{width: 30, alignItems: 'center', justifyContent: 'center'}}>
+                        <Icon
+                            name="qrcode"
+                            type='font-awesome'
+                            size={25}
+                            color="black"
+                            onPress={() => {
+                                this.props.navigation.navigate('Scanner')
+                            }}
+                        />
+
+                    </View>
+                </View>
+                <SuppliesContainer/>
+
+                <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Add new supply"}
+                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
+            </View>
+        )
+    }
 }
 
 
@@ -94,12 +64,10 @@ const styles = StyleSheet.create({
         borderColor: 'red',
         borderWidth: 1,
     },
-    listItem: {
-        borderBottomWidth: 1,
-        borderColor: '#d0d0d0'
+    searchbar: {
+        flexDirection: 'row',
     },
-    subtitle: {
-        color: '#d0d0d0',
-
+    search: {
+        maxWidth: 40
     }
 });
