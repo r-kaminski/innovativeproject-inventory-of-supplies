@@ -3,7 +3,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import AddCircleOutlineIcon from "@material-ui/icons/Add";
 
-class CustomToolbar extends React.Component {
+class ButtonAddItem extends React.Component {
 
   render() {
 
@@ -20,8 +20,8 @@ class CustomToolbar extends React.Component {
 
 }
 
-CustomToolbar.defaultProps = {
+ButtonAddItem.defaultProps = {
   onClickAddItem : () => void(0),
 }
 
-export default CustomToolbar;
+export default ButtonAddItem;

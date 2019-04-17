@@ -31,3 +31,10 @@ header{
     grid-row: 2 / span 1;
 
 }
+
+.toolbar{
+    height: 48px;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
