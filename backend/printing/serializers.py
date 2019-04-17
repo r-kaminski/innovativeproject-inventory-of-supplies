@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .views import QRCodePrint
+from .models import QRCodePrint
 
 
 class QRPrintSerializer(serializers.ModelSerializer):
