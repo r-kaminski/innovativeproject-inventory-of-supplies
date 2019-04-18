@@ -38,7 +38,6 @@ urlpatterns = [
     url(r'^api/users/', include('users.urls', namespace="users")),
     url(r'^api/rooms/', include('rooms.urls', namespace="rooms")),
     url(r'^api/supplies/', include('supplies.urls')),
-    url(r'^api/inventories/', include('inventories.urls', namespace="inventories")),
     url(r'^api/printing/', include('printing.urls')),
 ]
 

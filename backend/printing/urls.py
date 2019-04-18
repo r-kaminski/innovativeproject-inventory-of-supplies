@@ -1,6 +1,6 @@
 from django.urls import path
-from QRPrint import views
+from .views import CreatePrintable
 
 urlpatterns = [
-    path('', views.CreatePrintable, name='CreatePrintable')
+    path('', CreatePrintable, name='CreatePrintable')
 ]
