@@ -7,11 +7,17 @@ import MUIDataTable from "mui-datatables";
 import styles from '../Supplies/Supplies.module.css';
 import PrintCustomToolbar from './PrintCustomToolbar';
 import print from 'print-js'
+import LoadingDialog from './LoadingDialog'
+import AfterPrintDialog from './AfterPrintDialog'
 
 class PrintView extends Component {
 
+    MaxQRCodesPerPage = 110
+
     state = {
-        data: []
+        data: [],
+        loading: false,
+        finished: false,
     };
 
     componentDidMount() {
@@ -23,14 +29,51 @@ class PrintView extends Component {
         this.refreshTable();
     }
 
+    /** 
+     * Function converts array of ids to strings of parameters
+     * to pass to /printing
+     */
+    createIdLists(ids) {
+        let parts = []
+        while (ids.length > 0) {
+            let part;
+            if (ids.length > 100) {
+                part = ids.slice(0, 100)
+                ids = ids.slice(100)
+            } else {
+                part = ids
+                ids = []
+            }
+            parts.push(part)
+        }
+        let lists = []
+        for (let part of parts) {
+            let parameters = `?id=${part[0]}`
+            for (let id of part.slice(1)) {
+                parameters += `&id=${id}`
+            }
+            lists.push(parameters)
+        }
+        return lists
+    }
+
     printCodes() {
         let ids = this.state.data.map(item => item.supplyId)
+        const parameters = this.createIdLists(ids)
+
         print({
-            printable: [
-                'https://printjs.crabbly.com/images/print-01.jpg',
-                'https://printjs.crabbly.com/images/print-01.jpg',
-                'https://printjs.crabbly.com/images/print-01.jpg',
-            ], type: 'image'
+            printable: parameters.map(params => `/api/printing/${params}`),
+            type: 'image',
+            onLoadingEnd: () => {
+                this.setState({
+                    loading: false,
+                    finished: true
+                })
+
+            },
+            onLoadingStart: () => {
+                this.setState({ loading: true })
+            }
         })
     }
 
@@ -88,7 +131,6 @@ class PrintView extends Component {
         {
             options: {
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    console.log(tableMeta)
                     return (
                         < React.Fragment >
                             <ButtonRemoveItem
@@ -125,6 +167,9 @@ class PrintView extends Component {
                     data={this.state.data}
                     columns={this.columns}
                     options={this.options} />
+
+                <LoadingDialog open={this.state.loading} />
+                <AfterPrintDialog onAccept={() => { console.log('accept') }} onDeny={() => { console.log('deny') }} open={this.state.finished} />
             </div>
         );
     };
