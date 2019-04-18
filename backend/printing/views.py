@@ -9,6 +9,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
+
 @api_view(["GET"])
 def CreatePrintable(request):
     try:
@@ -21,10 +22,10 @@ def CreatePrintable(request):
         # check if the number of ids is lower or equal to 110, which is max amount of codes per page
         if len(idList) > 110:
             return Response("", status.HTTP_400_BAD_REQUEST)
-        
+
         codes = Image.new('RGB', (2480, 3508), (255, 255, 255))
         draw = ImageDraw.Draw(codes)
-        
+
         # using default PIL font until the issue with reading font from file is resolved
         font = ImageFont.load_default()
         finalImage = io.BytesIO()
@@ -33,7 +34,7 @@ def CreatePrintable(request):
         for x in idList:
             x = int(x)
 
-        X = Y = itemCount = 0;
+        X = Y = itemCount = 0
         for qrid in idList:
             buffer = io.BytesIO()  # here, otherwise qr codes are the same
             qr = QRCode(qrid)
@@ -41,7 +42,8 @@ def CreatePrintable(request):
 
             qrcodeimage = Image.open(buffer).resize((248, 248))
             codes.paste(qrcodeimage, (X, Y))  # paste code into image
-            draw.text((X, Y + 248), str(qrid), (0, 0, 0), font=font)  # draw text under code
+            draw.text((X, Y + 248), str(qrid), (0, 0, 0),
+                      font=font)  # draw text under code
 
             # calculate new position
             X += 248
@@ -53,5 +55,7 @@ def CreatePrintable(request):
         codes.save(finalImage, format="PNG")
         return HttpResponse(finalImage.getvalue(), content_type="image/png")
 
-    except MultiValueDictKeyError as e:
-        return Response("", status.HTTP_400_BAD_REQUEST)
+    except MultiValueDictKeyError:
+        return Response("id parameter was not provided", status.HTTP_400_BAD_REQUEST)
+    except ValueError as e:
+        return Response("Wrong id: {}".format(str(e)), status.HTTP_400_BAD_REQUEST)
