@@ -11,7 +11,7 @@ const LoadingDialog = (props) => {
         >
             <DialogTitle id="form-dialog-title">Generating QR codes</DialogTitle>
             <DialogContent>
-                <img src="http://oh.no.ms/dog.gif" width="200px" />
+                <img src="http://oh.no.ms/dog.gif" width="200px" alt="" />
             </DialogContent>
         </Dialog>
     );

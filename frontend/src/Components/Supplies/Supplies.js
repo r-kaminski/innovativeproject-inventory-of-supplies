@@ -1,17 +1,19 @@
 import React from 'react';
 import MUIDataTable from "mui-datatables";
 import styles from './Supplies.module.css';
-import CustomToolbar from './CustomToolbar/CustomToolbar'
-import ButtonRemoveItem from './ButtonRemoveItem';
-import ButtonEditItem from './ButtonEditItem';
-import ButtonPrintItem from './ButtonPrintItem';
+import ButtonAddToPrintQueue from './ButtonAddToPrintQueue';
+import ButtonAddItem from './ButtonAddItem/ButtonAddItem'
+import ButtonRemoveItem from './ButtonRemoveItem/ButtonRemoveItem';
+import ButtonEditItem from './ButtonEditItem/ButtonEditItem';
 import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
-import { getItems, deleteItem } from '../../services/inventoryService';
 import PrintService from '../../services/PrintService';
 import { withSnackbar } from 'notistack';
+import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
+import SearchTool from './SearchTool/SearchTool';
+import ButtonPrintQueue from './ButtonPrintQueue';
 
 
 
@@ -24,6 +26,8 @@ class Supplies extends React.Component {
             pageNumber: 1,
             itemsPerPage: 10,
             totalItemCount: 0,
+            search: false,
+            searchPhase: "",
             itemToEdit: {},
             openDialogEdit: false,
             openDialogAdd: false,
@@ -33,29 +37,45 @@ class Supplies extends React.Component {
         };
     }
 
-    updateData = (pageNumber, itemsPerPage) => {
-        if (pageNumber === undefined) {
-            pageNumber = this.state.pageNumber;
-            itemsPerPage = this.state.itemsPerPage;
-        } else if (itemsPerPage === undefined) {
-            itemsPerPage = this.state.itemsPerPage;
-        }
+    updateData = ({ searchPhase, pageNumber, itemsPerPage } = {}) => {
+        //if any of parameters not provided, use params of last update from state
+        if (searchPhase === undefined && this.state.search) searchPhase = this.state.searchPhase;
+        if (pageNumber === undefined) pageNumber = this.state.pageNumber;
+        if (itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-        getItems(pageNumber, itemsPerPage)
-            .then((res) => {
-                this.setState({
-                    data: res.data.results,
-                    totalItemCount: res.data.count,
-                });
-            }).catch((err) => {
-                if (err.response.data.detail === "Invalid page." && this.state.pageNumber > 1) {
+        if (searchPhase === undefined || searchPhase === "") {
+            getItems({ pageNumber, itemsPerPage })
+                .then((res) => {
                     this.setState({
-                        pageNumber: this.state.pageNumber - 1
-                    }, this.updateData);
-                } else {
-                    console.error(err);
-                }
-            })
+                        data: res.data.results,
+                        totalItemCount: res.data.count,
+                    });
+                }).catch((err) => {
+                    if (err.response.data.detail === "Invalid page." && this.state.pageNumber > 1) {
+                        this.setState({
+                            pageNumber: this.state.pageNumber - 1
+                        }, this.updateData);
+                    } else {
+                        console.error(err);
+                    }
+                });
+        } else {
+            searchItems({ searchPhase, pageNumber, itemsPerPage })
+                .then((res) => {
+                    this.setState({
+                        data: res.data.results,
+                        totalItemCount: res.data.count,
+                    });
+                }).catch((err) => {
+                    if (err.response.data.detail === "Invalid page." && pageNumber > 1) {
+                        pageNumber -= 1;
+                        this.setState({ pageNumber: pageNumber });
+                        this.updateData({ searchPhase, pageNumber, itemsPerPage });
+                    } else {
+                        console.error(err);
+                    }
+                });
+        }
     }
 
     onClickAddItem = () => {
@@ -139,7 +159,7 @@ class Supplies extends React.Component {
         this.setState({
             pageNumber: pageNumber
         });
-        this.updateData(pageNumber);
+        this.updateData({ pageNumber });
     }
 
     onChangeRowsPerPage = (changeRowsPerPage) => {
@@ -147,7 +167,21 @@ class Supplies extends React.Component {
             pageNumber: 1,
             itemsPerPage: changeRowsPerPage
         })
-        this.updateData(1, changeRowsPerPage);
+        this.updateData({ pageNumber: 1, itemsPerPage: changeRowsPerPage });
+    }
+
+    onSearchOpen = () => {
+        this.setState({ search: true })
+    }
+
+    onSearchChange = (searchPhase) => {
+        this.setState({ searchPhase });
+        this.updateData({ searchPhase });
+    }
+
+    onSearchClose = () => {
+        this.setState({ searchPhase: "", search: false });
+        this.updateData({ searchPhase: undefined });
     }
 
     showSnackbar = (type, message) => {
@@ -229,7 +263,7 @@ class Supplies extends React.Component {
                             <ButtonEditItem
                                 onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
                             />
-                            <ButtonPrintItem
+                            <ButtonAddToPrintQueue
                                 onClick={() => this.onClickPrint(tableMeta.rowIndex)}
                             />
                         </React.Fragment>
@@ -246,6 +280,8 @@ class Supplies extends React.Component {
             filter: false,
             sort: false,
             search: false,
+            onSearchChange: this.onSearch,
+            onSearchOpen: this.onSearchOpen,
             print: false,
             download: false,
             viewColumns: false,
@@ -257,7 +293,17 @@ class Supplies extends React.Component {
             onChangePage: this.onChangePage,
             onChangeRowsPerPage: this.onChangeRowsPerPage,
 
-            customToolbar: () => (<CustomToolbar onClickAddItem={() => this.onClickAddItem()} onClickPrint={() => this.props.history.push('/printing')} />),
+            customToolbar: () => (
+                <div className={styles.toolbar}>
+                    <ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />
+                    <ButtonPrintQueue onClickPrint={() => this.props.history.push('/printing')} />
+                    <SearchTool
+                        onOpen={this.onSearchOpen}
+                        onChange={this.onSearchChange}
+                        onClose={this.onSearchClose}
+                    />
+                </div>
+            ),
             onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
         };
 

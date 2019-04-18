@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import { withSnackbar } from 'notistack';
 import PrintService from '../../services/PrintService';
-import ButtonRemoveItem from '../Supplies/ButtonRemoveItem';
+import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 import MUIDataTable from "mui-datatables";
 import styles from '../Supplies/Supplies.module.css';
 import PrintCustomToolbar from './PrintCustomToolbar';
@@ -59,7 +59,7 @@ class PrintView extends Component {
 
     printCodes() {
         let ids = this.state.data.map(item => item.supplyId)
-        if (ids.length == 0) {
+        if (ids.length === 0) {
             this.props.enqueueSnackbar('Queue is empty', { variant: 'warning' })
             return
         }
