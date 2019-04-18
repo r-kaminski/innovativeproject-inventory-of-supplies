@@ -15,132 +15,165 @@ import { withSnackbar } from 'notistack';
 
 
 
-class Supplies extends React.Component{
-    constructor(props){
+class Supplies extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
             data: [],
+            pageNumber: 1,
+            itemsPerPage: 10,
+            totalItemCount: 0,
             itemToEdit: {},
-            openDialogEdit : false,
-            openDialogAdd : false,
-            openSnackbar : false,
-            snackbarMessage : "",
-            snackbarVariant : "info"
+            openDialogEdit: false,
+            openDialogAdd: false,
+            openSnackbar: false,
+            snackbarMessage: "",
+            snackbarVariant: "info"
         };
     }
 
-    updateData = () => {
-        getItems()
-            .then((res)=>{
-                this.setState({data : res.data.results});
-            }).catch((err)=>{
-                console.error(err);
+    updateData = (pageNumber, itemsPerPage) => {
+        if (pageNumber === undefined) {
+            pageNumber = this.state.pageNumber;
+            itemsPerPage = this.state.itemsPerPage;
+        } else if (itemsPerPage === undefined) {
+            itemsPerPage = this.state.itemsPerPage;
+        }
+
+        getItems(pageNumber, itemsPerPage)
+            .then((res) => {
+                this.setState({
+                    data: res.data.results,
+                    totalItemCount: res.data.count,
+                });
+            }).catch((err) => {
+                if (err.response.data.detail === "Invalid page." && this.state.pageNumber > 1) {
+                    this.setState({
+                        pageNumber: this.state.pageNumber - 1
+                    }, this.updateData);
+                } else {
+                    console.error(err);
+                }
             })
     }
 
     onClickAddItem = () => {
         this.setState({
-            openDialogAdd : true
+            openDialogAdd: true
         })
     }
 
     onClickDeleteRow = (rowId) => {
         deleteItem(this.state.data[rowId].id)
-            .then((res)=>{
-                let newData = [...this.state.data];
-                    newData.splice(rowId,1);
-
-                    this.setState({
-                        data: newData,
-                        openSnackbar : true,
-                        snackbarMessage : "Usunięto pomyślnie!",
-                        snackbarVariant : "success"
-                    });
-            }).catch((err)=>{
+            .then((res) => {
+                this.updateData();
+                this.setState({
+                    openSnackbar: true,
+                    snackbarMessage: "Usunięto pomyślnie!",
+                    snackbarVariant: "success"
+                });
+            }).catch((err) => {
                 console.error(err);
                 this.setState({
-                    openSnackbar : true,
-                    snackbarMessage : "Wystąpił błąd!",
-                    snackbarVariant : "error"
+                    openSnackbar: true,
+                    snackbarMessage: "Wystąpił błąd!",
+                    snackbarVariant: "error"
                 });
             });
     }
 
     onClickEditRow = (rowId) => {
         this.setState({
-            itemToEdit : this.state.data[rowId],
-            openDialogEdit : true
+            itemToEdit: this.state.data[rowId],
+            openDialogEdit: true
         })
     }
 
     onClickDeleteSelected = (rowsDeleted) => {
         let allOk = true;
         let someOk = false;
-        for(let key in rowsDeleted){
+        for (let key in rowsDeleted) {
             deleteItem(this.state.data[key].id)
-                .then((res)=>{
+                .then((res) => {
                     someOk = true;
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.error(err);
                     allOk = false;
                 });
         }
 
-        if(allOk){
+        this.updateData();
+
+        if (allOk) {
             this.setState({
-                snackbarMessage : "Usunięto pomyślnie!",
-                snackbarVariant : "success",
-                openSnackbar : true
+                snackbarMessage: "Usunięto pomyślnie!",
+                snackbarVariant: "success",
+                openSnackbar: true
             })
-        }else if(someOk){
+        } else if (someOk) {
             this.setState({
-                snackbarMessage : "Wystąpił częściowy błąd!",
-                snackbarVariant : "error",
-                openSnackbar : true
+                snackbarMessage: "Wystąpił częściowy błąd!",
+                snackbarVariant: "error",
+                openSnackbar: true
             })
-        }else{
+        } else {
             this.setState({
-                snackbarMessage : "Wystąpił błąd!",
-                snackbarVariant : "error",
-                openSnackbar : true
+                snackbarMessage: "Wystąpił błąd!",
+                snackbarVariant: "error",
+                openSnackbar: true
             })
         }
     }
 
     onClickPrint(rowId) {
-        try{
+        try {
             PrintService.addToQueue(this.state.data[rowId].id);
             this.props.enqueueSnackbar('Added to print queue', { variant: 'info' });
         } catch {
             this.props.enqueueSnackbar('Failed to add to print queue', { variant: 'error' });
         }
     }
+    onChangePage = (pageNumber) => {
+        pageNumber += 1;
+        this.setState({
+            pageNumber: pageNumber
+        });
+        this.updateData(pageNumber);
+    }
+
+    onChangeRowsPerPage = (changeRowsPerPage) => {
+        this.setState({
+            pageNumber: 1,
+            itemsPerPage: changeRowsPerPage
+        })
+        this.updateData(1, changeRowsPerPage);
+    }
 
     showSnackbar = (type, message) => {
-        switch (type){
+        switch (type) {
             case "success":
                 this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "success",
-                    openSnackbar : true
+                    snackbarMessage: message,
+                    snackbarVariant: "success",
+                    openSnackbar: true
                 });
                 break;
             case "error":
                 this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "error",
-                    openSnackbar : true
+                    snackbarMessage: message,
+                    snackbarVariant: "error",
+                    openSnackbar: true
                 });
                 break;
             default:
                 console.error(`Snackbar type: '${type}' not supported!`)
                 break;
         }
-        
+
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this.updateData();
     }
 
@@ -152,7 +185,7 @@ class Supplies extends React.Component{
                 filter: false,
                 sort: false
             }
-        }, 
+        },
         {
             name: "name",
             label: "Nazwa",
@@ -176,8 +209,8 @@ class Supplies extends React.Component{
                 filter: false,
                 sort: false,
                 customBodyRender: (value, tableMeta) => {
-                    if(value.length > 20)
-                        return value.slice(0, 17)+'...';
+                    if (value.length > 20)
+                        return value.slice(0, 17) + '...';
                     return value;
                 }
             }
@@ -190,35 +223,45 @@ class Supplies extends React.Component{
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <React.Fragment>
-                            <ButtonRemoveItem 
-                            onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
+                            <ButtonRemoveItem
+                                onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
                             />
-                            <ButtonEditItem 
-                            onClick={()=>this.onClickEditRow(tableMeta.rowIndex)}
+                            <ButtonEditItem
+                                onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
                             />
-                            <ButtonPrintItem 
-                            onClick={()=>this.onClickPrint(tableMeta.rowIndex)}
+                            <ButtonPrintItem
+                                onClick={() => this.onClickPrint(tableMeta.rowIndex)}
                             />
                         </React.Fragment>
                     );
-        }, 
+                },
             }
         }
     ];
-    
-    options = {
-        filter: false,
-        sort: false,
-        search: false,
-        print: false,
-        download: false,
-        viewColumns: false,
-        customToolbar: () => (<CustomToolbar onClickAddItem={()=>this.onClickAddItem()} onClickPrint={()=>this.props.history.push('/printing')}/>),
-        onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
-    };
 
-    render(){
-        return(
+    render() {
+        const { data, itemsPerPage, totalItemCount } = this.state;
+
+        const options = {
+            filter: false,
+            sort: false,
+            search: false,
+            print: false,
+            download: false,
+            viewColumns: false,
+            serverSide: true,
+
+            pagination: true,
+            count: totalItemCount,
+            rowsPerPage: itemsPerPage,
+            onChangePage: this.onChangePage,
+            onChangeRowsPerPage: this.onChangeRowsPerPage,
+
+            customToolbar: () => (<CustomToolbar onClickAddItem={() => this.onClickAddItem()} onClickPrint={() => this.props.history.push('/printing')} />),
+            onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
+        };
+
+        return (
             <div className={styles.wrapper}>
                 <header>
                     STOCK
@@ -227,29 +270,29 @@ class Supplies extends React.Component{
                 <MUIDataTable
                     className={styles.table}
                     title={"Wyposażenie"}
-                    data={this.state.data}
+                    data={data}
                     columns={this.columns}
-                    options={this.options} />
+                    options={options} />
 
                 <DialogAddItem
                     open={this.state.openDialogAdd}
-                    onCancel={()=>this.setState({openDialogAdd : false})}
-                    onSuccess={()=>{
+                    onCancel={() => this.setState({ openDialogAdd: false })}
+                    onSuccess={() => {
                         this.updateData();
                         this.showSnackbar("success", "Dodano pomyślnie!");
                     }}
-                    onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
-                    />
+                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                />
 
                 <DialogEditItem
                     open={this.state.openDialogEdit}
                     item={this.state.itemToEdit}
-                    onCancel={()=>{this.setState({openDialogEdit : false})}}
-                    onSuccess={()=>{
+                    onCancel={() => { this.setState({ openDialogEdit: false }) }}
+                    onSuccess={() => {
                         this.updateData();
                         this.showSnackbar("success", "Zapisano pomyślnie!");
                     }}
-                    onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
                 />
 
                 <Snackbar
@@ -259,15 +302,15 @@ class Supplies extends React.Component{
                     }}
                     open={this.state.openSnackbar}
                     autoHideDuration={4000}
-                    onClose={()=>this.setState({openSnackbar : false})}
-                    >
-                        <SnackbarContentWrapper
-                            onClose={()=>this.setState({openSnackbar : false})}
-                            variant={this.state.snackbarVariant}
-                            message={this.state.snackbarMessage}
-                        />
+                    onClose={() => this.setState({ openSnackbar: false })}
+                >
+                    <SnackbarContentWrapper
+                        onClose={() => this.setState({ openSnackbar: false })}
+                        variant={this.state.snackbarVariant}
+                        message={this.state.snackbarMessage}
+                    />
                 </Snackbar>
-            </div>            
+            </div>
         );
     };
 }

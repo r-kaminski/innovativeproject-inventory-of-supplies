@@ -1,9 +1,13 @@
 import axios from 'axios';
 
-export const getItems = () => {
+export const getItems = (pageNumber, itemsPerPage) => {
     return axios({
         method: 'get',
-        url: '/api/supplies/'
+        url: '/api/supplies/',
+        params : {
+            page : pageNumber,
+            page_size : itemsPerPage
+        }
     });
 }
 

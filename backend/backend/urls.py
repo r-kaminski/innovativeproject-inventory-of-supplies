@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^api/rooms/', include('rooms.urls', namespace="rooms")),
     url(r'^api/supplies/', include('supplies.urls')),
     url(r'^api/printing/', include('printing.urls')),
+    url(r'^api/inventories/', include('inventories.urls', namespace="inventories")),
 ]
 
 if settings.DEBUG:

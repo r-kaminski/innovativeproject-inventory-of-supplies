@@ -6,10 +6,10 @@ class PrintService {
         return Axios.post('api/printing/', { supplyId: supplyId });
     }
     static getQueue() {
-        return Axios.get('api/printing')
+        return Axios.get('api/printing/queue')
     }
     static removeFromQueue(printId) {
-        return Axios.delete(`api/printing/${printId}`)
+        return Axios.delete(`api/printing/queue/${printId}`)
     }
 }
 export default PrintService;
