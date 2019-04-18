@@ -4,3 +4,6 @@ psycopg2-binary==2.7.7
 django-rest-auth==0.9.3
 djangorestframework-jwt==1.11.0
 django-allauth==0.39.1
+PyQRCode==1.2.1
+Pillow==5.1.0
+pypng==0.0.18
