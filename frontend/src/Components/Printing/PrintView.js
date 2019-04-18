@@ -59,6 +59,10 @@ class PrintView extends Component {
 
     printCodes() {
         let ids = this.state.data.map(item => item.supplyId)
+        if (ids.length == 0) {
+            this.props.enqueueSnackbar('Queue is empty', { variant: 'warning' })
+            return
+        }
         const parameters = this.createIdLists(ids)
 
         print({
@@ -152,7 +156,17 @@ class PrintView extends Component {
         viewColumns: false,
         onRowsDelete: rows => this.onClickDeleteSelected(rows.data),
         customToolbar: () => (<PrintCustomToolbar onClickPrint={this.printCodes.bind(this)} />),
+        textLabels: {
+            body: {
+                noMatch: "Queue is empty"
+            }
+        }
     };
+
+    clearQueue() {
+        PrintService.clearQueue()
+        this.setState({ finished: false })
+    }
 
     render() {
         return (
@@ -169,7 +183,7 @@ class PrintView extends Component {
                     options={this.options} />
 
                 <LoadingDialog open={this.state.loading} />
-                <AfterPrintDialog onAccept={() => { console.log('accept') }} onDeny={() => { console.log('deny') }} open={this.state.finished} />
+                <AfterPrintDialog onAccept={this.clearQueue.bind(this)} onDeny={() => { this.setState({ finished: false }) }} open={this.state.finished} />
             </div>
         );
     };

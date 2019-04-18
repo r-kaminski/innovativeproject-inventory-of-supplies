@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from .serializers import PrintSerializer, FullPrintSerializer
 from supplies.serializers import SupplySerializer
 from .models import PrintQueue
+from users.models import User
 
 
 @api_view(["GET"])
@@ -67,6 +68,14 @@ class PrintQueueView(generics.ListCreateAPIView):
     serializer_class = PrintSerializer
     queryset = PrintQueue.objects.all()
 
+    def get_queryset(self):
+        """
+        Filters queryset so only elements in current user's queue are returned
+        """
+        user_id = self.request.user.id
+        qs = super().get_queryset().filter(user__id=user_id)
+        return qs
+
     def post(self, request):
         serializer = FullPrintSerializer(
             data={'user': request.user.pk, 'supply': request.data.get('supplyId')})
@@ -74,6 +83,16 @@ class PrintQueueView(generics.ListCreateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Clear queue
+        """
+        user = request.user.pk
+        qs = self.get_queryset()
+        count = len(qs)
+        qs.delete()
+        return Response("Removed %d elements from printing queue" % count, status=status.HTTP_200_OK)
 
 
 class PrintQueueDeleteView(generics.DestroyAPIView):
