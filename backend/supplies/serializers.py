@@ -10,3 +10,8 @@ class SupplySerializer(serializers.ModelSerializer):
             'state': {'required': False, 'allow_blank': True},
             'description': {'required': False, 'allow_blank': True},
         }
+
+class SupplyHeaderSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name')
+        model = Supply

@@ -1,0 +1,50 @@
+.Login {
+    padding:30px 50px;
+    max-width: 350px;
+    min-width: 246px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* height: 450px; */
+    overflow: hidden;
+    transition-timing-function: linear;
+}
+
+.bottomFields{
+    margin-top:20px !important;
+    color: rgb(171, 171, 171);
+    cursor: default;    
+}
+
+
+.bottomButtons:hover  {
+    color: rgb(122, 122, 122);
+    cursor: pointer;
+}
+
+.buttons{
+    margin-top:24px !important;
+}
+
+.wrapper{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: #eee;
+}
+.title, .subtitle{
+    justify-content: center;
+    text-align: center;
+    padding: 20px 0;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 69px;
+    font-weight: 200;
+    color:rgb(64, 81, 181);
+}
+.subtitle{
+    padding: 0 0;
+    text-align: center;
+    font-size: 24px;
+}
