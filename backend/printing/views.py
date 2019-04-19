@@ -4,10 +4,12 @@ from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status, generics
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
+from rest_framework import status, generics, permissions
+from PIL import Image, ImageDraw, ImageFont
+from .serializers import PrintSerializer, FullPrintSerializer
+from supplies.serializers import SupplySerializer
+from .models import PrintQueue
+from users.models import User
 
 
 @api_view(["GET"])
@@ -59,3 +61,41 @@ def CreatePrintable(request):
         return Response("id parameter was not provided", status.HTTP_400_BAD_REQUEST)
     except ValueError as e:
         return Response("Wrong id: {}".format(str(e)), status.HTTP_400_BAD_REQUEST)
+
+
+class PrintQueueView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PrintSerializer
+    queryset = PrintQueue.objects.all()
+
+    def get_queryset(self):
+        """
+        Filters queryset so only elements in current user's queue are returned
+        """
+        user_id = self.request.user.id
+        qs = super().get_queryset().filter(user__id=user_id)
+        return qs
+
+    def post(self, request):
+        serializer = FullPrintSerializer(
+            data={'user': request.user.pk, 'supply': request.data.get('supplyId')})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Clear queue
+        """
+        user = request.user.pk
+        qs = self.get_queryset()
+        count = len(qs)
+        qs.delete()
+        return Response("Removed %d elements from printing queue" % count, status=status.HTTP_200_OK)
+
+
+class PrintQueueDeleteView(generics.DestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PrintSerializer
+    queryset = PrintQueue.objects.all()

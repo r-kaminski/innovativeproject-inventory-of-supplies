@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'authentication.apps.AuthenticationConfig',
     'inventories.apps.InventoriesConfig',
+    'printing.apps.PrintingConfig',
 ]
 
 JWT_AUTH = {

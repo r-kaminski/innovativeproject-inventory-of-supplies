@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { SnackbarProvider } from 'notistack';
-import {HashRouter as Router,Route,Switch,Redirect} from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import './App.css';
 import Supplies from './Components/Supplies/Supplies';
 import Authentication from './Components/Authentication/Authentication';
+import PrintView from './Components/Printing/PrintView';
 
 class App extends Component {
     render() {
@@ -13,9 +14,10 @@ class App extends Component {
                 <Router>
                     <Switch>
                         <Route path="/Authentication" component={Authentication} />
-                        <Redirect exact from="/" to="/Authentication" />                            
+                        <Redirect exact from="/" to="/Authentication" />
                     </Switch>
                     <Route exact path="/Supplies" component={Supplies} />
+                    <Route exact path="/Printing" component={PrintView} />
                 </Router>
             </SnackbarProvider>
         );
