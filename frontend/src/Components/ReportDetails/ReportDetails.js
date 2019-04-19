@@ -1,22 +1,22 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-import styles from './Reports.module.css';
+import styles from './ReportDetails.module.css';
 
 import MUIDataTable from "mui-datatables";
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 
-import { getReports, deleteReport } from '../../services/inventoryService';
+import { getReportsItems } from '../../services/inventoryService';
 
 
 
-export default class Reports extends React.Component{
+export default class ReportDetails extends React.Component{
     constructor(props){
         super(props);
 
         this.state = {
             data: [],
+            reportId: Number(this.props.match.params.report_id),
 
             pageNumber : 1,
             itemsPerPage : 10,
@@ -32,19 +32,30 @@ export default class Reports extends React.Component{
         if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
         if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-        getReports({pageNumber, itemsPerPage})
+        let { reportId } = this.state;
+        
+        getReportsItems({reportId, pageNumber, itemsPerPage})
                 .then((res)=>{
+                    let data = [];
+                    for (const elem of res.data.results) {
+                        let {id : rsid, supply, is_checked} = elem;
+                        let {id, name, state, description} = supply;
+                        data.push({rsid, id, name, state, description, is_checked});
+                    }
+                    
                     this.setState({
-                        data : res.data.results,
+                        data : data,
                         totalItemCount : res.data.count,
                     });
                 }).catch((err)=>{
-                    if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
-                        let prevPage = this.state.pageNumber - 1;
-                        this.setState({pageNumber: prevPage});
-                        this.updateData({pageNumber: prevPage});
+                    if(err.response !== undefined){
+                        if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
+                            let prevPage = this.state.pageNumber - 1;
+                            this.setState({pageNumber: prevPage});
+                            this.updateData({pageNumber: prevPage});    
+                        }
                     }else{
-                        console.error(err.response.data);
+                        console.error(err);
                     }
                 });
     }
@@ -66,22 +77,22 @@ export default class Reports extends React.Component{
     }
 
     onClickDeleteRow = (rowId) => {
-        deleteReport(this.state.data[rowId].id)
-            .then((res)=>{
-                    this.updateData();
-                    this.setState({
-                        openSnackbar : true,
-                        snackbarMessage : "Usunięto pomyślnie!",
-                        snackbarVariant : "success"
-                    });
-            }).catch((err)=>{
-                console.error(err);
-                this.setState({
-                    openSnackbar : true,
-                    snackbarMessage : "Wystąpił błąd!",
-                    snackbarVariant : "error"
-                });
-            });
+        // deleteReport(this.state.data[rowId].id)
+        //     .then((res)=>{
+        //             this.updateData();
+        //             this.setState({
+        //                 openSnackbar : true,
+        //                 snackbarMessage : "Usunięto pomyślnie!",
+        //                 snackbarVariant : "success"
+        //             });
+        //     }).catch((err)=>{
+        //         console.error(err);
+        //         this.setState({
+        //             openSnackbar : true,
+        //             snackbarMessage : "Wystąpił błąd!",
+        //             snackbarVariant : "error"
+        //         });
+        //     });
     }
 
     showSnackbar = (type, message) => {
@@ -107,51 +118,62 @@ export default class Reports extends React.Component{
     };
 
     componentDidMount(){
-
-        this.updateData();
+        if(this.state.reportId === undefined) return;
+        
+        this.updateData();        
     }
 
     columns = [
         {
-            name: "id",
-            label: "ID",
+            name: "rsid",
+            options : { display: 'false'}
         }, 
         {
-            name: "date",
-            label: "Date",
+            name: "id",
+            label: "ID",
         },
         {
             name: "name",
-            label: "Name",
+            label: "Date",
         },
         {
-            name: "supplies_total",
-            label: "Quantity",
+            name: "state",
+            label: "Contidion",
         },
         {
-            name: "supplies_checked_out",
-            label: "Confirmed",
+            name: "description",
+            label: "Description",
         },
         {
-
+            name: "is_checked",
+            label: "Status",
             options: {
-                filter: false,
-                sort: false,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <ButtonRemoveItem 
-                            onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
-                        />
-                    );
-                }, 
+                customBodyRender: (value, rowMeta, updateValue)=> {
+                    return value ? "marked" : "unmarked";
+                }
             }
-        }
+            
+        },
+        // {
+
+        //     options: {
+        //         filter: false,
+        //         sort: false,
+        //         customBodyRender: (value, tableMeta, updateValue) => {
+        //             return (
+        //                 <ButtonRemoveItem 
+        //                     onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
+        //                 />
+        //             );
+        //         }, 
+        //     }
+        // }
     ];
     
 
 
     render(){
-        const {data, itemsPerPage, totalItemCount}  = this.state;
+        const {data, itemsPerPage, totalItemCount, reportId}  = this.state;
 
         const options = {
             filter: false,
@@ -167,16 +189,6 @@ export default class Reports extends React.Component{
             rowsPerPage: itemsPerPage,
             onChangePage: this.onChangePage,
             onChangeRowsPerPage: this.onChangeRowsPerPage,
-
-            onRowClick: (rowData, rowMeta) => {
-                this.setState({
-                    redirectData : {
-                        report_id: rowData[0],
-                        report_name: rowData[2]  ,
-                    },
-                    redirectDest : `/ReportDetails/${rowData[0]}`,
-                    redirect : true,
-                })},
         };
 
         return(
@@ -187,7 +199,7 @@ export default class Reports extends React.Component{
 
                 <MUIDataTable
                     className={styles.table}
-                    title={"Reports"}
+                    title={`Details of report #${reportId}`}
                     data={data}
                     columns={this.columns}
                     options={options} />
@@ -207,18 +219,11 @@ export default class Reports extends React.Component{
                             message={this.state.snackbarMessage}
                         />
                 </Snackbar>
-
-                { this.state.redirect && 
-                    (<Redirect to={{
-                        pathname: this.state.redirectDest, 
-                        state: this.state.redirectData
-                    }}/>) 
-                }
             </div>            
         );
     };
 }
 
-Reports.defaultProps = {
+ReportDetails.defaultProps = {
     reportId : -1,
 }

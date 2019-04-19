@@ -8,7 +8,8 @@ import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
-import { getItems, deleteItem, searchItems, createReport } from '../../services/inventoryService';
+import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
+import { Redirect } from 'react-router-dom';
 import SearchTool from './SearchTool/SearchTool';
 import ButtonReport from './ButtonReport/ButtonReport';
 import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
@@ -21,20 +22,30 @@ export default class Supplies extends React.Component{
 
         this.state = {
             data: [],
+
             pageNumber : 1,
             itemsPerPage : 10,
             totalItemCount: 0,
+
             search: false,
             searchPhase: "",
+
             itemToEdit: {},
             openDialogEdit : false,
             openDialogAdd : false,
             openDialogNewReport : false,
+
             openSnackbar : false,
             snackbarMessage : "",
-            snackbarVariant : "info"
+            snackbarVariant : "info",
+
+            redirect : false,
+            redirectDest : "/",
+            redirectData : {}
         };
     }
+
+    
 
     updateData = ({searchPhase, pageNumber, itemsPerPage} = {}) => {
         //if any of parameters not provided, use params of last update from state
@@ -289,7 +300,6 @@ export default class Supplies extends React.Component{
                     <ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>
                     <ButtonNewReport onClick={()=>{
                         this.setState({openDialogNewReport : true});
-                        //console.log("szmek");
                         }} /> 
                     <ButtonReport onClick={()=>{this.props.history.push('/reports');}} />        
                     <SearchTool 
@@ -340,8 +350,16 @@ export default class Supplies extends React.Component{
                     open={this.state.openDialogNewReport}
                     //item={this.state.itemToEdit}
                     onCancel={()=>{this.setState({openDialogNewRaport : false})}}
-                    onSuccess={()=>{
-                        this.props.history.push('/reports');
+                    onSuccess={(data)=>{
+                        this.setState({
+                            redirectData : {
+                                report_id: data.id,
+                                report_name: data.name  
+                            },
+                            redirectDest : `/ReportDetails/${data.id}`,
+                            redirect : true
+                        });
+                        //this.props.history.push('/reports');
                     }}
                     onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
                 />
@@ -361,6 +379,13 @@ export default class Supplies extends React.Component{
                             message={this.state.snackbarMessage}
                         />
                 </Snackbar>
+
+                { this.state.redirect && 
+                    (<Redirect to={{
+                        pathname: this.state.redirectDest, 
+                        state: this.state.redirectData
+                    }}/>) 
+                }
             </div>            
         );
     };

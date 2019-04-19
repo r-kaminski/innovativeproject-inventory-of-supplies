@@ -49,7 +49,7 @@ export default class DialogNewReport extends React.Component {
 
     createReport(item)
       .then((res)=>{
-        this.props.onSuccess();
+        this.props.onSuccess(res.data);
       })
       .catch((error)=>{
         this.props.onFailure();

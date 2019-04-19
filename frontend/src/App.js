@@ -6,6 +6,7 @@ import './App.css';
 import Supplies from './Components/Supplies/Supplies';
 import Authentication from './Components/Authentication/Authentication';
 import Reports from './Components/Reports/Reports';
+import ReportDetails from './Components/ReportDetails/ReportDetails';
 
 class App extends Component {
     render() {
@@ -18,6 +19,7 @@ class App extends Component {
                     </Switch>
                     <Route exact path="/Supplies" component={Supplies} />
                     <Route exact path="/Reports" component={Reports} />
+                    <Route exact path="/ReportDetails/:report_id" component={ReportDetails} />
                 </Router>
             </SnackbarProvider>
         );

@@ -69,7 +69,7 @@ export const getReportsItems = ({reportId : id, pageNumber : page, itemsPerPage 
 
     return axios({
         method: 'get',
-        url: '/api/inventories/{id}',
+        url: `/api/inventories/${id}`,
         params : params
     });
 }
