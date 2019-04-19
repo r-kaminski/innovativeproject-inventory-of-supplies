@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import styles from './ReportDetails.module.css';
+import classNames from 'classnames';
 
 import MUIDataTable from "mui-datatables";
 import Snackbar from '@material-ui/core/Snackbar';
@@ -146,10 +147,10 @@ export default class ReportDetails extends React.Component{
         },
         {
             name: "is_checked",
-            label: "Status",
+            label: " ",
             options: {
                 customBodyRender: (value, rowMeta, updateValue)=> {
-                    return value ? "marked" : "unmarked";
+                    return (<ConfirmField confirmed={value}/>);
                 }
             }
             
@@ -226,4 +227,24 @@ export default class ReportDetails extends React.Component{
 
 ReportDetails.defaultProps = {
     reportId : -1,
+}
+
+function ConfirmField(props){
+    //const [confirmed, setConfirmed] = useState(false);
+
+    const containerClasses = classNames({
+        [styles.confirm_container] : true,
+        [styles.confirm_container_confirmed] : props.confirmed
+    })
+
+    const contentClasses = classNames({
+        [styles.confirm_content] : true,
+        [styles.confirm_content_confirmed] : props.confirmed
+    })
+
+    return(
+        <div className={containerClasses}>
+            <div className={contentClasses}>confirmed <div className={styles.confirm_blob}>&nbsp;</div> unconfirmed</div>
+        </div>
+    );
 }
