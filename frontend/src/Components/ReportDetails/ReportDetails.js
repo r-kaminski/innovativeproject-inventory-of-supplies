@@ -124,6 +124,10 @@ export default class ReportDetails extends React.Component{
         this.updateData();        
     }
 
+    setCheckedUnchecked = (currentStatus) => {
+        return !currentStatus;
+    };
+
     columns = [
         {
             name: "rsid",
@@ -150,7 +154,7 @@ export default class ReportDetails extends React.Component{
             label: " ",
             options: {
                 customBodyRender: (value, rowMeta, updateValue)=> {
-                    return (<ConfirmField confirmed={value}/>);
+                    return (<ConfirmField onClick={this.setCheckedUnchecked}/>);
                 }
             }
             
@@ -230,21 +234,55 @@ ReportDetails.defaultProps = {
 }
 
 function ConfirmField(props){
-    //const [confirmed, setConfirmed] = useState(false);
+    const { onClick } = props;
+    //if(onClick === undefined) onClick = ()=>void(0);
 
-    const containerClasses = classNames({
+    const [pending, setPending] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
+
+
+    let containerClasses = classNames({
         [styles.confirm_container] : true,
-        [styles.confirm_container_confirmed] : props.confirmed
+        [styles.confirm_container_confirmed] : confirmed
     })
 
-    const contentClasses = classNames({
+    let contentClasses = classNames({
         [styles.confirm_content] : true,
-        [styles.confirm_content_confirmed] : props.confirmed
+        [styles.confirm_content_confirmed] : confirmed,
+        [styles.confirm_content_pending] : pending
     })
+    
+    useEffect(()=>{
+        containerClasses = classNames({
+            [styles.confirm_container] : true,
+            [styles.confirm_container_confirmed] : confirmed
+        })
+    
+        contentClasses = classNames({
+            [styles.confirm_content] : true,
+            [styles.confirm_content_confirmed] : confirmed,
+            [styles.confirm_content_pending] : pending
+        })
+
+        console.log(confirmed);
+    }, [confirmed])
+
+    const handleClick = () => {
+        //setPending(true);
+        setConfirmed(onClick(confirmed));
+    }
 
     return(
-        <div className={containerClasses}>
+        <div 
+            className={containerClasses} 
+            onClick={handleClick}
+        >
             <div className={contentClasses}>confirmed <div className={styles.confirm_blob}>&nbsp;</div> unconfirmed</div>
         </div>
     );
+}
+
+ConfirmField.defaultProps = {
+    confirmed : true,
+    onClick : ()=>false,
 }
