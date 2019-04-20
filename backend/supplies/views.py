@@ -3,7 +3,7 @@ from rest_framework.response import Response
 
 from .models import Supply
 from .serializers import SupplySerializer
-from .permissions import IsAuthenticatedReadOnly
+from backend.permissions import IsAuthenticatedReadOnly
 from backend.pagination import ResultSetPagination
 
 
