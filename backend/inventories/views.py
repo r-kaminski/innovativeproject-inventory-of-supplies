@@ -9,6 +9,7 @@ from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data
 
+
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
     queryset = InventoryReport.objects.all()
@@ -49,7 +50,7 @@ class InventoryReportRemoveView(generics.DestroyAPIView):
 class InventorySupplyView(generics.RetrieveUpdateAPIView):
     serializer_class = InventorySupplySerializer
     permission_classes = (permissions.IsAuthenticated,)
-    lookup_url_kwarg = 'supply_id'
+    lookup_field = 'inventory_supply_id'
 
     def get(self, request, *args, **kwargs):
         try:
@@ -61,7 +62,7 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
             return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
         except InventorySupply.DoesNotExist:
             return Response('Supply does not exist', status=status.HTTP_404_NOT_FOUND)
-    
+
     def patch(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
@@ -72,7 +73,7 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
             return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
         except InventorySupply.DoesNotExist:
             return Response('Supply does not exist', status=status.HTTP_404_NOT_FOUND)
-    
+
     def put(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
@@ -85,4 +86,4 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
             return Response('Supply does not exist', status=status.HTTP_404_NOT_FOUND)
 
     def get_queryset(self):
-        return InventorySupply.objects.filter(pk=self.kwargs.get('supply_id'))
+        return InventorySupply.objects.filter(inventory_report_id=self.kwargs.get('inventory_id'))
