@@ -10,7 +10,7 @@ class InventorySupplySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InventorySupply
-        fields = ('id','supply', 'is_checked')
+        fields = ('supply', 'is_checked')
 
 
 class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
         fields = ('id', 'supply_header', 'is_checked')
 
 
-class InventoryReportListSerializer(serializers.ModelSerializer):
+class InventoryReportSerializer(serializers.ModelSerializer):
     """
     Serializer for the purpose of listing all InventoryReport objects
     It doesn't contain details about it's supplies, and provides only representational form
@@ -45,19 +45,6 @@ class InventoryReportListSerializer(serializers.ModelSerializer):
     def get_supplies_checked_out(self, obj):
         return obj.inventory_supplies.all().exclude(is_checked=False).count()
 
-
-
-class InventoryReportSerializer(serializers.ModelSerializer):
-    supplies = InventorySupplyHeaderSerializer(source='inventory_supplies', many=True, read_only=True)
-
-    class Meta:
-        model = InventoryReport
-        fields = ('id', 'date', 'name', 'supplies',)
-        extra_kwargs = {
-            'supplies': {'required': False},
-            'date': {'required': False},
-        }
-
     def create(self, validated_data, **kwargs):
         """
         Automatically populates with InventorySupply
@@ -68,5 +55,6 @@ class InventoryReportSerializer(serializers.ModelSerializer):
             inventory_supply.save()
         report.save()
         return report
+
 
 
