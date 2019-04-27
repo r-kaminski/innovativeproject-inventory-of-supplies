@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {getSupply} from "../services/SuppliesService";
-import {getStocktaking} from "../services/StocktakingService";
+import {Button, RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {getStocktaking, updateStocktaking} from "../services/StocktakingService";
+import {ListItem, CheckBox} from "react-native-elements";
 
 
 export default class StocktakingScreen extends React.Component {
@@ -9,6 +9,7 @@ export default class StocktakingScreen extends React.Component {
     state = {
         isShowingText: true,
         stocktaking: null,
+        results: []
     };
 
     componentDidMount() {
@@ -19,7 +20,7 @@ export default class StocktakingScreen extends React.Component {
     reload() {
         getStocktaking(this.props.navigation.getParam("id")).then((res) => {
             {
-                this.setState({stocktaking: res})
+                this.setState(res)
             }
         })
     }
@@ -28,29 +29,59 @@ export default class StocktakingScreen extends React.Component {
         header: null
     };
 
-    onPressEditStocktaking = () => {
-        const {navigate} = this.props.navigation;
-        navigate('StocktakingEdit', {stocktaking: this.state.stocktaking, onGoBack: () => this.reload()})
-    }
-
     render() {
-        const {stocktaking} = this.state
         return (
             <View style={styles.container}>
                 <ScrollView style={styles.container}>
-                    {this.state.stocktaking && <View style={styles.mainView}>
-                        <Text style={styles.optionsTitleText}>
-                            {stocktaking.name}
-                        </Text>
-                        <View style={styles.row}>
+
+                    {this.state.results.map((stocktaking, index) => {
+                        return <ListItem
+                            style={styles.listItem}
+                            key={index}
+                            title={<View>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text>
+                                        {stocktaking.supply.name}
+                                    </Text>
+                                </View>
+                                <CheckBox style={{width: 20}}
+                                          checked={stocktaking.is_checked}
+                                          onPress={() => {
+                                              const res = this.state.results
+                                              res[index].is_checked = !(res[index].is_checked)
+                                              updateStocktaking(stocktaking.id, (stocktaking.is_checked))
+                                                  .then(() => {
+                                                      this.setState({
+                                                          ...this.state,
+                                                          results: res
+                                                      })
+                                                  })
 
 
-                        </View>
-                    </View>}
+                                          }}
+                                />
 
+                            </View>}
+                            subtitle={
+                                <Text style={styles.subtitle}
+                                      ellipsizeMode={'tail'}
+                                      numberOfLines={1}
+                                >{stocktaking.supply.description}</Text>
+                            }
+                            onPress={() => {
+                                const res = this.state.results
+                                res[index].is_checked = !(res[index].is_checked)
+                               updateStocktaking(stocktaking.id, (stocktaking.is_checked))
+                                                  .then(() => {
+                                                      this.setState({
+                                                          ...this.state,
+                                                          results: res
+                                                      })
+                                                  })
+                            }}
+                        />
+                    })}
                 </ScrollView>
-                <Button onPress={() => this.onPressEditStocktaking()} title={"Edit"}
-                        color={"#098584"}/>
             </View>
         );
     }

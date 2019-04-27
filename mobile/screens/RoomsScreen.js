@@ -50,7 +50,6 @@ export default class RoomsScreen extends React.Component {
     }
 
     onPressRoom = (id) => {
-        console.log(id)
         const {navigate} = this.props.navigation;
         navigate('Main', {id: id})
     }

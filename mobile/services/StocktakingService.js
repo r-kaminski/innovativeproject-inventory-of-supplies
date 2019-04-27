@@ -35,7 +35,6 @@ export async function postStocktaking(name) {
             }
         );
         let responseJson = await response.json();
-        // console.log(responseJson);
         return responseJson;
     } catch (error) {
         console.error(error);
@@ -59,15 +58,15 @@ export async function getStocktaking(id) {
     }
 }
 
-export async function updateStocktaking(id, stocktaking) {
+export async function updateStocktaking(id, is_checked) {
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/inventories/${id}/`, {
+            `${API_URL}/api/inventories/supplies/${id}`, {
                 method: 'PUT',
                 headers: headers,
-                body: JSON.stringify(stocktaking)
+                body: JSON.stringify({is_checked: is_checked})
             }
         );
         let responseJson = await response.json();

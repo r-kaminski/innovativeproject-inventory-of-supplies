@@ -20,15 +20,15 @@ export default class StocktakingAdd extends React.Component {
         header: null
     };
 
-    onPressEditStocktaking = () => {
+    onPressAddStocktaking = () => {
         // const {navigate} = this.props.navigation;
         // navigate('StocktakingEdit', {stocktaking: this.state.stocktaking, onGoBack: () => this.reload()})
         const {goBack} = this.props.navigation;
         const newStocktaking = {
             name: this.state.stocktaking.name,
         }
-        postStocktaking(newStocktaking);
-            //.then(() => this.props.navigation.state.params.onRefresh())
+        postStocktaking(newStocktaking)
+            .then(() => this.props.navigation.state.params.onRefresh())
         goBack()
     }
 
@@ -57,7 +57,7 @@ export default class StocktakingAdd extends React.Component {
                     </View>}
 
                 </ScrollView>
-                <Button onPress={() => this.onPressEditStocktaking()} title={"Add"}
+                <Button onPress={() => this.onPressAddStocktaking()} title={"Add"}
                         color={"#098584"}/>
             </View>
         );

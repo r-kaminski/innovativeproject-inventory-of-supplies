@@ -55,7 +55,6 @@ export async function getSupply(id) {
 }
 
 export async function updateSupply(id, supply) {
-    console.log(supply)
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
