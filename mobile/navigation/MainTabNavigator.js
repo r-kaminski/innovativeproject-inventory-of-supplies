@@ -3,27 +3,27 @@ import {Platform} from 'react-native';
 import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import StocktakingsScreen from '../screens/StocktakingsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SuppliesScreen from "../screens/SuppliesScreen";
 import SupplyScreen from "../screens/SupplyScreen";
 import SupplyEdit from "../screens/SupplyEdit";
 import SupplyAdd from "../screens/SupplyAdd";
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const StocktakingStack = createStackNavigator({
+    StocktakingsScreen: StocktakingsScreen,
+    StocktakingScreen: StocktakingsScreen,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+StocktakingStack.navigationOptions = {
+    tabBarLabel: 'Stocktaking',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+            ? `ios-albums${focused ? '' : '-outline'}`
+            : 'md-albums'
       }
     />
   ),
@@ -50,20 +50,6 @@ ToolsStack.navigationOptions = {
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
-});
-
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
-    />
-  ),
-};
-
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,
 });
@@ -72,15 +58,15 @@ SettingsStack.navigationOptions = {
   tabBarLabel: 'Settings',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+        style={{backgroundColor: 'red'}}
+        focused={focused}
+        name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
     />
   ),
 };
 
 export default createBottomTabNavigator({
     ToolsStack,
-    HomeStack,
-  LinksStack,
+    StocktakingStack,
   SettingsStack,
 });

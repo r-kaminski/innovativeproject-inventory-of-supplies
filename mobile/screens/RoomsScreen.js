@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {getRooms, postRoom} from '../services/RoomsService';
 
-export default class HomeScreen extends React.Component {
+export default class RoomsScreen extends React.Component {
     state = {rooms: []}
     static navigationOptions = {
         header: null,

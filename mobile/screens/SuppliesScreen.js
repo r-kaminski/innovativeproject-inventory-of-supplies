@@ -5,16 +5,16 @@ import {Button, Icon, Input} from "react-native-elements";
 
 export default class SuppliesScreen extends React.Component {
 
-    state = {
-        pageSize: 8,
-        isShowingText: true,
-        "count": 0,
-        "next": null,
-        "previous": null,
-        "results": [],
-        "total_pages": 1,
-        refreshing: false,
-    };
+    // state = {
+    //     pageSize: 8,
+    //     isShowingText: true,
+    //     "count": 0,
+    //     "next": null,
+    //     "previous": null,
+    //     "results": [],
+    //     "total_pages": 1,
+    //     refreshing: false,
+    // };
 
 
     static navigationOptions = {
@@ -60,9 +60,7 @@ export default class SuppliesScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        borderColor: 'red',
-        borderWidth: 1,
+        backgroundColor: '#fff'
     },
     searchbar: {
         flexDirection: 'row',
