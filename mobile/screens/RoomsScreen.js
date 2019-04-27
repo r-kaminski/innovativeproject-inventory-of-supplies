@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderColor: 'red',
         borderWidth: 1,
     },
     developmentModeText: {

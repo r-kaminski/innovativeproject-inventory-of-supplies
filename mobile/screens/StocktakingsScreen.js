@@ -47,6 +47,10 @@ export default class StocktakingsScreen extends React.Component {
         navigate('StocktakingAdd', {onRefresh: () => this._onRefresh()})
     }
 
+      static navigationOptions = {
+        header: null
+    };
+
     render() {
         return (
             <View style={styles.container}>
@@ -69,8 +73,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderColor: 'red',
         borderWidth: 1,
+        maxHeight: "100%"
     },
     developmentModeText: {
         marginBottom: 20,
@@ -78,9 +82,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 19,
         textAlign: 'center',
-    },
-    contentContainer: {
-        paddingTop: 30,
     },
     searchbar: {
         flexDirection: 'row',
