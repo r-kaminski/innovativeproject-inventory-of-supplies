@@ -47,7 +47,7 @@ export default class SuppliesScreen extends React.Component {
 
                     </View>
                 </View>
-                <SuppliesContainer/>
+                <SuppliesContainer onPressTool={id => this.props.navigation.navigate('Supply', { id: id })} />
 
                 <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Add new supply"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>
