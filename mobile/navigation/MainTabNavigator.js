@@ -1,6 +1,6 @@
 import React from 'react';
-import {Platform} from 'react-native';
-import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
+import { Platform } from 'react-native';
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
@@ -10,6 +10,8 @@ import SuppliesScreen from "../screens/SuppliesScreen";
 import SupplyScreen from "../screens/SupplyScreen";
 import SupplyEdit from "../screens/SupplyEdit";
 import SupplyAdd from "../screens/SupplyAdd";
+import StocktakingsScreen from "../screens/StocktakingsScreen";
+import ScanScreen from '../screens/ScanScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -30,14 +32,14 @@ HomeStack.navigationOptions = {
 };
 
 const ToolsStack = createStackNavigator({
-    Supplies: SuppliesScreen,
-    Supply: {screen: SupplyScreen},
-    SupplyEdit: {screen: SupplyEdit},
-    SupplyAdd: {screen: SupplyAdd},
+  Supplies: SuppliesScreen,
+  Supply: { screen: SupplyScreen },
+  SupplyEdit: { screen: SupplyEdit },
+  SupplyAdd: { screen: SupplyAdd },
 });
 
 ToolsStack.navigationOptions = {
-    tabBarLabel: 'Narzędzia',
+  tabBarLabel: 'Narzędzia',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -50,12 +52,13 @@ ToolsStack.navigationOptions = {
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const StocktakingsStack = createStackNavigator({
+  Stocktakings: StocktakingsScreen,
+  StockScanner: { screen: ScanScreen },
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+StocktakingsStack.navigationOptions = {
+  tabBarLabel: 'Stocktakings',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -79,8 +82,8 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-    ToolsStack,
-    HomeStack,
-  LinksStack,
+  ToolsStack,
+  HomeStack,
+  StocktakingsStack,
   SettingsStack,
 });
