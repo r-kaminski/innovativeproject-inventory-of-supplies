@@ -21,8 +21,6 @@ export default class StocktakingAdd extends React.Component {
     };
 
     onPressAddStocktaking = () => {
-        // const {navigate} = this.props.navigation;
-        // navigate('StocktakingEdit', {stocktaking: this.state.stocktaking, onGoBack: () => this.reload()})
         const {goBack} = this.props.navigation;
         const newStocktaking = {
             name: this.state.stocktaking.name,

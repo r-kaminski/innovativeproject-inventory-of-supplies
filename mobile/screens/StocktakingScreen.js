@@ -49,7 +49,7 @@ export default class StocktakingScreen extends React.Component {
                                           onPress={() => {
                                               const res = this.state.results
                                               res[index].is_checked = !(res[index].is_checked)
-                                              updateStocktaking(stocktaking.id, (stocktaking.is_checked))
+                                              updateStocktaking(this.props.navigation.getParam("id"), stocktaking.supply.id, (stocktaking.is_checked))
                                                   .then(() => {
                                                       this.setState({
                                                           ...this.state,
@@ -71,7 +71,7 @@ export default class StocktakingScreen extends React.Component {
                             onPress={() => {
                                 const res = this.state.results
                                 res[index].is_checked = !(res[index].is_checked)
-                               updateStocktaking(stocktaking.id, (stocktaking.is_checked))
+                               updateStocktaking(this.props.navigation.getParam("id"), stocktaking.supply.id , (stocktaking.is_checked))
                                                   .then(() => {
                                                       this.setState({
                                                           ...this.state,

@@ -6,15 +6,12 @@ import {getStocktakings} from "../services/StocktakingService";
 
 export default class StocktakingsScreen extends React.Component {
 
+      constructor(props) {
+    super(props);
+    this.child = React.createRef();
+  }
+
     state = {
-        pageSize: 8,
-        isShowingText: true,
-        "count": 0,
-        "next": null,
-        "previous": null,
-        "results": [],
-        "total_pages": 1,
-        refreshing: false,
         "search": ""
     };
 
@@ -22,16 +19,8 @@ export default class StocktakingsScreen extends React.Component {
         this._onRefresh(1)
     }
 
-    _onRefresh = (page) => {
-        this.state.count >= 0 ?
-            this.fetchData(page).then(() => {
-                this.setState({refreshing: false});
-            })
-            :
-            this.setState({refreshing: true});
-        this.fetchData(page ? page : 1).then(() => {
-            this.setState({refreshing: false});
-        });
+    _onRefresh = () => {
+        this.child.current._onRefresh(1);
     }
 
         async fetchData(page) {
@@ -60,7 +49,7 @@ export default class StocktakingsScreen extends React.Component {
                                placeholder={"Search..."}/>
                     </View>
                 </View>
-                <StocktakingsContainer results={this.state.results} nav={this.props.navigation}/>
+                <StocktakingsContainer nav={this.props.navigation} ref={this.child}/>
 
                 <Button onPress={() => this.onPressNavigateToNewStocktaking()} title={"Add new stocktaking"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>

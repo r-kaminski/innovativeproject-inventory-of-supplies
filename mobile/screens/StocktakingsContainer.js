@@ -10,12 +10,35 @@ export default class StocktakingsScreen extends React.Component {
         "count": 0,
         "next": null,
         "previous": null,
-        // "results": [],
         "total_pages": 1,
         refreshing: false,
+        results: []
     };
 
+        componentDidMount() {
+        this._onRefresh(1)
+    }
 
+    _onRefresh = (page) => {
+        this.setState({refreshing: true});
+            this.setState({refreshing: true});
+        this.fetchData(page ? page : 1).then(() => {
+            this.setState({refreshing: false});
+        });
+    }
+
+            async fetchData(page) {
+                await getStocktakings({page: page, page_size: this.state.pageSize}).then((res) => {
+                    {
+                        this.setState(res)
+                    }
+                })
+            }
+
+    isCloseToBottom({layoutMeasurement, contentOffset, contentSize}) {
+        return layoutMeasurement.height + contentOffset.y
+            >= contentSize.height - 50;
+    }
 
 
     render() {
@@ -34,7 +57,7 @@ export default class StocktakingsScreen extends React.Component {
                         }}
             >
 
-                {this.props.results.map((stocktaking, index) => {
+                {this.state.results.map((stocktaking, index) => {
                     return <ListItem
                         style={styles.listItem}
                         key={index}
