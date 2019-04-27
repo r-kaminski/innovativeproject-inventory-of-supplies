@@ -1,7 +1,7 @@
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
-import {getSupplies} from "../services/SuppliesService";
-import {ListItem} from "react-native-elements";
+import { RefreshControl, ScrollView, StyleSheet, Text } from 'react-native';
+import { getSupplies } from "../services/SuppliesService";
+import { ListItem } from "react-native-elements";
 
 export default class SuppliesContainer extends React.Component {
 
@@ -24,17 +24,17 @@ export default class SuppliesContainer extends React.Component {
     _onRefresh = (page) => {
         this.state.count >= 0 ?
             this.fetchData(page).then(() => {
-                this.setState({refreshing: false});
+                this.setState({ refreshing: false });
             })
             :
-            this.setState({refreshing: true});
+            this.setState({ refreshing: true });
         this.fetchData(page ? page : 1).then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
     async fetchData(page) {
-        await getSupplies({page: page, page_size: this.state.pageSize}).then((res) => {
+        await getSupplies({ page: page, page_size: this.state.pageSize }).then((res) => {
             {
                 this.setState(res)
             }
@@ -46,7 +46,7 @@ export default class SuppliesContainer extends React.Component {
         header: null
     };
 
-    isCloseToBottom({layoutMeasurement, contentOffset, contentSize}) {
+    isCloseToBottom({ layoutMeasurement, contentOffset, contentSize }) {
         return layoutMeasurement.height + contentOffset.y
             >= contentSize.height - 50;
     }
@@ -54,29 +54,29 @@ export default class SuppliesContainer extends React.Component {
     render() {
         return (
             <ScrollView style={styles.container}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={this._onRefresh}
-                            />
-                        }
-                        onScroll={({nativeEvent}) => {
-                            if (this.isCloseToBottom(nativeEvent)) {
-                                this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
-                            }
-                        }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh}
+                    />
+                }
+                onScroll={({ nativeEvent }) => {
+                    if (this.isCloseToBottom(nativeEvent)) {
+                        this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
+                    }
+                }}
             >
 
                 {this.state.results.map((supply, index) => {
                     return <ListItem
                         style={styles.listItem}
                         key={index}
-                        leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
+                        leftAvatar={{ source: { uri: 'https://via.placeholder.com/150' } }}
                         title={supply.name}
                         subtitle={
                             <Text style={styles.subtitle}
-                                  ellipsizeMode={'tail'}
-                                  numberOfLines={1}
+                                ellipsizeMode={'tail'}
+                                numberOfLines={1}
                             >{supply.description}</Text>
                         }
                         onPress={() => this._handlePressTool(supply.id)}
@@ -87,8 +87,7 @@ export default class SuppliesContainer extends React.Component {
     }
 
     _handlePressTool = (id) => {
-        const {navigate} = this.props.navigation;
-        navigate('Supply', {id: id})
+        this.props.onPressTool(id);
     };
 }
 
