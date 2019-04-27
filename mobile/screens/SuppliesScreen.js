@@ -5,16 +5,9 @@ import {Button, Icon, Input} from "react-native-elements";
 
 export default class SuppliesScreen extends React.Component {
 
-    // state = {
-    //     pageSize: 8,
-    //     isShowingText: true,
-    //     "count": 0,
-    //     "next": null,
-    //     "previous": null,
-    //     "results": [],
-    //     "total_pages": 1,
-    //     refreshing: false,
-    // };
+    state = {
+        "search":""
+    };
 
 
     static navigationOptions = {
@@ -47,7 +40,7 @@ export default class SuppliesScreen extends React.Component {
 
                     </View>
                 </View>
-                <SuppliesContainer onPressTool={id => this.props.navigation.navigate('Supply', { id: id })} />
+                <SuppliesContainer nav={this.props.navigation}/>
 
                 <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Add new supply"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>

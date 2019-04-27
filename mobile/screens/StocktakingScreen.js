@@ -1,13 +1,14 @@
 import React from 'react';
 import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {getSupply} from "../services/SuppliesService";
+import {getStocktaking} from "../services/StocktakingService";
 
 
 export default class StocktakingScreen extends React.Component {
 
     state = {
         isShowingText: true,
-        stacktaking: null,
+        stocktaking: null,
     };
 
     componentDidMount() {
@@ -16,9 +17,9 @@ export default class StocktakingScreen extends React.Component {
 
 
     reload() {
-        getSupply(this.props.navigation.getParam("id")).then((res) => {
+        getStocktaking(this.props.navigation.getParam("id")).then((res) => {
             {
-                this.setState({stacktaking: res})
+                this.setState({stocktaking: res})
             }
         })
     }
@@ -27,19 +28,19 @@ export default class StocktakingScreen extends React.Component {
         header: null
     };
 
-    onPressEditStacktaking = () => {
+    onPressEditStocktaking = () => {
         const {navigate} = this.props.navigation;
-        navigate('StacktakingEdit', {stacktaking: this.state.stacktaking, onGoBack: () => this.reload()})
+        navigate('StocktakingEdit', {stocktaking: this.state.stocktaking, onGoBack: () => this.reload()})
     }
 
     render() {
-        const {stacktaking} = this.state
+        const {stocktaking} = this.state
         return (
             <View style={styles.container}>
                 <ScrollView style={styles.container}>
-                    {this.state.stacktaking && <View style={styles.mainView}>
+                    {this.state.stocktaking && <View style={styles.mainView}>
                         <Text style={styles.optionsTitleText}>
-                            {stacktaking.name}
+                            {stocktaking.name}
                         </Text>
                         <View style={styles.row}>
 
@@ -48,7 +49,7 @@ export default class StocktakingScreen extends React.Component {
                     </View>}
 
                 </ScrollView>
-                <Button onPress={() => this.onPressEditStacktaking()} title={"Edit"}
+                <Button onPress={() => this.onPressEditStocktaking()} title={"Edit"}
                         color={"#098584"}/>
             </View>
         );

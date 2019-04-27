@@ -46,7 +46,7 @@ export default class SuppliesContainer extends React.Component {
         header: null
     };
 
-    isCloseToBottom({ layoutMeasurement, contentOffset, contentSize }) {
+    isCloseToBottom({layoutMeasurement, contentOffset, contentSize}) {
         return layoutMeasurement.height + contentOffset.y
             >= contentSize.height - 50;
     }
@@ -54,17 +54,17 @@ export default class SuppliesContainer extends React.Component {
     render() {
         return (
             <ScrollView style={styles.container}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
-                    />
-                }
-                onScroll={({ nativeEvent }) => {
-                    if (this.isCloseToBottom(nativeEvent)) {
-                        this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
-                    }
-                }}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this._onRefresh}
+                            />
+                        }
+                        onScroll={({nativeEvent}) => {
+                            if (this.isCloseToBottom(nativeEvent)) {
+                                this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
+                            }
+                        }}
             >
 
                 {this.state.results.map((supply, index) => {
@@ -79,6 +79,7 @@ export default class SuppliesContainer extends React.Component {
                                 numberOfLines={1}
                             >{supply.description}</Text>
                         }
+
                         onPress={() => this._handlePressTool(supply.id)}
                     />
                 })}
@@ -87,7 +88,9 @@ export default class SuppliesContainer extends React.Component {
     }
 
     _handlePressTool = (id) => {
-        this.props.onPressTool(id);
+        const {navigate} = this.props.nav;
+
+        navigate('Supply', {id: id})
     };
 }
 

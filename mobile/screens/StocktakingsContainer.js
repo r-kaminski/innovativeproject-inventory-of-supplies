@@ -56,27 +56,27 @@ export default class StocktakingsScreen extends React.Component {
                         }}
             >
 
-                {this.state.results.map((stacktaking, index) => {
+                {this.state.results.map((stocktaking, index) => {
                     return <ListItem
                         style={styles.listItem}
                         key={index}
-                        title={stacktaking.name}
+                        title={stocktaking.name}
                         subtitle={
                             <Text style={styles.subtitle}
                                   ellipsizeMode={'tail'}
                                   numberOfLines={1}
-                            >{stacktaking.date}</Text>
+                            >{stocktaking.date}</Text>
                         }
-                        onPress={() => this._handlePressStacktaking(stacktaking.id)}
+                        onPress={() => this._handlePressStocktaking(stocktaking.id)}
                     />
                 })}
             </ScrollView>
         );
     }
 
-    _handlePressStacktaking = (id) => {
+    _handlePressStocktaking = (id) => {
         const {navigate} = this.props.navigation;
-        navigate('Stacktaking', {id: id})
+        navigate('Stocktaking', {id: id})
     };
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, StyleSheet, View} from 'react-native';
 import {Input} from "react-native-elements";
-import SuppliesContainer from "./SuppliesScreen";
+import StocktakingsContainer from "./StocktakingsContainer";
 
 export default class StocktakingsScreen extends React.Component {
 
@@ -14,12 +14,12 @@ export default class StocktakingsScreen extends React.Component {
         "results": [],
         "total_pages": 1,
         refreshing: false,
-        search: null
+        "search": ""
     };
 
     onPressNavigateToNewStocktaking = () => {
         const {navigate} = this.props.navigation;
-        navigate('SupplyAdd', {onRefresh: () => this._onRefresh()})
+        navigate('StocktakingAdd')
     }
 
     render() {
@@ -31,7 +31,7 @@ export default class StocktakingsScreen extends React.Component {
                                placeholder={"Search..."}/>
                     </View>
                 </View>
-                <SuppliesContainer/>
+                <StocktakingsContainer/>
 
                 <Button onPress={() => this.onPressNavigateToNewStocktaking()} title={"Add new stocktaking"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>
@@ -57,4 +57,10 @@ const styles = StyleSheet.create({
     contentContainer: {
         paddingTop: 30,
     },
+    searchbar: {
+        flexDirection: 'row',
+    },
+    search: {
+        maxWidth: 40
+    }
 });

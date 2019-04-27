@@ -9,10 +9,13 @@ import SuppliesScreen from "../screens/SuppliesScreen";
 import SupplyScreen from "../screens/SupplyScreen";
 import SupplyEdit from "../screens/SupplyEdit";
 import SupplyAdd from "../screens/SupplyAdd";
+import StocktakingScreen from "../screens/StocktakingScreen";
+import StocktakingAdd from "../screens/StocktakingAdd";
 
 const StocktakingStack = createStackNavigator({
     StocktakingsScreen: StocktakingsScreen,
-    StocktakingScreen: StocktakingsScreen,
+    StocktakingScreen: StocktakingScreen,
+    StocktakingAdd: StocktakingAdd,
 });
 
 StocktakingStack.navigationOptions = {
@@ -68,5 +71,5 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator({
     ToolsStack,
     StocktakingStack,
-  SettingsStack,
+    SettingsStack
 });
