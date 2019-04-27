@@ -1,7 +1,7 @@
 import React from 'react';
-import { RefreshControl, ScrollView, StyleSheet, Text } from 'react-native';
-import { getSupplies } from "../services/SuppliesService";
-import { ListItem } from "react-native-elements";
+import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {getSupplies} from "../services/SuppliesService";
+import {ListItem, Overlay} from "react-native-elements";
 
 export default class SuppliesContainer extends React.Component {
 
@@ -22,25 +22,20 @@ export default class SuppliesContainer extends React.Component {
     }
 
     _onRefresh = (page) => {
-        this.state.count >= 0 ?
-            this.fetchData(page).then(() => {
-                this.setState({ refreshing: false });
-            })
-            :
-            this.setState({ refreshing: true });
+        this.setState({refreshing: true});
+            this.setState({refreshing: true});
         this.fetchData(page ? page : 1).then(() => {
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
     async fetchData(page) {
-        await getSupplies({ page: page, page_size: this.state.pageSize }).then((res) => {
+        await getSupplies({page: page, page_size: this.state.pageSize, name: this.props.search}).then((res) => {
             {
                 this.setState(res)
             }
         })
     }
-
 
     static navigationOptions = {
         header: null
@@ -53,7 +48,12 @@ export default class SuppliesContainer extends React.Component {
 
     render() {
         return (
-            <ScrollView style={styles.container}
+            <View style={styles.container}>
+                {this.state.refreshing &&
+                <View style={styles.overlay}>
+                </View>
+                }
+            <ScrollView
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state.refreshing}
@@ -71,12 +71,12 @@ export default class SuppliesContainer extends React.Component {
                     return <ListItem
                         style={styles.listItem}
                         key={index}
-                        leftAvatar={{ source: { uri: 'https://via.placeholder.com/150' } }}
+                        leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
                         title={supply.name}
                         subtitle={
                             <Text style={styles.subtitle}
-                                ellipsizeMode={'tail'}
-                                numberOfLines={1}
+                                  ellipsizeMode={'tail'}
+                                  numberOfLines={1}
                             >{supply.description}</Text>
                         }
 
@@ -84,6 +84,7 @@ export default class SuppliesContainer extends React.Component {
                     />
                 })}
             </ScrollView>
+                </View>
         );
     }
 
@@ -108,5 +109,15 @@ const styles = StyleSheet.create({
     subtitle: {
         color: '#d0d0d0',
 
+    },
+    overlay: {
+
+        position: 'absolute',
+        top:0,
+        bottom:0,
+        right: 0,
+        left: 0,
+        backgroundColor: 'rgba(255,255,255,0.5)',
+        zIndex: 1
     }
 });

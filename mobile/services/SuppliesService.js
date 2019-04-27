@@ -3,11 +3,12 @@ import {setHeaders} from "./AuthService";
 import * as querystring from "querystring";
 
 export async function getSupplies(paginationData) {
+    // let data = {...paginationData, name: ""}
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/supplies/?${querystring.stringify(paginationData)}`,
+            `${API_URL}/api/supplies/search?${querystring.stringify(paginationData)}`,
             {
                 headers: headers,
             }
