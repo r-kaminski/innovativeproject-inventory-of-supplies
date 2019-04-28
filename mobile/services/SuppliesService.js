@@ -3,7 +3,6 @@ import {setHeaders} from "./AuthService";
 import * as querystring from "querystring";
 
 export async function getSupplies(paginationData) {
-    // let data = {...paginationData, name: ""}
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {

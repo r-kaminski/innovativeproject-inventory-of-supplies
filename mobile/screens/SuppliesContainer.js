@@ -1,19 +1,16 @@
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {getSupplies} from "../services/SuppliesService";
-import {ListItem, Overlay} from "react-native-elements";
+import {ListItem} from "react-native-elements";
 
 export default class SuppliesContainer extends React.Component {
 
     state = {
         pageSize: 8,
-        isShowingText: true,
         "count": 0,
-        "next": null,
-        "previous": null,
         "results": [],
-        "total_pages": 1,
         refreshing: false,
+        page: 1
     };
 
 
@@ -22,8 +19,7 @@ export default class SuppliesContainer extends React.Component {
     }
 
     _onRefresh = (page) => {
-        this.setState({refreshing: true});
-            this.setState({refreshing: true});
+        this.setState({refreshing: true, page: page ? page : 1});
         this.fetchData(page ? page : 1).then(() => {
             this.setState({refreshing: false});
         });
@@ -32,59 +28,49 @@ export default class SuppliesContainer extends React.Component {
     async fetchData(page) {
         await getSupplies({page: page, page_size: this.state.pageSize, name: this.props.search}).then((res) => {
             {
-                this.setState(res)
+                console.log("page: ", page, this.props.search, res.total_pages) //TODO coś jest nie tak z searchem
+                page === 1 ?
+                    this.setState({...this.state, ...res, page: 1})
+                    : this.setState({...this.state, ...res, results: [...this.state.results, ...res.results]})
             }
-        })
+        }).catch((err) => console.log("error: ", err))
     }
 
     static navigationOptions = {
         header: null
     };
 
-    isCloseToBottom({layoutMeasurement, contentOffset, contentSize}) {
-        return layoutMeasurement.height + contentOffset.y
-            >= contentSize.height - 50;
-    }
-
     render() {
         return (
             <View style={styles.container}>
-                {this.state.refreshing &&
-                <View style={styles.overlay}>
-                </View>
-                }
-            <ScrollView
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={this._onRefresh}
-                            />
-                        }
-                        onScroll={({nativeEvent}) => {
-                            if (this.isCloseToBottom(nativeEvent)) {
-                                this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
-                            }
-                        }}
-            >
-
-                {this.state.results.map((supply, index) => {
-                    return <ListItem
+                <FlatList
+                    data={this.state.results}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({item, index}) => <ListItem
                         style={styles.listItem}
                         key={index}
                         leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
-                        title={supply.name}
+                        title={item.name}
                         subtitle={
                             <Text style={styles.subtitle}
                                   ellipsizeMode={'tail'}
                                   numberOfLines={1}
-                            >{supply.description}</Text>
+                            >{item.description}</Text>
                         }
 
-                        onPress={() => this._handlePressTool(supply.id)}
+                        onPress={() => this._handlePressTool(item.id)}
                     />
-                })}
-            </ScrollView>
-                </View>
+
+                    }
+                    onEndReached={() => {
+                        if (this.state.page < this.state.count / this.state.pageSize) {
+                            this._onRefresh(this.state.page + 1);
+                        }
+                    }}
+                    onEndReachedThreshold={0.5}
+                    initialNumToRender={this.state.pageSize}
+                />
+            </View>
         );
     }
 
@@ -100,7 +86,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderWidth: 1,
     },
     listItem: {
         borderBottomWidth: 1,
@@ -111,10 +96,9 @@ const styles = StyleSheet.create({
 
     },
     overlay: {
-
         position: 'absolute',
-        top:0,
-        bottom:0,
+        top: 0,
+        bottom: 0,
         right: 0,
         left: 0,
         backgroundColor: 'rgba(255,255,255,0.5)',

@@ -65,13 +65,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderWidth: 1,
     },
-    developmentModeText: {
-        marginBottom: 20,
-        color: 'rgba(0,0,0,0.4)',
-        fontSize: 14,
-        lineHeight: 19,
-        textAlign: 'center',
-    },
     contentContainer: {
         paddingTop: 30,
     },

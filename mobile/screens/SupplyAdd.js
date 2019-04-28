@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button, Image, ScrollView, StyleSheet, View} from 'react-native';
-import {Input} from "react-native-elements";
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Button, Input} from "react-native-elements";
 import {postSupply} from "../services/SuppliesService";
 
 
@@ -51,7 +51,7 @@ export default class SupplyEdit extends React.Component {
                                    this.setState({supply: {...supply, name: e.nativeEvent.text}})
                                }}
                                value={supply.name}
-                               label={"Nazwa"}
+                               label={"Name"}
                         />
                         <View style={styles.row}>
                             <View style={{flex: 1}}>
@@ -61,14 +61,14 @@ export default class SupplyEdit extends React.Component {
                                            this.setState({supply: {...supply, state: e.nativeEvent.text}})
                                        }}
                                        value={supply.state}
-                                       label={"Stan"}
+                                       label={"State"}
                                 />
                                 <Input inputStyle={styles.optionText}
                                        onChange={(e) => {
                                            this.setState({supply: {...supply, description: e.nativeEvent.text}})
                                        }}
                                        value={supply.description}
-                                       label={"Opis"}
+                                       label={"Description"}
                                 />
                             </View>
 
@@ -77,8 +77,8 @@ export default class SupplyEdit extends React.Component {
                     </View>}
 
                 </ScrollView>
-                <Button onPress={() => this.onPressSave()} title={"Zapisz"}
-                        color={"#098584"}/>
+                <Button onPress={() => this.onPressSave()} title={"Save"}
+                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
             </View>
         );
     }
@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
     },
     optionsTitleText: {
         fontSize: 18,
-        // marginBottom: 12,
     },
     optionText: {
         fontSize: 15,

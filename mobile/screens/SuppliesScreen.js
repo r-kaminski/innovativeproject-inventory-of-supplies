@@ -12,6 +12,9 @@ export default class SuppliesScreen extends React.Component {
         "search": ""
     };
 
+    _onRefresh = () => {
+        this.child.current._onRefresh(1);
+    }
 
     static navigationOptions = {
         header: null

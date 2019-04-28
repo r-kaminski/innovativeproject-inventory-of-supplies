@@ -1,6 +1,7 @@
 import React from 'react';
-import {Button, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {getSupply} from "../services/SuppliesService";
+import {Button} from "react-native-elements";
 
 
 export default class SupplyScreen extends React.Component {
@@ -53,14 +54,14 @@ export default class SupplyScreen extends React.Component {
 
                             <View style={{paddingRight: 8}}>
                                 <Text style={styles.descriptionText}>
-                                    id:
+                                    Id:
                                 </Text>
 
                                 <Text style={styles.descriptionText}>
-                                    stan:
+                                    State:
                                 </Text>
                                 <Text style={styles.descriptionText}>
-                                    opis:
+                                    Description:
                                 </Text>
                                 <Text style={styles.descriptionText}>
                                     {supply.localization}
@@ -87,8 +88,8 @@ export default class SupplyScreen extends React.Component {
                     </View>}
 
                 </ScrollView>
-                <Button onPress={() => this.onPressEditTool()} title={"Edytuj"}
-                        color={"#098584"}/>
+                <Button onPress={() => this.onPressEditTool()} title={"Edit"}
+                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
             </View>
         );
     }
@@ -103,8 +104,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        // borderColor: 'red',
-        // borderBottomWidth: 1,
         padding: 20
     },
     image: {

@@ -1,8 +1,7 @@
 import React from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {getSupply, postSupply} from "../services/SuppliesService";
-import {getStocktaking, postStocktaking} from "../services/StocktakingService";
-import {Input} from "react-native-elements";
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {postStocktaking} from "../services/StocktakingService";
+import {Button, Input} from "react-native-elements";
 
 
 export default class StocktakingAdd extends React.Component {
@@ -37,9 +36,6 @@ export default class StocktakingAdd extends React.Component {
 
                 <ScrollView style={styles.container}>
                     {this.state.stocktaking && <View style={styles.mainView}>
-                        <Text style={styles.optionsTitleText}>
-                            {stocktaking.name}
-                        </Text>
                         <Input inputStyle={styles.optionsTitleText}
                                onChange={(e) => {
                                    this.setState({stocktaking: {...stocktaking, name: e.nativeEvent.text}})
@@ -55,8 +51,8 @@ export default class StocktakingAdd extends React.Component {
                     </View>}
 
                 </ScrollView>
-                <Button onPress={() => this.onPressAddStocktaking()} title={"Add"}
-                        color={"#098584"}/>
+                <Button onPress={() => this.onPressAddStocktaking()} title={"Save"}
+                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
             </View>
         );
     }

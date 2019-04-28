@@ -42,12 +42,12 @@ export async function postStocktaking(name) {
     }
 }
 
-export async function getStocktaking(id) {
+export async function getStocktaking(id, paginationData) {
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/inventories/${id}`,
+            `${API_URL}/api/inventories/${id}?${querystring.stringify(paginationData)}`,
             {
                 headers: headers,
             }

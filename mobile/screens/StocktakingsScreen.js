@@ -1,8 +1,7 @@
 import React from 'react';
-import {Button, StyleSheet, View} from 'react-native';
-import {Input} from "react-native-elements";
+import {StyleSheet, View} from 'react-native';
+import {Button, Input} from "react-native-elements";
 import StocktakingsContainer from "./StocktakingsContainer";
-import {getStocktakings} from "../services/StocktakingService";
 
 export default class StocktakingsScreen extends React.Component {
 
@@ -15,20 +14,8 @@ export default class StocktakingsScreen extends React.Component {
         "search": ""
     };
 
-        componentDidMount() {
-        this._onRefresh(1)
-    }
-
     _onRefresh = () => {
         this.child.current._onRefresh(1);
-    }
-
-        async fetchData(page) {
-        await getStocktakings({page: page, page_size: this.state.pageSize}).then((res) => {
-            {
-                this.setState(res)
-            }
-        })
     }
 
     onPressNavigateToNewStocktaking = () => {
@@ -46,10 +33,13 @@ export default class StocktakingsScreen extends React.Component {
                 <View style={styles.searchbar}>
                     <View style={{flex: 1}}>
                         <Input style={styles.search} value={this.state.search}
-                               placeholder={"Search..."}/>
+                               placeholder={"Search..."} onChange={(value) => {
+                            this.setState({search: value.nativeEvent.text});
+                            this.child.current._onRefresh(1);
+                        }}/>
                     </View>
                 </View>
-                <StocktakingsContainer nav={this.props.navigation} ref={this.child}/>
+                <StocktakingsContainer nav={this.props.navigation} search={this.state.search} ref={this.child}/>
 
                 <Button onPress={() => this.onPressNavigateToNewStocktaking()} title={"Add new stocktaking"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>
@@ -62,15 +52,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderWidth: 1,
         maxHeight: "100%"
-    },
-    developmentModeText: {
-        marginBottom: 20,
-        color: 'rgba(0,0,0,0.4)',
-        fontSize: 14,
-        lineHeight: 19,
-        textAlign: 'center',
     },
     searchbar: {
         flexDirection: 'row',

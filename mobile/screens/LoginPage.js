@@ -16,7 +16,7 @@ export default class LoginPage extends React.Component {
                         keyboardShouldPersistTaps='handled'
             >
                 <View style={styles.wrapper}>
-                    <Text style={styles.header}>Logowanie</Text>
+                    <Text style={styles.header}>STOCK</Text>
                     <Input
                         placeholder='Login'
                         leftIcon={{type: 'feather', name: 'user', size: 18, color: '#d0d0d0'}}
@@ -29,7 +29,7 @@ export default class LoginPage extends React.Component {
                     />
 
                     <Input
-                        placeholder='Hasło'
+                        placeholder='Password'
                         leftIcon={{type: 'feather', name: 'lock', size: 18, color: '#d0d0d0'}}
                         leftIconContainerStyle={{paddingRight: 8}}
                         inputStyle={{color: 'white'}}
@@ -38,7 +38,7 @@ export default class LoginPage extends React.Component {
                             this.setState({password: e.nativeEvent.text})
                         }}
                         value={this.state.password}
-                        errorMessage={this.state.error ? "Niepoprawny login lub hasło" : null}
+                        errorMessage={this.state.error ? "Wrong login or password" : null}
                     />
 
                 </View>
@@ -48,7 +48,7 @@ export default class LoginPage extends React.Component {
                         (res) => res ? this.props.signIn()
                             : this.setState({login: null, password: null, error: true})
                     )
-                }} title={"zaloguj"}
+                }} title={"Log in"}
                         color={"#40c1ac"}/>
             </ScrollView>
         )
@@ -59,11 +59,6 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         flex: 1,
-        // backgroundColor: "#00295c",
-        // alignItems: "center",
-        // justifyContent: "center",
-        borderWidth: 1,
-        borderColor: "red"
     },
     wrapper: {
         marginBottom: 8,
