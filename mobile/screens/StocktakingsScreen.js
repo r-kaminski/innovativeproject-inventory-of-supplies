@@ -1,14 +1,14 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Button, Input} from "react-native-elements";
+import { StyleSheet, View } from 'react-native';
+import { Button, Input } from "react-native-elements";
 import StocktakingsContainer from "./StocktakingsContainer";
 
 export default class StocktakingsScreen extends React.Component {
 
-      constructor(props) {
-    super(props);
-    this.child = React.createRef();
-  }
+    constructor(props) {
+        super(props);
+        this.child = React.createRef();
+    }
 
     state = {
         "search": ""
@@ -19,11 +19,11 @@ export default class StocktakingsScreen extends React.Component {
     }
 
     onPressNavigateToNewStocktaking = () => {
-        const {navigate} = this.props.navigation;
-        navigate('StocktakingAdd', {onRefresh: () => this._onRefresh()})
+        const { navigate } = this.props.navigation;
+        navigate('StocktakingAdd', { onRefresh: () => this._onRefresh() })
     }
 
-      static navigationOptions = {
+    static navigationOptions = {
         header: null
     };
 
@@ -31,18 +31,18 @@ export default class StocktakingsScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.searchbar}>
-                    <View style={{flex: 1}}>
+                    <View style={{ flex: 1 }}>
                         <Input style={styles.search} value={this.state.search}
-                               placeholder={"Search..."} onChange={(value) => {
-                            this.setState({search: value.nativeEvent.text});
-                            this.child.current._onRefresh(1);
-                        }}/>
+                            placeholder={"Search..."} onChange={(value) => {
+                                this.setState({ search: value.nativeEvent.text });
+                                this.child.current._onRefresh(1);
+                            }} />
                     </View>
                 </View>
-                <StocktakingsContainer nav={this.props.navigation} search={this.state.search} ref={this.child}/>
+                <StocktakingsContainer nav={this.props.navigation} search={this.state.search} ref={this.child} />
 
                 <Button onPress={() => this.onPressNavigateToNewStocktaking()} title={"Add new stocktaking"}
-                        buttonStyle={{backgroundColor: "#40c1ac"}}/>
+                    buttonStyle={{ backgroundColor: "#40c1ac" }} />
             </View>
         )
     }
