@@ -2,12 +2,12 @@ import {API_URL} from "../api";
 import {setHeaders} from "./AuthService";
 import * as querystring from "querystring";
 
-export async function getSupplies(paginationData) {
+export async function getStocktakings(paginationData) {
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/supplies/search?${querystring.stringify(paginationData)}`,
+            `${API_URL}/api/inventories/?${querystring.stringify(paginationData)}`,
             {
                 headers: headers,
             }
@@ -19,15 +19,20 @@ export async function getSupplies(paginationData) {
     }
 }
 
-export async function postSupply(supply) {
+export async function postStocktaking(name) {
+    let body = {
+        date: new Date().toISOString().slice(0,10),
+        name: name.name
+    }
+    console.log(body)
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/supplies/`, {
+            `${API_URL}/api/inventories/`, {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify(supply)
+                body: JSON.stringify(body)
             }
         );
         let responseJson = await response.json();
@@ -37,12 +42,12 @@ export async function postSupply(supply) {
     }
 }
 
-export async function getSupply(id) {
+export async function getStocktaking(id, paginationData) {
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/supplies/${id}`,
+            `${API_URL}/api/inventories/${id}?${querystring.stringify(paginationData)}`,
             {
                 headers: headers,
             }
@@ -54,15 +59,15 @@ export async function getSupply(id) {
     }
 }
 
-export async function updateSupply(id, supply) {
+export async function updateStocktaking(inventory_id, id, is_checked) {
     let headers = null
     await setHeaders().then((res) => headers = res);
     try {
         let response = await fetch(
-            `${API_URL}/api/supplies/${id}/`, {
+            `${API_URL}/api/inventories/${inventory_id}/supplies/${id}`, {
                 method: 'PUT',
                 headers: headers,
-                body: JSON.stringify(supply)
+                body: JSON.stringify({is_checked: is_checked})
             }
         );
         let responseJson = await response.json();

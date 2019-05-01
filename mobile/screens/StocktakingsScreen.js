@@ -1,109 +1,63 @@
 import React from 'react';
-import { RefreshControl, ScrollView, StyleSheet, Text } from 'react-native';
-import { ListItem } from "react-native-elements";
-import { getStocktakings } from '../services/StocktakingsService';
+import { StyleSheet, View } from 'react-native';
+import { Button, Input } from "react-native-elements";
+import StocktakingsContainer from "./StocktakingsContainer";
 
 export default class StocktakingsScreen extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.child = React.createRef();
+    }
+
     state = {
-        pageSize: 8,
-        isShowingText: true,
-        "count": 0,
-        "next": null,
-        "previous": null,
-        "results": [],
-        "total_pages": 1,
-        refreshing: false,
+        "search": ""
     };
 
-    _onRefresh = (page) => {
-        this.state.count >= 0 ?
-            this.fetchData(page).then(() => {
-                this.setState({ refreshing: false });
-            })
-            :
-            this.setState({ refreshing: true });
-        this.fetchData(page ? page : 1).then(() => {
-            this.setState({ refreshing: false });
-        });
+    _onRefresh = () => {
+        this.child.current._onRefresh(1);
     }
 
-    componentDidMount() {
-        this._onRefresh(1)
+    onPressNavigateToNewStocktaking = () => {
+        const { navigate } = this.props.navigation;
+        navigate('StocktakingAdd', { onRefresh: () => this._onRefresh() })
     }
-
-    async fetchData(page) {
-        await getStocktakings({ page: page, page_size: this.state.pageSize }).then((res) => {
-            {
-                this.setState(res)
-            }
-        });
-        console.log(this.state);
-    }
-
 
     static navigationOptions = {
         header: null
     };
 
-    _handlePressTool(id) {
-
-    }
-
     render() {
         return (
-            <ScrollView style={styles.container}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
-                    />
-                }
-                onScroll={({ nativeEvent }) => {
-                    if (this.isCloseToBottom(nativeEvent)) {
-                        this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
-                    }
-                }}
-            >
+            <View style={styles.container}>
+                <View style={styles.searchbar}>
+                    <View style={{ flex: 1 }}>
+                        <Input style={styles.search} value={this.state.search}
+                            placeholder={"Search..."} onChange={(value) => {
+                                this.setState({ search: value.nativeEvent.text });
+                                this.child.current._onRefresh(1);
+                            }} />
+                    </View>
+                </View>
+                <StocktakingsContainer nav={this.props.navigation} search={this.state.search} ref={this.child} />
 
-                {this.state.results.map((stocktaking, index) => {
-                    return <ListItem
-                        style={styles.listItem}
-                        key={index}
-                        // leftAvatar={{ source: { uri: 'https://via.placeholder.com/150' } }}
-                        title={stocktaking.name}
-                        subtitle={
-                            <Text style={styles.subtitle}
-                                ellipsizeMode={'tail'}
-                                numberOfLines={1}
-                            >{stocktaking.date}</Text>
-                        }
-                        onPress={() => this._handlePressTool(stocktaking.id)}
-                    />
-                })}
-            </ScrollView>
-        );
+                <Button onPress={() => this.onPressNavigateToNewStocktaking()} title={"Add new stocktaking"}
+                    buttonStyle={{ backgroundColor: "#40c1ac" }} />
+            </View>
+        )
     }
-
-    _handlePressTool = (id) => {
-        const { push } = this.props.navigation;
-        push('StockScanner', { stockId: id })
-    };
 }
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderColor: 'red',
-        borderWidth: 1,
+        maxHeight: "100%"
     },
-    listItem: {
-        borderBottomWidth: 1,
-        borderColor: '#d0d0d0'
+    searchbar: {
+        flexDirection: 'row',
     },
-    subtitle: {
-        color: '#d0d0d0',
+    search: {
+        maxWidth: 40
     }
 });

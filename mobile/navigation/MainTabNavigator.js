@@ -3,29 +3,33 @@ import { Platform } from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import StocktakingsScreen from '../screens/StocktakingsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SuppliesScreen from "../screens/SuppliesScreen";
 import SupplyScreen from "../screens/SupplyScreen";
 import SupplyEdit from "../screens/SupplyEdit";
 import SupplyAdd from "../screens/SupplyAdd";
-import StocktakingsScreen from "../screens/StocktakingsScreen";
 import ScanScreen from '../screens/ScanScreen';
+import StocktakingScreen from "../screens/StocktakingScreen";
+import StocktakingAdd from "../screens/StocktakingAdd";
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+
+const StocktakingStack = createStackNavigator({
+  StocktakingsScreen: StocktakingsScreen,
+  StocktakingScreen: StocktakingScreen,
+  StocktakingAdd: StocktakingAdd,
+  StocktakingScanner: ScanScreen,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+StocktakingStack.navigationOptions = {
+  tabBarLabel: 'Stocktaking',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          ? `ios-albums${focused ? '' : '-outline'}`
+          : 'md-albums'
       }
     />
   ),
@@ -52,21 +56,6 @@ ToolsStack.navigationOptions = {
   ),
 };
 
-const StocktakingsStack = createStackNavigator({
-  Stocktakings: StocktakingsScreen,
-  StockScanner: { screen: ScanScreen },
-});
-
-StocktakingsStack.navigationOptions = {
-  tabBarLabel: 'Stocktakings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
-    />
-  ),
-};
-
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,
 });
@@ -83,7 +72,6 @@ SettingsStack.navigationOptions = {
 
 export default createBottomTabNavigator({
   ToolsStack,
-  HomeStack,
-  StocktakingsStack,
-  SettingsStack,
+  StocktakingStack,
+  SettingsStack
 });

@@ -55,7 +55,6 @@ export default class ScanScreen extends React.Component {
             <View style={{
                 flex: 1,
                 backgroundColor: '#fff',
-                borderColor: 'red',
                 borderWidth: 1
             }}>
                 {this.state.hasCameraPermission === null

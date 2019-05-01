@@ -1,5 +1,5 @@
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {getSupplies} from "../services/SuppliesService";
 import {ListItem} from "react-native-elements";
 
@@ -7,13 +7,10 @@ export default class SuppliesContainer extends React.Component {
 
     state = {
         pageSize: 8,
-        isShowingText: true,
         "count": 0,
-        "next": null,
-        "previous": null,
         "results": [],
-        "total_pages": 1,
         refreshing: false,
+        page: 1
     };
 
 
@@ -22,72 +19,64 @@ export default class SuppliesContainer extends React.Component {
     }
 
     _onRefresh = (page) => {
-        this.state.count >= 0 ?
-            this.fetchData(page).then(() => {
-                this.setState({refreshing: false});
-            })
-            :
-            this.setState({refreshing: true});
+        this.setState({refreshing: true, page: page ? page : 1});
         this.fetchData(page ? page : 1).then(() => {
             this.setState({refreshing: false});
         });
     }
 
     async fetchData(page) {
-        await getSupplies({page: page, page_size: this.state.pageSize}).then((res) => {
+        await getSupplies({page: page, page_size: this.state.pageSize, name: this.props.search}).then((res) => {
             {
-                this.setState(res)
+                console.log("page: ", page, this.props.search, res.total_pages) //TODO coś jest nie tak z searchem
+                page === 1 ?
+                    this.setState({...this.state, ...res, page: 1})
+                    : this.setState({...this.state, ...res, results: [...this.state.results, ...res.results]})
             }
-        })
+        }).catch((err) => console.log("error: ", err))
     }
-
 
     static navigationOptions = {
         header: null
     };
 
-    isCloseToBottom({layoutMeasurement, contentOffset, contentSize}) {
-        return layoutMeasurement.height + contentOffset.y
-            >= contentSize.height - 50;
-    }
-
     render() {
         return (
-            <ScrollView style={styles.container}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={this._onRefresh}
-                            />
-                        }
-                        onScroll={({nativeEvent}) => {
-                            if (this.isCloseToBottom(nativeEvent)) {
-                                this._onRefresh(Math.floor(this.state.count / this.state.pageSize) + 1);
-                            }
-                        }}
-            >
-
-                {this.state.results.map((supply, index) => {
-                    return <ListItem
+            <View style={styles.container}>
+                <FlatList
+                    data={this.state.results}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({item, index}) => <ListItem
                         style={styles.listItem}
                         key={index}
                         leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
-                        title={supply.name}
+                        title={item.name}
                         subtitle={
                             <Text style={styles.subtitle}
                                   ellipsizeMode={'tail'}
                                   numberOfLines={1}
-                            >{supply.description}</Text>
+                            >{item.description}</Text>
                         }
-                        onPress={() => this._handlePressTool(supply.id)}
+
+                        onPress={() => this._handlePressTool(item.id)}
                     />
-                })}
-            </ScrollView>
+
+                    }
+                    onEndReached={() => {
+                        if (this.state.page < this.state.count / this.state.pageSize) {
+                            this._onRefresh(this.state.page + 1);
+                        }
+                    }}
+                    onEndReachedThreshold={0.5}
+                    initialNumToRender={this.state.pageSize}
+                />
+            </View>
         );
     }
 
     _handlePressTool = (id) => {
-        const {navigate} = this.props.navigation;
+        const {navigate} = this.props.nav;
+
         navigate('Supply', {id: id})
     };
 }
@@ -97,8 +86,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderColor: 'red',
-        borderWidth: 1,
     },
     listItem: {
         borderBottomWidth: 1,
@@ -107,5 +94,14 @@ const styles = StyleSheet.create({
     subtitle: {
         color: '#d0d0d0',
 
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        backgroundColor: 'rgba(255,255,255,0.5)',
+        zIndex: 1
     }
 });
