@@ -4,18 +4,17 @@ import SuppliesContainer from "./SuppliesContainer";
 import {Button, Icon, Input} from "react-native-elements";
 
 export default class SuppliesScreen extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this.child = React.createRef();
+  }
     state = {
-        pageSize: 8,
-        isShowingText: true,
-        "count": 0,
-        "next": null,
-        "previous": null,
-        "results": [],
-        "total_pages": 1,
-        refreshing: false,
+        "search": ""
     };
 
+    _onRefresh = () => {
+        this.child.current._onRefresh(1);
+    }
 
     static navigationOptions = {
         header: null
@@ -32,7 +31,10 @@ export default class SuppliesScreen extends React.Component {
                 <View style={styles.searchbar}>
                     <View style={{flex: 1}}>
                         <Input style={styles.search} value={this.state.search}
-                               placeholder={"Search..."}/>
+                               placeholder={"Search..."} onChange={(value) => {
+                                   this.setState({search: value.nativeEvent.text});
+                                   this.child.current._onRefresh(1);
+                               }}/>
                     </View>
                     <View style={{width: 30, alignItems: 'center', justifyContent: 'center'}}>
                         <Icon
@@ -47,7 +49,7 @@ export default class SuppliesScreen extends React.Component {
 
                     </View>
                 </View>
-                <SuppliesContainer onPressTool={id => this.props.navigation.navigate('Supply', { id: id })} />
+                <SuppliesContainer nav={this.props.navigation} search={this.state.search} ref={this.child}/>
 
                 <Button onPress={() => this.onPressNavigateToAddNewSupply()} title={"Add new supply"}
                         buttonStyle={{backgroundColor: "#40c1ac"}}/>
@@ -60,9 +62,7 @@ export default class SuppliesScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        borderColor: 'red',
-        borderWidth: 1,
+        backgroundColor: '#fff'
     },
     searchbar: {
         flexDirection: 'row',

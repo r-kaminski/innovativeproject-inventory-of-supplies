@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {getRooms, postRoom} from '../services/RoomsService';
 
-export default class HomeScreen extends React.Component {
+export default class RoomsScreen extends React.Component {
     state = {rooms: []}
     static navigationOptions = {
         header: null,
@@ -50,7 +50,6 @@ export default class HomeScreen extends React.Component {
     }
 
     onPressRoom = (id) => {
-        console.log(id)
         const {navigate} = this.props.navigation;
         navigate('Main', {id: id})
     }
@@ -64,15 +63,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        borderColor: 'red',
         borderWidth: 1,
-    },
-    developmentModeText: {
-        marginBottom: 20,
-        color: 'rgba(0,0,0,0.4)',
-        fontSize: 14,
-        lineHeight: 19,
-        textAlign: 'center',
     },
     contentContainer: {
         paddingTop: 30,
