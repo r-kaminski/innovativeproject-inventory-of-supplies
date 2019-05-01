@@ -2,7 +2,7 @@ import React from 'react';
 import { BarCodeScanner, Permissions } from 'expo';
 import { Dimensions, LayoutAnimation, StatusBar, StyleSheet, Text, View, ToastAndroid } from 'react-native';
 import { Button } from "react-native-elements";
-import { checkSupply } from '../services/StocktakingsService';
+import { updateStocktaking } from '../services/StocktakingService';
 
 
 export default class ScanScreen extends React.Component {
@@ -33,19 +33,22 @@ export default class ScanScreen extends React.Component {
     };
 
     _handleBarCodeRead = async result => {
-        if (result.data !== this.state.supplyId) {
+        let id = parseInt(result.data);
+        if (isNaN(id)) {
+            return;
+        }
+        if (id !== this.state.supplyId) {
             LayoutAnimation.spring();
-            this.setState({ supplyId: result.data })
+            this.setState({ supplyId: id })
             if (this.state.stocktaking !== null) {
                 try {
-                    await checkSupply(this.state.stocktaking, result.data);
-                    ToastAndroid.show(`Scanned supply: ${result.data}`, ToastAndroid.SHORT);
+                    await updateStocktaking(this.state.stocktaking, id, true);
+                    ToastAndroid.show(`Scanned supply: ${id}`, ToastAndroid.SHORT);
                 } catch {
                     ToastAndroid.show(`Error while scanning`, ToastAndroid.SHORT);
                 }
-
             } else {
-                this.props.navigation.navigate('Supply', { id: result.data })
+                this.props.navigation.navigate('Supply', { id: id })
             }
         }
     };
@@ -55,6 +58,7 @@ export default class ScanScreen extends React.Component {
             <View style={{
                 flex: 1,
                 backgroundColor: '#fff',
+                borderColor: 'red',
                 borderWidth: 1
             }}>
                 {this.state.hasCameraPermission === null
