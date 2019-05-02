@@ -1,11 +1,13 @@
-import React, { useState , useEffect } from 'react';
+import React from 'react';
 import styles from './ReportDetails.module.css';
 import classNames from 'classnames';
 
 import MUIDataTable from "mui-datatables";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
+import ConfirmSwitch from './ConfirmSwitch/ConfirmSwitch'
 
 import { getReportsItems } from '../../services/inventoryService';
 
@@ -134,12 +136,21 @@ export default class ReportDetails extends React.Component{
             options : { display: 'false'}
         }, 
         {
+            name: "is_checked",
+            label: "State",
+            options: {
+                customBodyRender: (value, rowMeta, updateValue)=> {
+                    return (<ConfirmSwitch onClick={()=>this.setCheckedUnchecked(value)}/>);
+                }
+            }
+        },
+        {
             name: "id",
             label: "ID",
         },
         {
             name: "name",
-            label: "Date",
+            label: "Name",
         },
         {
             name: "state",
@@ -149,16 +160,7 @@ export default class ReportDetails extends React.Component{
             name: "description",
             label: "Description",
         },
-        {
-            name: "is_checked",
-            label: " ",
-            options: {
-                customBodyRender: (value, rowMeta, updateValue)=> {
-                    return (<ConfirmField onClick={this.setCheckedUnchecked}/>);
-                }
-            }
-            
-        },
+        
         // {
 
         //     options: {
@@ -175,6 +177,19 @@ export default class ReportDetails extends React.Component{
         // }
     ];
     
+
+    getMuiTheme = () => createMuiTheme({
+        overrides: {
+          MUIDataTableHeadCell: {
+            root: {
+              '&:nth-child(2)': {
+                //backgroundColor: "red",
+                width: 20
+              }
+            }
+          }
+        }
+      })
 
 
     render(){
@@ -196,19 +211,24 @@ export default class ReportDetails extends React.Component{
             onChangeRowsPerPage: this.onChangeRowsPerPage,
         };
 
+        let muiTableClassnames = classNames({
+            [styles.table]: true,
+            [styles.tableCell_narrow]: true,
+        })
+
         return(
             <div className={styles.wrapper}>
                 <header>
                     STOCK
                 </header>
-
-                <MUIDataTable
-                    className={styles.table}
-                    title={`Details of report #${reportId}`}
-                    data={data}
-                    columns={this.columns}
-                    options={options} />
-
+                <MuiThemeProvider theme={this.getMuiTheme()}>
+                    <MUIDataTable
+                        className={muiTableClassnames}
+                        title={`Details of report #${reportId}`}
+                        data={data}
+                        columns={this.columns}
+                        options={options} />
+                </MuiThemeProvider>
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -231,58 +251,4 @@ export default class ReportDetails extends React.Component{
 
 ReportDetails.defaultProps = {
     reportId : -1,
-}
-
-function ConfirmField(props){
-    const { onClick } = props;
-    //if(onClick === undefined) onClick = ()=>void(0);
-
-    const [pending, setPending] = useState(false);
-    const [confirmed, setConfirmed] = useState(false);
-
-
-    let containerClasses = classNames({
-        [styles.confirm_container] : true,
-        [styles.confirm_container_confirmed] : confirmed
-    })
-
-    let contentClasses = classNames({
-        [styles.confirm_content] : true,
-        [styles.confirm_content_confirmed] : confirmed,
-        [styles.confirm_content_pending] : pending
-    })
-    
-    useEffect(()=>{
-        containerClasses = classNames({
-            [styles.confirm_container] : true,
-            [styles.confirm_container_confirmed] : confirmed
-        })
-    
-        contentClasses = classNames({
-            [styles.confirm_content] : true,
-            [styles.confirm_content_confirmed] : confirmed,
-            [styles.confirm_content_pending] : pending
-        })
-
-        console.log(confirmed);
-    }, [confirmed])
-
-    const handleClick = () => {
-        //setPending(true);
-        setConfirmed(onClick(confirmed));
-    }
-
-    return(
-        <div 
-            className={containerClasses} 
-            onClick={handleClick}
-        >
-            <div className={contentClasses}>confirmed <div className={styles.confirm_blob}>&nbsp;</div> unconfirmed</div>
-        </div>
-    );
-}
-
-ConfirmField.defaultProps = {
-    confirmed : true,
-    onClick : ()=>false,
 }

@@ -140,7 +140,9 @@ export default class Reports extends React.Component{
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <ButtonRemoveItem 
-                            onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
+                            onClick={()=>{
+                                this.onClickDeleteRow(tableMeta.rowIndex)
+                            }}
                         />
                     );
                 }, 
