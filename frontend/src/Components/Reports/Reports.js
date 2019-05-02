@@ -140,9 +140,7 @@ export default class Reports extends React.Component{
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <ButtonRemoveItem 
-                            onClick={()=>{
-                                this.onClickDeleteRow(tableMeta.rowIndex)
-                            }}
+                            onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
                         />
                     );
                 }, 
@@ -170,7 +168,10 @@ export default class Reports extends React.Component{
             onChangePage: this.onChangePage,
             onChangeRowsPerPage: this.onChangeRowsPerPage,
 
-            onRowClick: (rowData, rowMeta) => {
+            onRowClick: (rowData, rowMeta, e) => {
+                let targetTag = e.target.tagName;
+                if(targetTag != "TD") return;
+                
                 this.setState({
                     redirectData : {
                         report_id: rowData[0],
@@ -178,7 +179,8 @@ export default class Reports extends React.Component{
                     },
                     redirectDest : `/ReportDetails/${rowData[0]}`,
                     redirect : true,
-                })},
+                })
+            },
         };
 
         return(
