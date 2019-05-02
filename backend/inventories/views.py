@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 from .models import InventoryReport, InventorySupply
-from .serializers import InventoryReportSerializer, InventorySupplySerializer
+from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer, InventoryReportCSVSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data
+from .renderers import ReportCSVRenderer
 
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
@@ -87,3 +88,27 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return InventorySupply.objects.filter(inventory_report_id=self.kwargs.get('inventory_id'))
+
+
+class InventoryReportCSV(generics.RetrieveAPIView):
+    renderer_classes = (ReportCSVRenderer, )
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = InventoryReport.objects.all()
+    serializer_class = InventoryReportCSVSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            report = InventoryReport.objects.get(pk=self.kwargs.get('pk'))
+            content = [{'ID': report.id,
+                        'Date': report.date,
+                        'Name': report.name}]
+
+            for supply in report.inventory_supplies.all():
+                content.append({'Supply ID': supply.inventory_supply.id,
+                                'Supply name': supply.inventory_supply.name,
+                                'Checked out': supply.is_checked})
+            return Response(content)
+        except InventoryReport.DoesNotExist:
+            return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
+
+
