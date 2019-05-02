@@ -20,11 +20,11 @@ class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
     The rest of details can be accessed by '/api/inventories/supplies/<int:pk>' with ID provided by this serializer
     This will future-proof that adding more details to supply (e.g. image) won't attach unnecessary data to InventoryReport details view
     """
-    supply_header = SupplyHeaderSerializer(source='inventory_supply', many=False, read_only=True)
+    supply = SupplyHeaderSerializer(source='inventory_supply', many=False, read_only=True)
 
     class Meta:
         model = InventorySupply
-        fields = ('id', 'supply_header', 'is_checked')
+        fields = ('supply', 'is_checked')
 
 
 class InventoryReportSerializer(serializers.ModelSerializer):
