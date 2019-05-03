@@ -90,14 +90,14 @@ class Supplies extends React.Component {
                 this.updateData();
                 this.setState({
                     openSnackbar: true,
-                    snackbarMessage: "Usunięto pomyślnie!",
+                    snackbarMessage: "Removed successfully!",
                     snackbarVariant: "success"
                 });
             }).catch((err) => {
                 console.error(err);
                 this.setState({
                     openSnackbar: true,
-                    snackbarMessage: "Wystąpił błąd!",
+                    snackbarMessage: "An error occurred!",
                     snackbarVariant: "error"
                 });
             });
@@ -127,19 +127,19 @@ class Supplies extends React.Component {
 
         if (allOk) {
             this.setState({
-                snackbarMessage: "Usunięto pomyślnie!",
+                snackbarMessage: "Removed successfully!",
                 snackbarVariant: "success",
                 openSnackbar: true
             })
         } else if (someOk) {
             this.setState({
-                snackbarMessage: "Wystąpił częściowy błąd!",
+                snackbarMessage: "A partial error occurred!",
                 snackbarVariant: "error",
                 openSnackbar: true
             })
         } else {
             this.setState({
-                snackbarMessage: "Wystąpił błąd!",
+                snackbarMessage: "An error occurred!",
                 snackbarVariant: "error",
                 openSnackbar: true
             })
@@ -222,7 +222,7 @@ class Supplies extends React.Component {
         },
         {
             name: "name",
-            label: "Nazwa",
+            label: "Name",
             options: {
                 filter: false,
                 sort: false
@@ -230,7 +230,7 @@ class Supplies extends React.Component {
         },
         {
             name: "state",
-            label: "Stan",
+            label: "State",
             options: {
                 filter: false,
                 sort: false
@@ -238,7 +238,7 @@ class Supplies extends React.Component {
         },
         {
             name: "description",
-            label: "Opis",
+            label: "Description",
             options: {
                 filter: false,
                 sort: false,
@@ -315,7 +315,7 @@ class Supplies extends React.Component {
 
                 <MUIDataTable
                     className={styles.table}
-                    title={"Wyposażenie"}
+                    title={"Equipment"}
                     data={data}
                     columns={this.columns}
                     options={options} />
@@ -325,9 +325,9 @@ class Supplies extends React.Component {
                     onCancel={() => this.setState({ openDialogAdd: false })}
                     onSuccess={() => {
                         this.updateData();
-                        this.showSnackbar("success", "Dodano pomyślnie!");
+                        this.showSnackbar("success", "Added successfully!");
                     }}
-                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "An error occured!")}
                 />
 
                 <DialogEditItem
@@ -336,9 +336,9 @@ class Supplies extends React.Component {
                     onCancel={() => { this.setState({ openDialogEdit: false }) }}
                     onSuccess={() => {
                         this.updateData();
-                        this.showSnackbar("success", "Zapisano pomyślnie!");
+                        this.showSnackbar("success", "Saved successfully!");
                     }}
-                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "An error occured!")}
                 />
 
                 <Snackbar
