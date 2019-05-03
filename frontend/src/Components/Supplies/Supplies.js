@@ -364,7 +364,7 @@ class Supplies extends React.Component {
                 <DialogNewReport
                     open={this.state.openDialogNewReport}
                     //item={this.state.itemToEdit}
-                    onCancel={()=>{this.setState({openDialogNewRaport : false})}}
+                    onCancel={()=>{this.setState({openDialogNewReport : false})}}
                     onSuccess={(data)=>{
                         this.setState({
                             redirectData : {
