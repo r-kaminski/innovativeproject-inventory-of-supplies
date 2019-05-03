@@ -12,7 +12,6 @@ import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import PrintService from '../../services/PrintService';
 import { withSnackbar } from 'notistack';
 import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
-import { Redirect } from 'react-router-dom';
 import SearchTool from './SearchTool/SearchTool';
 import ButtonReport from './ButtonReport/ButtonReport';
 import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
@@ -43,10 +42,6 @@ class Supplies extends React.Component {
             openSnackbar : false,
             snackbarMessage : "",
             snackbarVariant : "info",
-
-            redirect : false,
-            redirectDest : "/",
-            redirectData : {}
         };
     }
 
@@ -363,19 +358,8 @@ class Supplies extends React.Component {
 
                 <DialogNewReport
                     open={this.state.openDialogNewReport}
-                    //item={this.state.itemToEdit}
                     onCancel={()=>{this.setState({openDialogNewReport : false})}}
-                    onSuccess={(data)=>{
-                        this.setState({
-                            redirectData : {
-                                report_id: data.id,
-                                report_name: data.name  
-                            },
-                            redirectDest : `/ReportDetails/${data.id}`,
-                            redirect : true
-                        });
-                        //this.props.history.push('/reports');
-                    }}
+                    onSuccess={(data)=>this.props.history.push(`/ReportDetails/${data.id}`)}
                     onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
                 />
 
@@ -394,13 +378,6 @@ class Supplies extends React.Component {
                         message={this.state.snackbarMessage}
                     />
                 </Snackbar>
-
-                { this.state.redirect && 
-                    (<Redirect to={{
-                        pathname: this.state.redirectDest, 
-                        state: this.state.redirectData
-                    }}/>) 
-                }
             </div>            
         );
     };

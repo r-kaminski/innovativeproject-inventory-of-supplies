@@ -40,7 +40,7 @@ export default class ReportDetails extends React.Component{
         
         getReportsItems({reportId, pageNumber, itemsPerPage})
                 .then((res)=>{
-                    console.log(res);
+                    //console.log(res);
                     let data = [];
                     for (const elem of res.data.results) {
                         let {supply, is_checked} = elem;
@@ -128,15 +128,14 @@ export default class ReportDetails extends React.Component{
 
     setIsCheckedSelected = (newValue) => {
         let {reportId, data, rowsSelected} = this.state;
-        console.log(rowsSelected);
 
         let allOk = true;
         let someOk = false;
         for (let key in rowsSelected) {
-            // Ommit API call if already checked
-            if(data[key].is_checked == newValue) continue;
+            //Ommit API call if already checked
+            if(data[rowsSelected[key].index].is_checked == newValue) continue;
 
-            let supplyId = data[key].id
+            let supplyId = data[rowsSelected[key].index].id;
             partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
                 .then((res) => {
                     someOk = true;

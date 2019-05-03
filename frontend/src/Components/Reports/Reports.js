@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import styles from './Reports.module.css';
 
 import MUIDataTable from "mui-datatables";
@@ -172,14 +171,7 @@ export default class Reports extends React.Component{
                 let targetTag = e.target.tagName;
                 if(targetTag != "TD") return;
                 
-                this.setState({
-                    redirectData : {
-                        report_id: rowData[0],
-                        report_name: rowData[2]  ,
-                    },
-                    redirectDest : `/ReportDetails/${rowData[0]}`,
-                    redirect : true,
-                })
+                this.props.history.push(`/ReportDetails/${rowData[0]}`)
             },
         };
 
@@ -211,13 +203,6 @@ export default class Reports extends React.Component{
                             message={this.state.snackbarMessage}
                         />
                 </Snackbar>
-
-                { this.state.redirect && 
-                    (<Redirect to={{
-                        pathname: this.state.redirectDest, 
-                        state: this.state.redirectData
-                    }}/>) 
-                }
             </div>            
         );
     };
