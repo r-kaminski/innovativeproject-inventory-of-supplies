@@ -163,8 +163,8 @@ class PrintView extends Component {
         }
     };
 
-    clearQueue() {
-        PrintService.clearQueue()
+    async clearQueue() {
+            await PrintService.clearQueue()
         this.setState({ finished: false })
         this.refreshTable()
     }
