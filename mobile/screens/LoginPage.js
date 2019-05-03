@@ -16,7 +16,7 @@ export default class LoginPage extends React.Component {
                         keyboardShouldPersistTaps='handled'
             >
                 <View style={styles.wrapper}>
-                    <Text style={styles.header}>STOCK</Text>
+                <Text style={styles.header}>MAKERSPACE</Text>
                     <Input
                         placeholder='Login'
                         leftIcon={{type: 'feather', name: 'user', size: 18, color: '#d0d0d0'}}

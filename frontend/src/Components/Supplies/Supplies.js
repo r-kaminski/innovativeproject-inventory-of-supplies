@@ -310,7 +310,7 @@ class Supplies extends React.Component {
         return (
             <div className={styles.wrapper}>
                 <header>
-                    STOCK
+                    MAKERSPACE
                 </header>
 
                 <MUIDataTable
