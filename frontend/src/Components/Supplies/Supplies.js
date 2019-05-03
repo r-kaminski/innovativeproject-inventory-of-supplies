@@ -14,7 +14,7 @@ import { withSnackbar } from 'notistack';
 import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
 import SearchTool from './SearchTool/SearchTool';
 import ButtonPrintQueue from './ButtonPrintQueue';
-
+import authService from '../../services/authService';
 
 
 class Supplies extends React.Component {
@@ -33,8 +33,22 @@ class Supplies extends React.Component {
             openDialogAdd: false,
             openSnackbar: false,
             snackbarMessage: "",
-            snackbarVariant: "info"
+            snackbarVariant: "info",
+            isAdmin: false,
         };
+    }
+
+    async componentDidMount() {
+        let isAdmin = await authService.isCurrentUserAdmin();
+        this.setState({ isAdmin: isAdmin });
+    }
+
+    displayIfAdmin(template) {
+        if (this.state.isAdmin === true) {
+            return template;
+        } else {
+            return null;
+        }
     }
 
     updateData = ({ searchPhase, pageNumber, itemsPerPage } = {}) => {
@@ -257,12 +271,16 @@ class Supplies extends React.Component {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <React.Fragment>
-                            <ButtonRemoveItem
-                                onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
-                            />
-                            <ButtonEditItem
-                                onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
-                            />
+                            {this.displayIfAdmin(
+                                <ButtonRemoveItem
+                                    onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
+                                />
+                            )}
+                            {this.displayIfAdmin(
+                                <ButtonEditItem
+                                    onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
+                                />
+                            )}
                             <ButtonAddToPrintQueue
                                 onClick={() => this.onClickPrint(tableMeta.rowIndex)}
                             />
@@ -295,7 +313,7 @@ class Supplies extends React.Component {
 
             customToolbar: () => (
                 <div className={styles.toolbar}>
-                    <ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />
+                    {this.displayIfAdmin(<ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />)}
                     <ButtonPrintQueue onClickPrint={() => this.props.history.push('/printing')} />
                     <SearchTool
                         onOpen={this.onSearchOpen}
@@ -329,6 +347,7 @@ class Supplies extends React.Component {
                     }}
                     onFailure={() => this.showSnackbar("error", "An error occured!")}
                 />
+
 
                 <DialogEditItem
                     open={this.state.openDialogEdit}
