@@ -13,5 +13,5 @@ class SupplySerializer(serializers.ModelSerializer):
 
 class SupplyHeaderSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'description')
         model = Supply
