@@ -6,8 +6,8 @@ from django.urls import reverse
 from .models import InventoryReport, InventorySupply
 from users.models import User
 from supplies.models import Supply
-from .views import InventoryReportCreateView, InventoryReportListView, InventoryReportDetailsView, InventoryReportRemoveView
-from .views import InventorySupplyDetailsUpdateView
+from .views import InventoryReportListCreateView, InventoryReportDetailsView, InventoryReportRemoveView
+from .views import InventorySupplyView
 
 class InventoryReportCreateTests(APITestCase):
 
@@ -37,9 +37,9 @@ class InventoryReportCreateTests(APITestCase):
         """
 
         request = self.factory.post(
-            '/api/inventories/create', {'name': self.report_name})
+            '/api/inventories/', {'name': self.report_name})
         force_authenticate(request, user=self.test_admin)
-        response = InventoryReportCreateView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         try:
@@ -55,9 +55,9 @@ class InventoryReportCreateTests(APITestCase):
         Required name parameter is not given
         """
         request = self.factory.post(
-            '/api/inventories/create', {})
+            '/api/inventories/', {})
         force_authenticate(request, user=self.test_admin)
-        response = InventoryReportCreateView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(InventoryReport.objects.all()), 0)
@@ -68,9 +68,9 @@ class InventoryReportCreateTests(APITestCase):
         Report name is given as a parameter
         """
         request = self.factory.post(
-            '/api/inventories/create', {'name': self.report_name})
+            '/api/inventories/', {'name': self.report_name})
         force_authenticate(request, user=self.test_user)
-        response = InventoryReportCreateView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(len(InventoryReport.objects.all()), 0)
@@ -82,9 +82,9 @@ class InventoryReportCreateTests(APITestCase):
         Authorization check is performed firstly, therefore 'forbidden' response should be returned
         """
         request = self.factory.post(
-            '/api/inventories/create', {})
+            '/api/inventories/', {})
         force_authenticate(request, user=self.test_user)
-        response = InventoryReportCreateView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(len(InventoryReport.objects.all()), 0)
@@ -96,8 +96,8 @@ class InventoryReportCreateTests(APITestCase):
         Required name parameter is given
         """
         request = self.factory.post(
-            '/api/inventories/create', {'name': self.report_name})
-        response = InventoryReportCreateView.as_view()(request)
+            '/api/inventories/', {'name': self.report_name})
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(len(InventoryReport.objects.all()), 0)
@@ -110,8 +110,8 @@ class InventoryReportCreateTests(APITestCase):
         Authorization check is performed firstly, therefore 'unauthorized' response should be returned
         """
         request = self.factory.post(
-            '/api/inventories/create', {})
-        response = InventoryReportCreateView.as_view()(request)
+            '/api/inventories/', {})
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(len(InventoryReport.objects.all()), 0)
@@ -141,9 +141,9 @@ class InventoryReportListTests(APITestCase):
         # Report has to be generated through view to make sure it's populated with supplies
         cls.test_report_name = 'Test report'
         request = cls.factory.post(
-            '/api/inventories/create', {'name': cls.test_report_name})
+            '/api/inventories/', {'name': cls.test_report_name})
         force_authenticate(request, user=cls.test_admin)
-        InventoryReportCreateView.as_view()(request)
+        InventoryReportListCreateView.as_view()(request)
 
     def test_list_reports_admin(self):
         """
@@ -152,7 +152,7 @@ class InventoryReportListTests(APITestCase):
         request = self.factory.get(
             '/api/inventories')
         force_authenticate(request, user=self.test_admin)
-        response = InventoryReportListView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(response.data) > 0)
@@ -164,7 +164,7 @@ class InventoryReportListTests(APITestCase):
         request = self.factory.get(
             '/api/inventories')
         force_authenticate(request, user=self.test_user)
-        response = InventoryReportListView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(response.data) > 0)
@@ -175,7 +175,7 @@ class InventoryReportListTests(APITestCase):
         """
         request = self.factory.get(
             '/api/inventories')
-        response = InventoryReportListView.as_view()(request)
+        response = InventoryReportListCreateView.as_view()(request)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -204,9 +204,9 @@ class InventoryReportDetailsTest(APITestCase):
         # Report has to be generated through view to make sure it's populated with supplies
         cls.test_report_name = 'Test report'
         request = cls.factory.post(
-            '/api/inventories/create', {'name': cls.test_report_name})
+            '/api/inventories/', {'name': cls.test_report_name})
         force_authenticate(request, user=cls.test_admin)
-        InventoryReportCreateView.as_view()(request)
+        InventoryReportListCreateView.as_view()(request)
         cls.test_report = InventoryReport.objects.get(name=cls.test_report_name)
 
     def test_report_details_admin(self):
@@ -279,9 +279,9 @@ class InventoryReportRemovalTest(APITestCase):
         # Report has to be generated through view to make sure it's populated with supplies
         cls.test_report_name = 'Test report'
         request = cls.factory.post(
-            '/api/inventories/create', {'name': cls.test_report_name})
+            '/api/inventories/', {'name': cls.test_report_name})
         force_authenticate(request, user=cls.test_admin)
-        InventoryReportCreateView.as_view()(request)
+        InventoryReportListCreateView.as_view()(request)
         cls.test_report = InventoryReport.objects.get(name=cls.test_report_name)
 
     def test_remove_report_admin(self):
@@ -356,17 +356,22 @@ class InventorySupplyTest(APITestCase):
             description=cls.test_supply_description)
         cls.test_supply.save()
 
-        cls.test_inventory_supply = InventorySupply(inventory_supply=cls.test_supply)
+        cls.test_report = InventoryReport(name=cls.report_name)
+        cls.test_report.save()
+
+        cls.test_inventory_supply = InventorySupply(inventory_supply=cls.test_supply, 
+            inventory_report=cls.test_report)
         cls.test_inventory_supply.save()
 
     def test_supply_details_admin(self):
         """
         Test correctly checking existing inventory supply details with admin account
         """
-        url = reverse("inventories:supplies-details-update", args=[self.test_supply.id])
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, self.test_supply.id])
         request = self.factory.get(url)
         force_authenticate(request, user=self.test_admin)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=self.test_supply.id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=self.test_supply.id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['supply']['name'], self.test_supply_name)
@@ -375,10 +380,11 @@ class InventorySupplyTest(APITestCase):
         """
         Test correctly checking existing inventory supply details with user account
         """
-        url = reverse("inventories:supplies-details-update", args=[self.test_supply.id])
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, self.test_supply.id])
         request = self.factory.get(url)
         force_authenticate(request, user=self.test_user)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=self.test_supply.id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=self.test_supply.id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['supply']['name'], self.test_supply_name)
@@ -388,9 +394,10 @@ class InventorySupplyTest(APITestCase):
         """
         Test correctly checking existing inventory supply details with user account
         """
-        url = reverse("inventories:supplies-details-update", args=[self.test_supply.id])
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, self.test_supply.id])
         request = self.factory.get(url)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=self.test_supply.id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=self.test_supply.id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -398,11 +405,12 @@ class InventorySupplyTest(APITestCase):
         """
         Test incorrectly checking non-existing inventory supply while authorized
         """
-        invalid_test_supply_id = 153
-        url = reverse("inventories:supplies-details-update", args=[invalid_test_supply_id])
+        invalid_test_inventory_supply_id = 153
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, invalid_test_inventory_supply_id])
         request = self.factory.get(url)
         force_authenticate(request, user=self.test_user)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=invalid_test_supply_id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=invalid_test_inventory_supply_id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -411,15 +419,16 @@ class InventorySupplyTest(APITestCase):
         Test correctly setting existing inventory supply's  "is_checked" status to true
         Admin privileges are used
         """
-        is_checked = InventorySupply.objects.get(pk=self.test_supply.id).is_checked
+        is_checked = InventorySupply.objects.get(pk=self.test_inventory_supply.id).is_checked
         self.assertFalse(is_checked)
-        url = reverse("inventories:supplies-details-update", args=[self.test_supply.id])
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, self.test_supply.id])
         request = self.factory.patch(url, {'is_checked': True})
         force_authenticate(request, user=self.test_admin)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=self.test_supply.id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=self.test_inventory_supply.id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        is_checked = InventorySupply.objects.get(pk=self.test_supply.id).is_checked
+        is_checked = InventorySupply.objects.get(pk=self.test_inventory_supply.id).is_checked
         self.assertTrue(is_checked)
 
     def test_update_supply_user(self):
@@ -427,15 +436,16 @@ class InventorySupplyTest(APITestCase):
         Test correctly setting existing inventory supply's  "is_checked" status to true
         User privileges are used
         """
-        is_checked = InventorySupply.objects.get(pk=self.test_supply.id).is_checked
+        is_checked = InventorySupply.objects.get(pk=self.test_inventory_supply.id).is_checked
         self.assertFalse(is_checked)
-        url = reverse("inventories:supplies-details-update", args=[self.test_supply.id])
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, self.test_supply.id])
         request = self.factory.patch(url, {'is_checked': True})
         force_authenticate(request, user=self.test_user)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=self.test_supply.id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=self.test_supply.id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        is_checked = InventorySupply.objects.get(pk=self.test_supply.id).is_checked
+        is_checked = InventorySupply.objects.get(pk=self.test_inventory_supply.id).is_checked
         self.assertTrue(is_checked)
 
     def test_update_supply_unauthorized(self):
@@ -443,24 +453,26 @@ class InventorySupplyTest(APITestCase):
         Test incorrectly setting existing inventory supply's  "is_checked" status to true
         User in unauthorized
         """
-        is_checked = InventorySupply.objects.get(pk=self.test_supply.id).is_checked
+        is_checked = InventorySupply.objects.get(pk=self.test_inventory_supply.id).is_checked
         self.assertFalse(is_checked)
-        url = reverse("inventories:supplies-details-update", args=[self.test_supply.id])
+        url = reverse("inventories:supplies-details-update", args=[self.test_report.id, self.test_supply.id])
         request = self.factory.patch(url, {'is_checked': True})
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=self.test_supply.id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=self.test_supply.id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        is_checked = InventorySupply.objects.get(pk=self.test_supply.id).is_checked
+        is_checked = InventorySupply.objects.get(pk=self.test_inventory_supply.id).is_checked
         self.assertFalse(is_checked)
 
     def test_update_invalid_supply(self):
         """
         Test incorrectly setting non-existing inventory supply's "is_checked" status to true
         """
-        invalid_test_supply_id = 153
-        url = reverse("inventories:supplies-details-update", args=[invalid_test_supply_id])
+        invalid_test_inventory_supply_id = 153
+        url = reverse("inventories:supplies-details-update", args=[invalid_test_inventory_supply_id, self.test_supply.id])
         request = self.factory.patch(url, {'is_checked': True})
         force_authenticate(request, user=self.test_user)
-        response = InventorySupplyDetailsUpdateView.as_view()(request, pk=invalid_test_supply_id)
+        response = InventorySupplyView.as_view()(
+            request, inventory_supply_id=invalid_test_inventory_supply_id, inventory_id=self.test_report.id)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

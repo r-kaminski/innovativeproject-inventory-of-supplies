@@ -82,7 +82,7 @@ export const createReport = async ({name, date}) =>  {
 
     return axios({
         method: 'post',
-        url: '/api/inventories/create',
+        url: '/api/inventories/',
         data: data
     });
 }

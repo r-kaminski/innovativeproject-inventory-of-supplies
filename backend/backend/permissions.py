@@ -1,6 +1,4 @@
 from rest_framework import permissions
-from .models import Supply
-
 
 class IsAuthenticatedReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
