@@ -232,14 +232,14 @@ export default class ReportDetails extends React.Component{
                 <header>
                     STOCK
                 </header>
-                <MuiThemeProvider theme={this.getMuiTheme()}>
+                {/* <MuiThemeProvider theme={this.getMuiTheme()}> */}
                     <MUIDataTable
-                        className={muiTableClassnames}
+                        className={styles.table}
                         title={`Details of report #${reportId}`}
                         data={data}
                         columns={this.columns}
                         options={options} />
-                </MuiThemeProvider>
+                {/* </MuiThemeProvider> */}
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',

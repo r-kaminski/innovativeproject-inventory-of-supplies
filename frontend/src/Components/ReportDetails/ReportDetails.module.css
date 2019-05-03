@@ -29,6 +29,20 @@ header{
     grid-row: 2 / span 1;
 }
 
+/* fix oversized first two columns */
+
+.table tr > td:nth-child(1),
+.table tr > th:nth-child(1){
+    width: 50px !important;
+    padding-right: 12px !important;
+}
+
+.table tr > td:nth-child(3),
+.table tr > th:nth-child(2){
+    width: 115px !important;
+    padding-right: 24px !important;
+}
+
 .toolbar{
     height: 48px;
     margin: 0;
@@ -39,3 +53,4 @@ header{
     align-self: center;
     align-items: center;
 }
+
