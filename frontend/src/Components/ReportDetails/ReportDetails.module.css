@@ -28,3 +28,14 @@ header{
     grid-column: 2 / span 1;
     grid-row: 2 / span 1;
 }
+
+.toolbar{
+    height: 48px;
+    margin: 0;
+    padding: 0 8px;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-self: center;
+    align-items: center;
+}

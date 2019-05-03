@@ -6,6 +6,10 @@ import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
+
+import ButtonCheck from './ButtonCheck';
+import ButtonClear from './ButtonClear';
+
 import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 import ConfirmSwitch from './ConfirmSwitch/ConfirmSwitch'
 
@@ -209,6 +213,13 @@ export default class ReportDetails extends React.Component{
             rowsPerPage: itemsPerPage,
             onChangePage: this.onChangePage,
             onChangeRowsPerPage: this.onChangeRowsPerPage,
+
+            customToolbarSelect: () => (
+                <div className={styles.toolbar}>
+                    <ButtonCheck tooltip="Check all"/>
+                    <ButtonClear tooltip="Uncheck all"/>
+                </div>
+            ),
         };
 
         let muiTableClassnames = classNames({
