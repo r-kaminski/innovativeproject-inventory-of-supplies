@@ -56,15 +56,3 @@ class InventoryReportSerializer(serializers.ModelSerializer):
         report.save()
         return report
 
-
-class InventoryReportCSVSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the purpose of exporting report contents to CSV file
-    """
-    supplies = InventorySupplySerializer(source='inventory_supplies', many=True, read_only=True)
-    class Meta:
-        model = InventoryReport
-        fields = ('id', 'date', 'name', 'supplies')
-
-
-

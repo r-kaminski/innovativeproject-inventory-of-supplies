@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 from .models import InventoryReport, InventorySupply
-from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer, InventoryReportCSVSerializer
+from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data
@@ -94,21 +94,24 @@ class InventoryReportCSV(generics.RetrieveAPIView):
     renderer_classes = (ReportCSVRenderer, )
     permission_classes = (permissions.IsAuthenticated,)
     queryset = InventoryReport.objects.all()
-    serializer_class = InventoryReportCSVSerializer
+    serializer_class = InventoryReportSerializer
 
     def get(self, request, *args, **kwargs):
-        try:
-            report = InventoryReport.objects.get(pk=self.kwargs.get('pk'))
-            content = [{'ID': report.id,
-                        'Date': report.date,
-                        'Name': report.name}]
+        report = InventoryReport.objects.get(pk=self.kwargs.get('pk'))
+        serializer = self.serializer_class(report)
+        # Content has to be the same as header in renderers.py
+        content = [{'ID': report.id,
+                    'Date': report.date,
+                    'Name': report.name,
+                    'Supplies total': serializer.data['supplies_total'],
+                    'Supplies scanned': serializer.data['supplies_checked_out']
+                    }]
 
-            for supply in report.inventory_supplies.all():
+        for supply in report.inventory_supplies.all():
+            if supply.is_checked:
                 content.append({'Supply ID': supply.inventory_supply.id,
-                                'Supply name': supply.inventory_supply.name,
-                                'Checked out': supply.is_checked})
-            return Response(content)
-        except InventoryReport.DoesNotExist:
-            return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
+                                'Supply name': supply.inventory_supply.name})
+        return Response(content)
+
 
 
