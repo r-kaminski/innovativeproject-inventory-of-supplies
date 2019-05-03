@@ -26,6 +26,7 @@ class Supplies extends React.Component {
 
         this.state = {
             data: [],
+            rowsSelecetd: [],
 
             pageNumber : 1,
             itemsPerPage : 10,
@@ -121,21 +122,23 @@ class Supplies extends React.Component {
         })
     }
 
-    onClickDeleteSelected = (rowsDeleted) => {
+    onClickDeleteSelected = () => {
+        let {data, rowsSelected} = this.state;
         let allOk = true;
         let someOk = false;
-        for (let key in rowsDeleted) {
-            deleteItem(this.state.data[key].id)
+        for (let key in rowsSelected) {
+            let supplyId = data[rowsSelected[key].index].id;
+            deleteItem(supplyId)
                 .then((res) => {
                     someOk = true;
+                    this.updateData();
                 }).catch((err) => {
                     console.error(err);
                     allOk = false;
                 });
         }
 
-        this.updateData();
-
+    
         if (allOk) {
             this.setState({
                 snackbarMessage: "Usunięto pomyślnie!",
@@ -165,6 +168,23 @@ class Supplies extends React.Component {
             this.props.enqueueSnackbar('Failed to add to print queue', { variant: 'error' });
         }
     }
+
+    onClickPrintSelected = () => {
+        let {data, rowsSelected} = this.state;
+
+        let allOk = true;
+        let someOk = false;
+        for (let key in rowsSelected) {
+            let supplyId = data[rowsSelected[key].index].id;
+            try {
+                PrintService.addToQueue(supplyId);
+                this.props.enqueueSnackbar('Added to print queue', { variant: 'info' });
+            } catch {
+                this.props.enqueueSnackbar('Failed to add to print queue', { variant: 'error' });
+            }
+        }
+    }
+
     onChangePage = (pageNumber) => {
         pageNumber += 1;
         this.setState({
@@ -319,7 +339,20 @@ class Supplies extends React.Component {
                     />
                 </div>
             ),
-            onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
+            //onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data),
+            customToolbarSelect: () => (
+                <div className={styles.toolbar}>
+                    <ButtonRemoveItem
+                                onClick={this.onClickDeleteSelected}
+                            />
+                    <ButtonAddToPrintQueue
+                                onClick={this.onClickPrintSelected}
+                            />
+                </div>
+            ),
+            onRowsSelect: (currentRowsSelected, allRowsSelected) => {
+                this.setState({rowsSelected: allRowsSelected})
+            },
         };
 
         return (

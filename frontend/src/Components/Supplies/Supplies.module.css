@@ -38,5 +38,6 @@ header{
     display: inline-flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-self: center;
     align-items: center;
 }
