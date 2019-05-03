@@ -73,7 +73,6 @@ class PrintView extends Component {
                     loading: false,
                     finished: true
                 })
-
             },
             onLoadingStart: () => {
                 this.setState({ loading: true })
@@ -164,7 +163,7 @@ class PrintView extends Component {
     };
 
     async clearQueue() {
-            await PrintService.clearQueue()
+        await PrintService.clearQueue()
         this.setState({ finished: false })
         this.refreshTable()
     }
