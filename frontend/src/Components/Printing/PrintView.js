@@ -172,7 +172,7 @@ class PrintView extends Component {
         return (
             <div className={styles.wrapper}>
                 <header>
-                    STOCK
+                    MAKERSPACE
                 </header>
 
                 <MUIDataTable

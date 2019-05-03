@@ -9,28 +9,28 @@ import styles from './DialogAddItem.module.css';
 import { insertItem } from '../../../services/inventoryService';
 
 export default class DialogAddItem extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
-      name : '',
-      state : '',
-      description : ''
+      name: '',
+      state: '',
+      description: ''
     }
   }
 
   onChangeHandler = (event, propName) => {
-    switch(propName){
+    switch (propName) {
       case "name":
-        this.setState({name : event.target.value})
+        this.setState({ name: event.target.value })
         break;
 
       case "state":
-        this.setState({state : event.target.value})
+        this.setState({ state: event.target.value })
         break;
 
       case "description":
-        this.setState({description : event.target.value})
+        this.setState({ description: event.target.value })
         break;
 
       default:
@@ -39,26 +39,26 @@ export default class DialogAddItem extends React.Component {
     }
   }
 
-  clearState = ()=>{
+  clearState = () => {
     this.setState({
-      name : '',
-      state : '',
-      description : ''
+      name: '',
+      state: '',
+      description: ''
     })
   };
 
   onClickAdd = () => {
     let item = {
-      name : this.state.name,
-      state : this.state.state,
+      name: this.state.name,
+      state: this.state.state,
       description: this.state.description
     }
 
     insertItem(item)
-      .then((res)=>{
+      .then((res) => {
         this.props.onSuccess();
       })
-      .catch((error)=>{
+      .catch((error) => {
         this.props.onFailure();
         console.error(error)
       });
@@ -69,56 +69,56 @@ export default class DialogAddItem extends React.Component {
 
   render() {
     return (
-        <Dialog
-          open={this.props.open}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Nowy element</DialogTitle>
-          <DialogContent>
-            <div className={styles.dialogContentWrapper}>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Nazwa"
-                variant="outlined"
-                value={this.state.name}
-                onChange={(event) => this.onChangeHandler(event, "name")}
-              />
-              <TextField
-                margin="dense"
-                id="state"
-                label="Stan"
-                variant="outlined"
-                value={this.state.state}
-                onChange={(event) => this.onChangeHandler(event, "state")}
-              />
-              <TextField
-                margin="dense"
-                id="description"
-                label="Opis"
-                variant="outlined"
-                value={this.state.description}
-                onChange={(event) => this.onChangeHandler(event, "description")}
-              />
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.props.onCancel} color="primary">
-              Cancel
+      <Dialog
+        open={this.props.open}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">New element</DialogTitle>
+        <DialogContent>
+          <div className={styles.dialogContentWrapper}>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              variant="outlined"
+              value={this.state.name}
+              onChange={(event) => this.onChangeHandler(event, "name")}
+            />
+            <TextField
+              margin="dense"
+              id="state"
+              label="State"
+              variant="outlined"
+              value={this.state.state}
+              onChange={(event) => this.onChangeHandler(event, "state")}
+            />
+            <TextField
+              margin="dense"
+              id="description"
+              label="Description"
+              variant="outlined"
+              value={this.state.description}
+              onChange={(event) => this.onChangeHandler(event, "description")}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.props.onCancel} color="primary">
+            Cancel
             </Button>
-            <Button onClick={this.onClickAdd}  color="primary">
-              Add
+          <Button onClick={this.onClickAdd} color="primary">
+            Add
             </Button>
-          </DialogActions>
-        </Dialog>
+        </DialogActions>
+      </Dialog>
     );
   }
 }
 
 DialogAddItem.defaultProps = {
-  open : false,
-  onSuccess : () => void(0),
-  onFailure : () => void(0),
-  onCancel : () => void(0)
+  open: false,
+  onSuccess: () => void (0),
+  onFailure: () => void (0),
+  onCancel: () => void (0)
 }
