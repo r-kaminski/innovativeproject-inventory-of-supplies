@@ -74,6 +74,18 @@ export const getReportsItems = ({reportId : id, pageNumber : page, itemsPerPage 
     });
 }
 
+export const partialUpdateReportItem = ({reportId, supplyId, is_checked} = {}) => {
+    if(reportId === undefined)   throw Error("reportId not provided!");
+    if(supplyId === undefined)   throw Error("supplyId not provided!");
+    if(is_checked === undefined) throw Error("is_checked not provided!");
+
+    return axios({
+        method: 'patch',
+        url: `/api/inventories/${reportId}/supplies/${supplyId}`,
+        data: {is_checked},
+    });
+}
+
 export const createReport = async ({name, date}) =>  {
     if (name === undefined || name === "") throw Error("Name not provided!");
 

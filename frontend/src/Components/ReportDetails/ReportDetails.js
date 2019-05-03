@@ -1,19 +1,15 @@
 import React from 'react';
 import styles from './ReportDetails.module.css';
-import classNames from 'classnames';
 
 import MUIDataTable from "mui-datatables";
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 
 import ButtonCheck from './ButtonCheck';
 import ButtonClear from './ButtonClear';
-
-import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 import ConfirmSwitch from './ConfirmSwitch/ConfirmSwitch'
 
-import { getReportsItems } from '../../services/inventoryService';
+import { getReportsItems, partialUpdateReportItem } from '../../services/inventoryService';
 
 
 
@@ -23,6 +19,7 @@ export default class ReportDetails extends React.Component{
 
         this.state = {
             data: [],
+            rowsSelected: [],
             reportId: Number(this.props.match.params.report_id),
 
             pageNumber : 1,
@@ -43,11 +40,12 @@ export default class ReportDetails extends React.Component{
         
         getReportsItems({reportId, pageNumber, itemsPerPage})
                 .then((res)=>{
+                    console.log(res);
                     let data = [];
                     for (const elem of res.data.results) {
-                        let {id : rsid, supply, is_checked} = elem;
+                        let {supply, is_checked} = elem;
                         let {id, name, state, description} = supply;
-                        data.push({rsid, id, name, state, description, is_checked});
+                        data.push({id, name, state, description, is_checked});
                     }
                     
                     this.setState({
@@ -83,25 +81,6 @@ export default class ReportDetails extends React.Component{
         this.updateData({pageNumber: 1, itemsPerPage: changeRowsPerPage});
     }
 
-    onClickDeleteRow = (rowId) => {
-        // deleteReport(this.state.data[rowId].id)
-        //     .then((res)=>{
-        //             this.updateData();
-        //             this.setState({
-        //                 openSnackbar : true,
-        //                 snackbarMessage : "Usunięto pomyślnie!",
-        //                 snackbarVariant : "success"
-        //             });
-        //     }).catch((err)=>{
-        //         console.error(err);
-        //         this.setState({
-        //             openSnackbar : true,
-        //             snackbarMessage : "Wystąpił błąd!",
-        //             snackbarVariant : "error"
-        //         });
-        //     });
-    }
-
     showSnackbar = (type, message) => {
         switch (type){
             case "success":
@@ -130,21 +109,74 @@ export default class ReportDetails extends React.Component{
         this.updateData();        
     }
 
-    setCheckedUnchecked = (currentStatus) => {
-        return !currentStatus;
+    setCheckedUnchecked = (row, value) => {
+        let {reportId, data} = this.state;
+        let supplyId = data[row].id;
+        let newValue = !value;
+        partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
+            .then((res) => {
+                this.updateData();
+            }).catch((err) => {
+                console.error(err);
+                this.setState({
+                    openSnackbar: true,
+                    snackbarMessage: "Wystąpił błąd!",
+                    snackbarVariant: "error"
+                });
+            });
     };
 
+    setIsCheckedSelected = (newValue) => {
+        let {reportId, data, rowsSelected} = this.state;
+        console.log(rowsSelected);
+
+        let allOk = true;
+        let someOk = false;
+        for (let key in rowsSelected) {
+            // Ommit API call if already checked
+            if(data[key].is_checked == newValue) continue;
+
+            let supplyId = data[key].id
+            partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
+                .then((res) => {
+                    someOk = true;
+                    this.updateData();
+                }).catch((err) => {
+                    console.error(err);
+                    allOk = false;
+                });
+        }
+
+        
+
+        if (allOk) {
+            //nothing
+        } else if (someOk) {
+            this.setState({
+                snackbarMessage: "Wystąpił częściowy błąd!",
+                snackbarVariant: "error",
+                openSnackbar: true
+            })
+        } else {
+            this.setState({
+                snackbarMessage: "Wystąpił błąd!",
+                snackbarVariant: "error",
+                openSnackbar: true
+            })
+        }
+    }
+
     columns = [
-        {
-            name: "rsid",
-            options : { display: 'false'}
-        }, 
         {
             name: "is_checked",
             label: "State",
             options: {
-                customBodyRender: (value, rowMeta, updateValue)=> {
-                    return (<ConfirmSwitch onClick={()=>this.setCheckedUnchecked(value)}/>);
+                customBodyRender: (value, tableMeta, updateValue)=> {
+                    return (
+                        <ConfirmSwitch 
+                            confirmed={value}
+                            onClick={()=>this.setCheckedUnchecked(tableMeta.rowIndex, value)}/>
+                    );
                 }
             }
         },
@@ -164,36 +196,7 @@ export default class ReportDetails extends React.Component{
             name: "description",
             label: "Description",
         },
-        
-        // {
-
-        //     options: {
-        //         filter: false,
-        //         sort: false,
-        //         customBodyRender: (value, tableMeta, updateValue) => {
-        //             return (
-        //                 <ButtonRemoveItem 
-        //                     onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
-        //                 />
-        //             );
-        //         }, 
-        //     }
-        // }
     ];
-    
-
-    getMuiTheme = () => createMuiTheme({
-        overrides: {
-          MUIDataTableHeadCell: {
-            root: {
-              '&:nth-child(2)': {
-                //backgroundColor: "red",
-                width: 20
-              }
-            }
-          }
-        }
-      })
 
 
     render(){
@@ -216,30 +219,30 @@ export default class ReportDetails extends React.Component{
 
             customToolbarSelect: () => (
                 <div className={styles.toolbar}>
-                    <ButtonCheck tooltip="Check all"/>
-                    <ButtonClear tooltip="Uncheck all"/>
+                    <ButtonCheck 
+                        tooltip="Check all"
+                        onClick={()=>this.setIsCheckedSelected(true)}/>
+                    <ButtonClear 
+                        tooltip="Uncheck all"
+                        onClick={()=>this.setIsCheckedSelected(false)}/>
                 </div>
             ),
+            onRowsSelect: (currentRowsSelected, allRowsSelected) => {
+                this.setState({rowsSelected: allRowsSelected})
+            },
         };
-
-        let muiTableClassnames = classNames({
-            [styles.table]: true,
-            [styles.tableCell_narrow]: true,
-        })
 
         return(
             <div className={styles.wrapper}>
                 <header>
                     STOCK
                 </header>
-                {/* <MuiThemeProvider theme={this.getMuiTheme()}> */}
-                    <MUIDataTable
-                        className={styles.table}
-                        title={`Details of report #${reportId}`}
-                        data={data}
-                        columns={this.columns}
-                        options={options} />
-                {/* </MuiThemeProvider> */}
+                <MUIDataTable
+                    className={styles.table}
+                    title={`Details of report #${reportId}`}
+                    data={data}
+                    columns={this.columns}
+                    options={options} />
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',

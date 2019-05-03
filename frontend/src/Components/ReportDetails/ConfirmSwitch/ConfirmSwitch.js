@@ -3,7 +3,7 @@ import styles from './ConfirmSwitch.module.css';
 import classNames from 'classnames';
 
 export default function ConfirmSwitch(props){
-    const { confirmed } = props;
+    const { confirmed, onClick } = props;
 
     let contentClasses = classNames({
         [styles.confirm_content] : true,
@@ -21,6 +21,7 @@ export default function ConfirmSwitch(props){
     return(
         <div 
             className={styles.confirm_container}
+            onClick={ onClick }
         >
             <div className={contentClasses}>confirmed<div className={styles.confirm_blob}></div>unconfirmed</div>
         </div>
@@ -28,5 +29,6 @@ export default function ConfirmSwitch(props){
 }
 
 ConfirmSwitch.defaultProps = {
+    onClick : ()=>void(0),
     confirmed : false,
 }
