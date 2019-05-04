@@ -10,6 +10,8 @@ from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data
 from .renderers import ReportCSVRenderer
 
+from rest_framework_csv import renderers as r
+
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
@@ -91,27 +93,32 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
 
 
 class InventoryReportCSV(generics.RetrieveAPIView):
-    renderer_classes = (ReportCSVRenderer, )
     permission_classes = (permissions.IsAuthenticated,)
     queryset = InventoryReport.objects.all()
     serializer_class = InventoryReportSerializer
 
-    def get(self, request, *args, **kwargs):
-        report = InventoryReport.objects.get(pk=self.kwargs.get('pk'))
-        serializer = self.serializer_class(report)
-        # Content has to be the same as header in renderers.py
-        content = [{'ID': report.id,
-                    'Date': report.date,
-                    'Name': report.name,
-                    'Supplies total': serializer.data['supplies_total'],
-                    'Supplies scanned': serializer.data['supplies_checked_out']
-                    }]
+    renderer = r.CSVRenderer()
+    
 
-        for supply in report.inventory_supplies.all():
-            if supply.is_checked:
-                content.append({'Supply ID': supply.inventory_supply.id,
-                                'Supply name': supply.inventory_supply.name})
-        return Response(content)
+    def get(self, request, *args, **kwargs):
+        try:
+            report = InventoryReport.objects.get(pk=self.kwargs.get('pk'))
+            serializer = self.serializer_class(report)
+            # Content has to be the same as header in renderers.py
+            content = [{'ID': report.id,
+                        'Date': report.date,
+                        'Name': report.name,
+                        'Supplies total': serializer.data['supplies_total'],
+                        'Supplies scanned': serializer.data['supplies_checked_out']
+                        }]
+
+            for supply in report.inventory_supplies.all():
+                if supply.is_checked:
+                    content.append({'Supply ID': supply.inventory_supply.id,
+                                    'Supply name': supply.inventory_supply.name})
+            return Response(self.renderer.render(content))
+        except InventoryReport.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 
