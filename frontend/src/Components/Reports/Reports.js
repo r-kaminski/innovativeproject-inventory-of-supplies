@@ -77,7 +77,7 @@ export default class Reports extends React.Component{
                 console.error(err);
                 this.setState({
                     openSnackbar : true,
-                    snackbarMessage : "Wystąpił błąd!",
+                    snackbarMessage : "An error occured!",
                     snackbarVariant : "error"
                 });
             });
@@ -178,7 +178,7 @@ export default class Reports extends React.Component{
         return(
             <div className={styles.wrapper}>
                 <header>
-                    STOCK
+                    MAKERSPACE
                 </header>
 
                 <MUIDataTable

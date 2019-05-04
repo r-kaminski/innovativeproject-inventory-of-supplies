@@ -66,7 +66,7 @@ export default class DialogNewReport extends React.Component {
           open={this.props.open}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Nowy raport</DialogTitle>
+          <DialogTitle id="form-dialog-title">New report</DialogTitle>
           <DialogContent>
             <div className={styles.dialogContentWrapper}>
               <TextField
