@@ -1,0 +1,54 @@
+.confirm_container {
+    width: 114px;
+    max-width: 114px;
+
+    overflow: hidden;
+
+    border-radius: 15px;
+
+    box-shadow: 0px 0px 0px 4px white;
+}
+
+.confirm_content,
+.confirm_content::selection {
+    z-index: 0;
+    display: flex;
+    flex-direction: row;
+
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+
+
+    padding: 0 8px;
+    padding-left: 18px;
+    margin-left: -80px;
+    background-color: #eee;
+    color: rgb(173, 171, 171);
+    text-decoration: none;
+
+    transition: margin-left ease 0.5s, background-color ease 0.5s;
+}
+
+.confirm_content_pending {
+    background-color: rgb(255, 151, 91);
+}
+
+.confirm_content_confirmed {
+    margin-left: 0px;
+    background-color: #4DB875;
+    color: rgb(255, 255, 255);
+}
+
+.confirm_blob {
+    min-width: 20px;
+    height: 20px;
+
+    align-self: center;
+
+    margin: 0 8px;
+
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
+}

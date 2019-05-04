@@ -31,7 +31,7 @@ export default function SearchTool(props){
                         props.onChange(event.target.value);
                     }}
                     />
-                <Tooltip title={"Close"}>
+                <Tooltip title="Close" placement="bottom-start">
                     <IconButton 
                         onClick={()=>{
                             setActive(false)
@@ -43,7 +43,7 @@ export default function SearchTool(props){
                 </Tooltip>
             </React.Fragment>
         ) : (
-            <Tooltip title={"Search"}>
+            <Tooltip title="Search" placement="bottom-end">
                 <IconButton onClick={()=>{
                     setActive(true)
                     props.onOpen();

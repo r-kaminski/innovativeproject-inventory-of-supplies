@@ -1,4 +1,5 @@
 from .models import InventoryReport, InventorySupply
+from .serializers import InventorySupplySerializer
 
 
 class ParameterException(Exception):
@@ -25,3 +26,11 @@ def validate_input_data(kwargs):
         raise
     except InventorySupply.DoesNotExist:
         raise
+
+
+def validate_order(order):
+    if order[0] == '-' and len(order) > 1:
+        order = order[1:]
+    if order not in InventorySupplySerializer.Meta.fields:
+        return False
+    return True
