@@ -7,7 +7,7 @@ from .models import InventoryReport, InventorySupply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
-from .validators import ParameterException, validate_input_data
+from .validators import ParameterException, validate_input_data, validate_order
 
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
@@ -34,11 +34,19 @@ class InventoryReportDetailsView(generics.ListAPIView):
         except InventoryReport.DoesNotExist:
             return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
 
+        if 'order' in request.query_params:
+            order = request.query_params['order']
+            if not validate_order(order):
+                return Response('Wrong order: {}'.format(order), status=status.HTTP_400_BAD_REQUEST)
         return super().get(request, args, kwargs)
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        return InventorySupply.objects.filter(inventory_report__pk=pk)
+        if 'order' in self.request.query_params:
+            order = self.request.query_params.get('order')
+        else:
+            order = "id"
+        return InventorySupply.objects.filter(inventory_report__pk=pk).order_by(order)
 
 
 class InventoryReportRemoveView(generics.DestroyAPIView):
