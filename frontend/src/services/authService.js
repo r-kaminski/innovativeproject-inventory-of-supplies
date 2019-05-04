@@ -12,7 +12,8 @@ class authService {
 
     static async isCurrentUserAdmin() {
         try {
-            return (await Axios.get('api/users/current')).is_staff;
+            let user = await Axios.get('api/users/whoami')
+            return user.data.is_staff;
         } catch {
             return false;
         }

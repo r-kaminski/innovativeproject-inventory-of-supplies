@@ -38,10 +38,6 @@ class Supplies extends React.Component {
         };
     }
 
-    async componentDidMount() {
-        let isAdmin = await authService.isCurrentUserAdmin();
-        this.setState({ isAdmin: isAdmin });
-    }
 
     displayIfAdmin(template) {
         if (this.state.isAdmin === true) {
@@ -221,7 +217,9 @@ class Supplies extends React.Component {
 
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        let isAdmin = await authService.isCurrentUserAdmin();
+        this.setState({ isAdmin: isAdmin });
         this.updateData();
     }
 
@@ -264,7 +262,6 @@ class Supplies extends React.Component {
             }
         },
         {
-
             options: {
                 filter: false,
                 sort: false,
@@ -324,12 +321,12 @@ class Supplies extends React.Component {
             ),
             onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
         };
-
         return (
             <div className={styles.wrapper}>
                 <header>
                     MAKERSPACE
                 </header>
+
 
                 <MUIDataTable
                     className={styles.table}
