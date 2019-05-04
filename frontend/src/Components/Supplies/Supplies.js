@@ -403,7 +403,7 @@ class Supplies extends React.Component {
                     open={this.state.openDialogNewReport}
                     onCancel={()=>{this.setState({openDialogNewReport : false})}}
                     onSuccess={(data)=>this.props.history.push(`/ReportDetails/${data.id}`)}
-                    onFailure={()=>this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={()=>this.showSnackbar("error", "An error occured!")}
                 />
 
                 <Snackbar
