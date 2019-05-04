@@ -17,7 +17,7 @@ import ButtonReport from './ButtonReport/ButtonReport';
 import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
 import DialogNewReport from './DialogNewReport/DialogNewReport';
 import ButtonPrintQueue from './ButtonPrintQueue';
-
+import authService from '../../services/authService';
 
 
 class Supplies extends React.Component {
@@ -36,19 +36,29 @@ class Supplies extends React.Component {
             searchPhase: "",
 
             itemToEdit: {},
-            openDialogEdit : false,
-            openDialogAdd : false,
-            openDialogNewReport : false,
-
-            openSnackbar : false,
-            snackbarMessage : "",
-            snackbarVariant : "info",
+            openDialogEdit: false,
+            openDialogAdd: false,
+            openSnackbar: false,
+            snackbarMessage: "",
+            snackbarVariant: "info",
+            isAdmin: false,
         };
     }
 
-    
+    async componentDidMount() {
+        let isAdmin = await authService.isCurrentUserAdmin();
+        this.setState({ isAdmin: isAdmin });
+    }
 
-    updateData = ({searchPhase, pageNumber, itemsPerPage} = {}) => {
+    displayIfAdmin(template) {
+        if (this.state.isAdmin === true) {
+            return template;
+        } else {
+            return null;
+        }
+    }
+
+    updateData = ({ searchPhase, pageNumber, itemsPerPage } = {}) => {
         //if any of parameters not provided, use params of last update from state
         if(searchPhase === undefined && this.state.search) searchPhase = this.state.searchPhase;
         if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
@@ -102,14 +112,14 @@ class Supplies extends React.Component {
                 this.updateData();
                 this.setState({
                     openSnackbar: true,
-                    snackbarMessage: "Usunięto pomyślnie!",
+                    snackbarMessage: "Removed successfully!",
                     snackbarVariant: "success"
                 });
             }).catch((err) => {
                 console.error(err);
                 this.setState({
                     openSnackbar: true,
-                    snackbarMessage: "Wystąpił błąd!",
+                    snackbarMessage: "An error occurred!",
                     snackbarVariant: "error"
                 });
             });
@@ -141,19 +151,19 @@ class Supplies extends React.Component {
     
         if (allOk) {
             this.setState({
-                snackbarMessage: "Usunięto pomyślnie!",
+                snackbarMessage: "Removed successfully!",
                 snackbarVariant: "success",
                 openSnackbar: true
             })
         } else if (someOk) {
             this.setState({
-                snackbarMessage: "Wystąpił częściowy błąd!",
+                snackbarMessage: "A partial error occurred!",
                 snackbarVariant: "error",
                 openSnackbar: true
             })
         } else {
             this.setState({
-                snackbarMessage: "Wystąpił błąd!",
+                snackbarMessage: "An error occurred!",
                 snackbarVariant: "error",
                 openSnackbar: true
             })
@@ -253,7 +263,7 @@ class Supplies extends React.Component {
         },
         {
             name: "name",
-            label: "Nazwa",
+            label: "Name",
             options: {
                 filter: false,
                 sort: false
@@ -261,7 +271,7 @@ class Supplies extends React.Component {
         },
         {
             name: "state",
-            label: "Stan",
+            label: "State",
             options: {
                 filter: false,
                 sort: false
@@ -269,7 +279,7 @@ class Supplies extends React.Component {
         },
         {
             name: "description",
-            label: "Opis",
+            label: "Description",
             options: {
                 filter: false,
                 sort: false,
@@ -288,12 +298,16 @@ class Supplies extends React.Component {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <React.Fragment>
-                            <ButtonRemoveItem
-                                onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
-                            />
-                            <ButtonEditItem
-                                onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
-                            />
+                            {this.displayIfAdmin(
+                                <ButtonRemoveItem
+                                    onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
+                                />
+                            )}
+                            {this.displayIfAdmin(
+                                <ButtonEditItem
+                                    onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
+                                />
+                            )}
                             <ButtonAddToPrintQueue
                                 onClick={() => this.onClickPrint(tableMeta.rowIndex)}
                             />
@@ -326,11 +340,9 @@ class Supplies extends React.Component {
 
             customToolbar: () => (
                 <div className={styles.toolbar}>
-                    <ButtonAddItem onClickAddItem={()=>this.onClickAddItem()}/>
-                    <ButtonNewReport onClick={()=>{
-                        this.setState({openDialogNewReport : true});
-                        }} /> 
-                    <ButtonReport onClick={()=>{this.props.history.push('/reports');}} />        
+                    {this.displayIfAdmin(<ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />)}
+                    {this.displayIfAdmin(<ButtonNewReport onClick={()=> this.setState({openDialogNewReport : true})} />)}
+                    <ButtonReport onClick={()=>{this.props.history.push('/reports');}} />
                     <ButtonPrintQueue onClickPrint={() => this.props.history.push('/printing')} />
                     <SearchTool
                         onOpen={this.onSearchOpen}
@@ -358,7 +370,7 @@ class Supplies extends React.Component {
         return (
             <div className={styles.wrapper}>
                 <header>
-                    STOCK
+                    MAKERSPACE
                 </header>
 
                 <MUIDataTable
@@ -373,10 +385,11 @@ class Supplies extends React.Component {
                     onCancel={() => this.setState({ openDialogAdd: false })}
                     onSuccess={() => {
                         this.updateData();
-                        this.showSnackbar("success", "Dodano pomyślnie!");
+                        this.showSnackbar("success", "Added successfully!");
                     }}
-                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "An error occured!")}
                 />
+
 
                 <DialogEditItem
                     open={this.state.openDialogEdit}
@@ -384,9 +397,9 @@ class Supplies extends React.Component {
                     onCancel={() => { this.setState({ openDialogEdit: false }) }}
                     onSuccess={() => {
                         this.updateData();
-                        this.showSnackbar("success", "Zapisano pomyślnie!");
+                        this.showSnackbar("success", "Saved successfully!");
                     }}
-                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "An error occured!")}
                 />
 
                 <DialogNewReport

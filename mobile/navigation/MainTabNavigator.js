@@ -43,7 +43,7 @@ const ToolsStack = createStackNavigator({
 });
 
 ToolsStack.navigationOptions = {
-    tabBarLabel: 'Narzędzia',
+    tabBarLabel: 'Tools',
     tabBarIcon: ({ focused }) => (
         <TabBarIcon
             focused={focused}

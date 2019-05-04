@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 from .models import InventoryReport, InventorySupply
-from .serializers import InventoryReportSerializer, InventorySupplySerializer
+from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data, validate_order
@@ -23,7 +23,7 @@ class InventoryReportDetailsView(generics.ListAPIView):
     Also supports pagination, example: /api/inventories/3?page=1&page_size=10
     """
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = InventorySupplySerializer
+    serializer_class = InventorySupplyHeaderSerializer
     pagination_class = ResultSetPagination
 
     def get(self, request, *args, **kwargs):
