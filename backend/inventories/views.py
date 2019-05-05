@@ -46,7 +46,7 @@ class InventoryReportDetailsView(generics.ListAPIView):
             order = self.request.query_params.get('order')
         else:
             order = "id"
-        return InventorySupply.objects.filter(inventory_report__pk=pk).order_by(order)
+        return InventorySupply.objects.filter(inventory_report__pk=pk).exclude(inventory_supply__isnull=True).order_by(order)
 
 
 class InventoryReportRemoveView(generics.DestroyAPIView):

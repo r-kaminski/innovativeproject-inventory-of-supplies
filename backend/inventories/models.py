@@ -21,7 +21,7 @@ class InventorySupply(models.Model):
         is_checked = False (default), the supply hasn't been checked out yet
     """
     inventory_supply = models.ForeignKey(
-        Supply, on_delete=models.CASCADE, blank=True, null=True)
+        Supply, on_delete=models.SET_NULL, blank=True, null=True)
     is_checked = models.BooleanField(default=False)
     inventory_report = models.ForeignKey(InventoryReport,
                                          on_delete=models.CASCADE, related_name="inventory_supplies", blank=True, null=True)
