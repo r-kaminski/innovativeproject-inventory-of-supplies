@@ -118,7 +118,7 @@ class InventoryReportCSV(generics.RetrieveAPIView):
                         }]
 
             for supply in report.inventory_supplies.all():
-                if supply.is_checked:
+                if supply.is_checked and supply.inventory_supply:
                     content.append({'Supply ID': supply.inventory_supply.id,
                                     'Supply name': supply.inventory_supply.name})
             return Response(content)
