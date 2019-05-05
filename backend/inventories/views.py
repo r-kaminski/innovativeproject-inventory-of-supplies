@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
+from rest_framework.renderers import JSONRenderer
 
 from .models import InventoryReport, InventorySupply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer
@@ -93,12 +94,10 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
 
 
 class InventoryReportCSV(generics.RetrieveAPIView):
+    renderer_classes = (JSONRenderer, ReportCSVRenderer)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = InventoryReport.objects.all()
     serializer_class = InventoryReportSerializer
-
-    renderer = r.CSVRenderer()
-    
 
     def get(self, request, *args, **kwargs):
         try:
@@ -116,9 +115,9 @@ class InventoryReportCSV(generics.RetrieveAPIView):
                 if supply.is_checked:
                     content.append({'Supply ID': supply.inventory_supply.id,
                                     'Supply name': supply.inventory_supply.name})
-            return Response(self.renderer.render(content))
+            return Response(content)
         except InventoryReport.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
 
 
 
