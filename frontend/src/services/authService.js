@@ -9,5 +9,14 @@ class authService {
     static registerToken = credentials => {
         return Axios.post('rest-auth/registration/', { username: credentials.username, email: credentials.email, password1: credentials.password1, password2: credentials.password2 });
     }
+
+    static async isCurrentUserAdmin() {
+        try {
+            let user = await Axios.get('api/users/whoami')
+            return user.data.is_staff;
+        } catch {
+            return false;
+        }
+    }
 }
 export default authService;

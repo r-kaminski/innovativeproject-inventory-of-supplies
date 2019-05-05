@@ -168,7 +168,7 @@ class Authentication extends Component {
                     <Grid container direction="column" justify="center" spacing={8}>
                         <Grid item xs={12}>
                             <div className="title">
-                                STOCK
+                                MAKERSPACE
                                     <div className="subtitle">
                                     Inventory simplified
                                     </div>

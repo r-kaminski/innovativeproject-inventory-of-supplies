@@ -13,8 +13,11 @@ import PrintService from '../../services/PrintService';
 import { withSnackbar } from 'notistack';
 import { getItems, deleteItem, searchItems } from '../../services/inventoryService';
 import SearchTool from './SearchTool/SearchTool';
+import ButtonReport from './ButtonReport/ButtonReport';
+import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
+import DialogNewReport from './DialogNewReport/DialogNewReport';
 import ButtonPrintQueue from './ButtonPrintQueue';
-
+import authService from '../../services/authService';
 
 
 class Supplies extends React.Component {
@@ -23,29 +26,44 @@ class Supplies extends React.Component {
 
         this.state = {
             data: [],
-            pageNumber: 1,
-            itemsPerPage: 10,
+            rowsSelecetd: [],
+
+            pageNumber : 1,
+            itemsPerPage : 10,
             totalItemCount: 0,
+
             search: false,
             searchPhase: "",
+
             itemToEdit: {},
             openDialogEdit: false,
             openDialogAdd: false,
             openSnackbar: false,
             snackbarMessage: "",
-            snackbarVariant: "info"
+            snackbarVariant: "info",
+            isAdmin: false,
         };
+    }
+
+
+    displayIfAdmin(template) {
+        if (this.state.isAdmin === true) {
+            return template;
+        } else {
+            return null;
+        }
     }
 
     updateData = ({ searchPhase, pageNumber, itemsPerPage } = {}) => {
         //if any of parameters not provided, use params of last update from state
-        if (searchPhase === undefined && this.state.search) searchPhase = this.state.searchPhase;
-        if (pageNumber === undefined) pageNumber = this.state.pageNumber;
-        if (itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
+        if(searchPhase === undefined && this.state.search) searchPhase = this.state.searchPhase;
+        if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
+        if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-        if (searchPhase === undefined || searchPhase === "") {
-            getItems({ pageNumber, itemsPerPage })
-                .then((res) => {
+        if(searchPhase === undefined || searchPhase === ""){
+
+            getItems({pageNumber, itemsPerPage})
+                .then((res)=>{
                     this.setState({
                         data: res.data.results,
                         totalItemCount: res.data.count,
@@ -90,14 +108,14 @@ class Supplies extends React.Component {
                 this.updateData();
                 this.setState({
                     openSnackbar: true,
-                    snackbarMessage: "Usunięto pomyślnie!",
+                    snackbarMessage: "Removed successfully!",
                     snackbarVariant: "success"
                 });
             }).catch((err) => {
                 console.error(err);
                 this.setState({
                     openSnackbar: true,
-                    snackbarMessage: "Wystąpił błąd!",
+                    snackbarMessage: "An error occurred!",
                     snackbarVariant: "error"
                 });
             });
@@ -110,36 +128,38 @@ class Supplies extends React.Component {
         })
     }
 
-    onClickDeleteSelected = (rowsDeleted) => {
+    onClickDeleteSelected = () => {
+        let {data, rowsSelected} = this.state;
         let allOk = true;
         let someOk = false;
-        for (let key in rowsDeleted) {
-            deleteItem(this.state.data[key].id)
+        for (let key in rowsSelected) {
+            let supplyId = data[rowsSelected[key].index].id;
+            deleteItem(supplyId)
                 .then((res) => {
                     someOk = true;
+                    this.updateData();
                 }).catch((err) => {
                     console.error(err);
                     allOk = false;
                 });
         }
 
-        this.updateData();
-
+    
         if (allOk) {
             this.setState({
-                snackbarMessage: "Usunięto pomyślnie!",
+                snackbarMessage: "Removed successfully!",
                 snackbarVariant: "success",
                 openSnackbar: true
             })
         } else if (someOk) {
             this.setState({
-                snackbarMessage: "Wystąpił częściowy błąd!",
+                snackbarMessage: "A partial error occurred!",
                 snackbarVariant: "error",
                 openSnackbar: true
             })
         } else {
             this.setState({
-                snackbarMessage: "Wystąpił błąd!",
+                snackbarMessage: "An error occurred!",
                 snackbarVariant: "error",
                 openSnackbar: true
             })
@@ -154,6 +174,23 @@ class Supplies extends React.Component {
             this.props.enqueueSnackbar('Failed to add to print queue', { variant: 'error' });
         }
     }
+
+    onClickPrintSelected = () => {
+        let {data, rowsSelected} = this.state;
+
+        let allOk = true;
+        let someOk = false;
+        for (let key in rowsSelected) {
+            let supplyId = data[rowsSelected[key].index].id;
+            try {
+                PrintService.addToQueue(supplyId);
+                this.props.enqueueSnackbar('Added to print queue', { variant: 'info' });
+            } catch {
+                this.props.enqueueSnackbar('Failed to add to print queue', { variant: 'error' });
+            }
+        }
+    }
+
     onChangePage = (pageNumber) => {
         pageNumber += 1;
         this.setState({
@@ -207,7 +244,9 @@ class Supplies extends React.Component {
 
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        let isAdmin = await authService.isCurrentUserAdmin();
+        this.setState({ isAdmin: isAdmin });
         this.updateData();
     }
 
@@ -222,7 +261,7 @@ class Supplies extends React.Component {
         },
         {
             name: "name",
-            label: "Nazwa",
+            label: "Name",
             options: {
                 filter: false,
                 sort: false
@@ -230,7 +269,7 @@ class Supplies extends React.Component {
         },
         {
             name: "state",
-            label: "Stan",
+            label: "State",
             options: {
                 filter: false,
                 sort: false
@@ -238,7 +277,7 @@ class Supplies extends React.Component {
         },
         {
             name: "description",
-            label: "Opis",
+            label: "Description",
             options: {
                 filter: false,
                 sort: false,
@@ -250,19 +289,22 @@ class Supplies extends React.Component {
             }
         },
         {
-
             options: {
                 filter: false,
                 sort: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <React.Fragment>
-                            <ButtonRemoveItem
-                                onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
-                            />
-                            <ButtonEditItem
-                                onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
-                            />
+                            {this.displayIfAdmin(
+                                <ButtonRemoveItem
+                                    onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
+                                />
+                            )}
+                            {this.displayIfAdmin(
+                                <ButtonEditItem
+                                    onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
+                                />
+                            )}
                             <ButtonAddToPrintQueue
                                 onClick={() => this.onClickPrint(tableMeta.rowIndex)}
                             />
@@ -295,7 +337,9 @@ class Supplies extends React.Component {
 
             customToolbar: () => (
                 <div className={styles.toolbar}>
-                    <ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />
+                    {this.displayIfAdmin(<ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />)}
+                    {this.displayIfAdmin(<ButtonNewReport onClick={()=> this.setState({openDialogNewReport : true})} />)}
+                    <ButtonReport onClick={()=>{this.props.history.push('/reports');}} />
                     <ButtonPrintQueue onClickPrint={() => this.props.history.push('/printing')} />
                     <SearchTool
                         onOpen={this.onSearchOpen}
@@ -304,18 +348,31 @@ class Supplies extends React.Component {
                     />
                 </div>
             ),
-            onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data)
+            //onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data),
+            customToolbarSelect: () => (
+                <div className={styles.toolbar}>
+                    <ButtonRemoveItem
+                                onClick={this.onClickDeleteSelected}
+                            />
+                    <ButtonAddToPrintQueue
+                                onClick={this.onClickPrintSelected}
+                            />
+                </div>
+            ),
+            onRowsSelect: (currentRowsSelected, allRowsSelected) => {
+                this.setState({rowsSelected: allRowsSelected})
+            },
         };
-
         return (
             <div className={styles.wrapper}>
                 <header>
-                    STOCK
+                    MAKERSPACE
                 </header>
+
 
                 <MUIDataTable
                     className={styles.table}
-                    title={"Wyposażenie"}
+                    title={"Supplies"}
                     data={data}
                     columns={this.columns}
                     options={options} />
@@ -325,10 +382,11 @@ class Supplies extends React.Component {
                     onCancel={() => this.setState({ openDialogAdd: false })}
                     onSuccess={() => {
                         this.updateData();
-                        this.showSnackbar("success", "Dodano pomyślnie!");
+                        this.showSnackbar("success", "Added successfully!");
                     }}
-                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "An error occured!")}
                 />
+
 
                 <DialogEditItem
                     open={this.state.openDialogEdit}
@@ -336,9 +394,16 @@ class Supplies extends React.Component {
                     onCancel={() => { this.setState({ openDialogEdit: false }) }}
                     onSuccess={() => {
                         this.updateData();
-                        this.showSnackbar("success", "Zapisano pomyślnie!");
+                        this.showSnackbar("success", "Saved successfully!");
                     }}
-                    onFailure={() => this.showSnackbar("error", "Wystąpił błąd!")}
+                    onFailure={() => this.showSnackbar("error", "An error occured!")}
+                />
+
+                <DialogNewReport
+                    open={this.state.openDialogNewReport}
+                    onCancel={()=>{this.setState({openDialogNewReport : false})}}
+                    onSuccess={(data)=>this.props.history.push(`/ReportDetails/${data.id}`)}
+                    onFailure={()=>this.showSnackbar("error", "An error occured!")}
                 />
 
                 <Snackbar
@@ -356,7 +421,7 @@ class Supplies extends React.Component {
                         message={this.state.snackbarMessage}
                     />
                 </Snackbar>
-            </div>
+            </div>            
         );
     };
 }

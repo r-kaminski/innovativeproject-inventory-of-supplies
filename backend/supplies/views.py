@@ -32,7 +32,7 @@ class SupplyListView(generics.ListCreateAPIView):
         if 'order' in self.request.query_params:
             order = self.request.query_params.get('order')
         else:
-            order = "name"
+            order = "id"
         return Supply.objects.order_by(order)
 
 

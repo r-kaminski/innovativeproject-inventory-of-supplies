@@ -78,7 +78,7 @@ class DialogEditItem extends React.Component {
           onEnter={this.fillWithItemData}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Edytuj element</DialogTitle>
+          <DialogTitle id="form-dialog-title">Edit element</DialogTitle>
 
           <DialogContent>
             <div className={styles.dialogContentWrapper}>
@@ -86,7 +86,7 @@ class DialogEditItem extends React.Component {
                 autoFocus
                 margin="dense"
                 id="name"
-                label="Nazwa"
+                label="Name"
                 variant="outlined"
                 value={this.state.name}
                 onChange={(event) => this.onChangeHandler(event, "name")}
@@ -94,7 +94,7 @@ class DialogEditItem extends React.Component {
               <TextField
                 margin="dense"
                 id="state"
-                label="Stan"
+                label="State"
                 variant="outlined"
                 value={this.state.state}
                 onChange={(event) => this.onChangeHandler(event, "state")}
@@ -102,7 +102,7 @@ class DialogEditItem extends React.Component {
               <TextField
                 margin="dense"
                 id="description"
-                label="Opis"
+                label="Description"
                 variant="outlined"
                 value={this.state.description}
                 onChange={(event) => this.onChangeHandler(event, "description")}
@@ -112,10 +112,10 @@ class DialogEditItem extends React.Component {
 
           <DialogActions>
           <Button onClick={this.props.onCancel} color="primary">
-              Anuluj
+              Cancel
             </Button>
             <Button onClick={this.onClickUpdate}  color="primary">
-              Zapisz
+              Save
             </Button>
           </DialogActions>
 
