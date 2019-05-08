@@ -1,7 +1,7 @@
 import Axios from 'axios'
 
-class authService {
 
+class authService {
     static loginToken = credentials => {
         return Axios.post('obtain-token/', { username: credentials.username, password: credentials.password });
     }
@@ -20,3 +20,13 @@ class authService {
     }
 }
 export default authService;
+
+export var isAdmin;
+authService.isCurrentUserAdmin().then(is_staff => isAdmin = is_staff);
+export const displayIfAdmin = (template) => {
+    if (isAdmin === true) {
+        return template;
+    } else {
+        return null;
+    }
+}
