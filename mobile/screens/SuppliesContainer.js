@@ -77,6 +77,8 @@ export default class SuppliesContainer extends React.Component {
                     }}
                     onEndReachedThreshold={0.5}
                     initialNumToRender={this.state.pageSize}
+                    refreshing={this.state.refreshing}
+                    onRefresh={() => this._onRefresh(1, this.props.search)}
                 />
             </View>
         );
