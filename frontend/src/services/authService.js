@@ -18,6 +18,9 @@ class authService {
             return false;
         }
     }
+    static async logout() {
+        return Axios.post('remove-token/');
+    }
 }
 export default authService;
 

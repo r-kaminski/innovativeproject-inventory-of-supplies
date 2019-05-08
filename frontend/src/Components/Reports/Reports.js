@@ -9,6 +9,8 @@ import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 import { getReports, deleteReport } from '../../services/inventoryService';
 import { displayIfAdmin, isAdmin } from '../../services/authService';
 
+import ButtonGoBack from '../GoBackButton';
+
 
 export default class Reports extends React.Component {
     constructor(props) {
@@ -171,6 +173,7 @@ export default class Reports extends React.Component {
                 this.props.history.push(`/ReportDetails/${rowData[0]}`)
             },
             selectableRows: isAdmin,
+            customToolbar: () => (<ButtonGoBack history={this.props.history} />)
         };
 
         return (

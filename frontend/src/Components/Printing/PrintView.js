@@ -154,7 +154,7 @@ class PrintView extends Component {
         download: false,
         viewColumns: false,
         onRowsDelete: rows => this.onClickDeleteSelected(rows.data),
-        customToolbar: () => (<PrintCustomToolbar onClickPrint={this.printCodes.bind(this)} />),
+        customToolbar: () => (<PrintCustomToolbar history={this.props.history} onClickPrint={this.printCodes.bind(this)} />),
         textLabels: {
             body: {
                 noMatch: "Queue is empty"
