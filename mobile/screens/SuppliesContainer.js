@@ -1,7 +1,7 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {getSupplies} from "../services/SuppliesService";
-import {ListItem} from "react-native-elements";
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { getSupplies } from "../services/SuppliesService";
+import { ListItem } from "react-native-elements";
 
 export default class SuppliesContainer extends React.Component {
 
@@ -14,31 +14,39 @@ export default class SuppliesContainer extends React.Component {
     };
 
 
-    componentDidMount() {
-        this._onRefresh(1)
+    componentWillMount() {
+        this._onRefresh(1, this.props.search);
     }
 
-    _onRefresh = (page) => {
-        this.setState({refreshing: true, page: page ? page : 1});
-        this.fetchData(page ? page : 1).then(() => {
-            this.setState({refreshing: false});
-        });
+    _onRefresh = (page, search) => {
+        if (search !== undefined) {
+            this.setState({ refreshing: true, page: page ? page : 1 });
+            this.fetchData(page ? page : 1, search).then(() => {
+                this.setState({ refreshing: false });
+            });
+        }
     }
 
-    async fetchData(page) {
-        await getSupplies({page: page, page_size: this.state.pageSize, name: this.props.search}).then((res) => {
+    async fetchData(page, search) {
+        await getSupplies({ page: page, page_size: this.state.pageSize, name: search }).then((res) => {
             {
-                console.log("page: ", page, this.props.search, res.total_pages) //TODO coś jest nie tak z searchem
                 page === 1 ?
-                    this.setState({...this.state, ...res, page: 1})
-                    : this.setState({...this.state, ...res, results: [...this.state.results, ...res.results]})
+                    this.setState({ ...this.state, ...res, page: 1 })
+                    : this.setState({ ...this.state, ...res, results: [...this.state.results, ...res.results] })
             }
         }).catch((err) => console.log("error: ", err))
+
     }
 
     static navigationOptions = {
         header: null
     };
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.search !== nextProps.search) {
+            this._onRefresh(1, nextProps.search);
+        }
+    }
 
     render() {
         return (
@@ -46,15 +54,15 @@ export default class SuppliesContainer extends React.Component {
                 <FlatList
                     data={this.state.results}
                     keyExtractor={item => item.id.toString()}
-                    renderItem={({item, index}) => <ListItem
+                    renderItem={({ item, index }) => <ListItem
                         style={styles.listItem}
                         key={index}
-                        leftAvatar={{source: {uri: 'https://via.placeholder.com/150'}}}
+                        leftAvatar={{ source: { uri: 'https://via.placeholder.com/150' } }}
                         title={item.name}
                         subtitle={
                             <Text style={styles.subtitle}
-                                  ellipsizeMode={'tail'}
-                                  numberOfLines={1}
+                                ellipsizeMode={'tail'}
+                                numberOfLines={1}
                             >{item.description}</Text>
                         }
 
@@ -64,7 +72,7 @@ export default class SuppliesContainer extends React.Component {
                     }
                     onEndReached={() => {
                         if (this.state.page < this.state.count / this.state.pageSize) {
-                            this._onRefresh(this.state.page + 1);
+                            this._onRefresh(this.state.page + 1, this.props.search);
                         }
                     }}
                     onEndReachedThreshold={0.5}
@@ -75,9 +83,9 @@ export default class SuppliesContainer extends React.Component {
     }
 
     _handlePressTool = (id) => {
-        const {navigate} = this.props.nav;
+        const { navigate } = this.props.nav;
 
-        navigate('Supply', {id: id})
+        navigate('Supply', { id: id })
     };
 }
 
