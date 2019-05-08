@@ -22,7 +22,12 @@ class authService {
 export default authService;
 
 export var isAdmin;
-authService.isCurrentUserAdmin().then(is_staff => isAdmin = is_staff);
+export const validateAdmin = () => {
+    authService.isCurrentUserAdmin().then(is_staff => isAdmin = is_staff);
+}
+
+validateAdmin();
+
 export const displayIfAdmin = (template) => {
     if (isAdmin === true) {
         return template;

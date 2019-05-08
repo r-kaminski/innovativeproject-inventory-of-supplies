@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import authService from '../../services/authService'
+import authService, { validateAdmin } from '../../services/authService'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import Button from '@material-ui/core/Button'
@@ -97,6 +97,7 @@ class Authentication extends Component {
                 username: this.state.username,
                 password: this.state.password1
             });
+            validateAdmin();
             this.props.history.push('/supplies');
         } catch (error) {
             for (let message of Object.values(error.response.data)) {
