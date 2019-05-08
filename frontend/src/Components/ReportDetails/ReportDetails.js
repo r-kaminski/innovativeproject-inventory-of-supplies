@@ -11,10 +11,11 @@ import ConfirmSwitch from './ConfirmSwitch/ConfirmSwitch'
 
 import { getReportsItems, partialUpdateReportItem } from '../../services/inventoryService';
 
+import ButtonGoBack from '../GoBackButton';
 
 
-export default class ReportDetails extends React.Component{
-    constructor(props){
+export default class ReportDetails extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -22,79 +23,79 @@ export default class ReportDetails extends React.Component{
             rowsSelected: [],
             reportId: Number(this.props.match.params.report_id),
 
-            pageNumber : 1,
-            itemsPerPage : 10,
+            pageNumber: 1,
+            itemsPerPage: 10,
             totalItemCount: 0,
 
-            openSnackbar : false,
-            snackbarMessage : "",
-            snackbarVariant : "info"
+            openSnackbar: false,
+            snackbarMessage: "",
+            snackbarVariant: "info"
         };
     }
 
-    updateData = ({pageNumber, itemsPerPage}={}) => {
-        if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
-        if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
+    updateData = ({ pageNumber, itemsPerPage } = {}) => {
+        if (pageNumber === undefined) pageNumber = this.state.pageNumber;
+        if (itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
         let { reportId } = this.state;
-        
-        getReportsItems({reportId, pageNumber, itemsPerPage})
-                .then((res)=>{
-                    //console.log(res);
-                    let data = [];
-                    for (const elem of res.data.results) {
-                        let {supply, is_checked} = elem;
-                        let {id, name, state, description} = supply;
-                        data.push({id, name, state, description, is_checked});
-                    }
-                    
-                    this.setState({
-                        data : data,
-                        totalItemCount : res.data.count,
-                    });
-                }).catch((err)=>{
-                    if(err.response !== undefined){
-                        if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
-                            let prevPage = this.state.pageNumber - 1;
-                            this.setState({pageNumber: prevPage});
-                            this.updateData({pageNumber: prevPage});    
-                        }
-                    }else{
-                        console.error(err);
-                    }
+
+        getReportsItems({ reportId, pageNumber, itemsPerPage })
+            .then((res) => {
+                //console.log(res);
+                let data = [];
+                for (const elem of res.data.results) {
+                    let { supply, is_checked } = elem;
+                    let { id, name, state, description } = supply;
+                    data.push({ id, name, state, description, is_checked });
+                }
+
+                this.setState({
+                    data: data,
+                    totalItemCount: res.data.count,
                 });
+            }).catch((err) => {
+                if (err.response !== undefined) {
+                    if (err.response.data.detail === "Invalid page." && this.state.pageNumber > 1) {
+                        let prevPage = this.state.pageNumber - 1;
+                        this.setState({ pageNumber: prevPage });
+                        this.updateData({ pageNumber: prevPage });
+                    }
+                } else {
+                    console.error(err);
+                }
+            });
     }
 
     onChangePage = (pageNumber) => {
         pageNumber += 1;
         this.setState({
-            pageNumber : pageNumber
+            pageNumber: pageNumber
         });
-        this.updateData({pageNumber});
+        this.updateData({ pageNumber });
     }
 
     onChangeRowsPerPage = (changeRowsPerPage) => {
         this.setState({
-            pageNumber : 1,
-            itemsPerPage : changeRowsPerPage
+            pageNumber: 1,
+            itemsPerPage: changeRowsPerPage
         })
-        this.updateData({pageNumber: 1, itemsPerPage: changeRowsPerPage});
+        this.updateData({ pageNumber: 1, itemsPerPage: changeRowsPerPage });
     }
 
     showSnackbar = (type, message) => {
-        switch (type){
+        switch (type) {
             case "success":
                 this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "success",
-                    openSnackbar : true
+                    snackbarMessage: message,
+                    snackbarVariant: "success",
+                    openSnackbar: true
                 });
                 break;
             case "error":
                 this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "error",
-                    openSnackbar : true
+                    snackbarMessage: message,
+                    snackbarVariant: "error",
+                    openSnackbar: true
                 });
                 break;
             default:
@@ -103,17 +104,17 @@ export default class ReportDetails extends React.Component{
         }
     };
 
-    componentDidMount(){
-        if(this.state.reportId === undefined) return;
-        
-        this.updateData();        
+    componentDidMount() {
+        if (this.state.reportId === undefined) return;
+
+        this.updateData();
     }
 
     setCheckedUnchecked = (row, value) => {
-        let {reportId, data} = this.state;
+        let { reportId, data } = this.state;
         let supplyId = data[row].id;
         let newValue = !value;
-        partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
+        partialUpdateReportItem({ reportId, supplyId, is_checked: newValue })
             .then((res) => {
                 this.updateData();
             }).catch((err) => {
@@ -127,16 +128,16 @@ export default class ReportDetails extends React.Component{
     };
 
     setIsCheckedSelected = (newValue) => {
-        let {reportId, data, rowsSelected} = this.state;
+        let { reportId, data, rowsSelected } = this.state;
 
         let allOk = true;
         let someOk = false;
         for (let key in rowsSelected) {
             //Ommit API call if already checked
-            if(data[rowsSelected[key].index].is_checked == newValue) continue;
+            if (data[rowsSelected[key].index].is_checked == newValue) continue;
 
             let supplyId = data[rowsSelected[key].index].id;
-            partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
+            partialUpdateReportItem({ reportId, supplyId, is_checked: newValue })
                 .then((res) => {
                     someOk = true;
                     this.updateData();
@@ -146,7 +147,7 @@ export default class ReportDetails extends React.Component{
                 });
         }
 
-        
+
 
         if (allOk) {
             //nothing
@@ -170,11 +171,11 @@ export default class ReportDetails extends React.Component{
             name: "is_checked",
             label: "State",
             options: {
-                customBodyRender: (value, tableMeta, updateValue)=> {
+                customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <ConfirmSwitch 
+                        <ConfirmSwitch
                             confirmed={value}
-                            onClick={()=>this.setCheckedUnchecked(tableMeta.rowIndex, value)}/>
+                            onClick={() => this.setCheckedUnchecked(tableMeta.rowIndex, value)} />
                     );
                 }
             }
@@ -198,8 +199,8 @@ export default class ReportDetails extends React.Component{
     ];
 
 
-    render(){
-        const {data, itemsPerPage, totalItemCount, reportId}  = this.state;
+    render() {
+        const { data, itemsPerPage, totalItemCount, reportId } = this.state;
 
         const options = {
             filter: false,
@@ -218,20 +219,21 @@ export default class ReportDetails extends React.Component{
 
             customToolbarSelect: () => (
                 <div className={styles.toolbar}>
-                    <ButtonCheck 
+                    <ButtonCheck
                         tooltip="Check all"
-                        onClick={()=>this.setIsCheckedSelected(true)}/>
-                    <ButtonClear 
+                        onClick={() => this.setIsCheckedSelected(true)} />
+                    <ButtonClear
                         tooltip="Uncheck all"
-                        onClick={()=>this.setIsCheckedSelected(false)}/>
+                        onClick={() => this.setIsCheckedSelected(false)} />
                 </div>
             ),
+            customToolbar: () => (<ButtonGoBack history={this.props.history} />),
             onRowsSelect: (currentRowsSelected, allRowsSelected) => {
-                this.setState({rowsSelected: allRowsSelected})
+                this.setState({ rowsSelected: allRowsSelected })
             },
         };
 
-        return(
+        return (
             <div className={styles.wrapper}>
                 <header>
                     MAKERSPACE
@@ -249,19 +251,19 @@ export default class ReportDetails extends React.Component{
                     }}
                     open={this.state.openSnackbar}
                     autoHideDuration={4000}
-                    onClose={()=>this.setState({openSnackbar : false})}
-                    >
-                        <SnackbarContentWrapper
-                            onClose={()=>this.setState({openSnackbar : false})}
-                            variant={this.state.snackbarVariant}
-                            message={this.state.snackbarMessage}
-                        />
+                    onClose={() => this.setState({ openSnackbar: false })}
+                >
+                    <SnackbarContentWrapper
+                        onClose={() => this.setState({ openSnackbar: false })}
+                        variant={this.state.snackbarVariant}
+                        message={this.state.snackbarMessage}
+                    />
                 </Snackbar>
-            </div>            
+            </div>
         );
     };
 }
 
 ReportDetails.defaultProps = {
-    reportId : -1,
+    reportId: -1,
 }

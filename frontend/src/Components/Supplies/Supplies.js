@@ -4,6 +4,7 @@ import styles from './Supplies.module.css';
 import ButtonAddToPrintQueue from './ButtonAddToPrintQueue';
 import ButtonAddItem from './ButtonAddItem/ButtonAddItem'
 import ButtonRemoveItem from './ButtonRemoveItem/ButtonRemoveItem';
+import ButtonLogout from './ButtonLogout';
 import ButtonEditItem from './ButtonEditItem/ButtonEditItem';
 import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
@@ -90,6 +91,12 @@ class Supplies extends React.Component {
     onClickAddItem = () => {
         this.setState({
             openDialogAdd: true
+        })
+    }
+
+    logout() {
+        authService.logout().then(() => {
+            this.props.history.push('/');
         })
     }
 
@@ -335,6 +342,7 @@ class Supplies extends React.Component {
                         onChange={this.onSearchChange}
                         onClose={this.onSearchClose}
                     />
+                    <ButtonLogout onClick={this.logout.bind(this)} />
                 </div>
             ),
             //onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data),
