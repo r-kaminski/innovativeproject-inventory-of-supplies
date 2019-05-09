@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 595.3 595.3" style="enable-background:new 0 0 595.3 595.3;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;fill:url(#old_1_);stroke:url(#old_2_);stroke-width:4;stroke-miterlimit:10;}
+	.st2{fill:url(#new_1_);stroke:url(#new_2_);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st3{display:none;fill:#FFFFFF;}
+	.st4{fill:url(#full_x5F_box_1_);stroke:url(#full_x5F_box_2_);stroke-width:13;stroke-miterlimit:10;}
+	.st5{display:none;fill:none;stroke:#FFFFFF;stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st6{display:inline;fill:none;stroke:#FFFFFF;stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	
+		.st7{fill:url(#inner_x5F_fill_1_);stroke:url(#inner_x5F_fill_2_);stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st8{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st9{display:inline;fill:url(#XMLID_24_);stroke:url(#XMLID_25_);stroke-width:4;stroke-miterlimit:10;}
+	.st10{fill:none;stroke:#FFFFFF;stroke-width:28;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st11{display:inline;fill:url(#XMLID_32_);}
+	.st12{display:inline;fill:#FFFFFF;}
+	.st13{fill:#FFFFFF;}
+	.st14{fill:none;stroke:#FFFFFF;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	
+		.st15{display:inline;fill:#FFFFFF;stroke:#000000;stroke-width:19;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st16{display:inline;fill:#070808;}
+	.st17{fill:none;stroke:#000000;stroke-width:19;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<g id="Warstwa_1" class="st0">
+	
+		<image style="display:inline;overflow:visible;opacity:0.4;" width="160" height="160" id="XMLID_1_" xlink:href="8373FF1F.jpg"  transform="matrix(2.5398 0 0 2.5398 94.4563 94.4563)">
+	</image>
+</g>
+<g id="gradients" class="st0">
+	<linearGradient id="old_1_" gradientUnits="userSpaceOnUse" x1="0" y1="297.5" x2="596" y2="297.5">
+		<stop  offset="0" style="stop-color:#5761AC"/>
+		<stop  offset="1" style="stop-color:#8E61A9"/>
+	</linearGradient>
+	<linearGradient id="old_2_" gradientUnits="userSpaceOnUse" x1="-2" y1="297.5" x2="598" y2="297.5">
+		<stop  offset="0" style="stop-color:#5761AC"/>
+		<stop  offset="1" style="stop-color:#8E61A9"/>
+	</linearGradient>
+	<rect id="old" class="st1" width="596" height="595"/>
+	<linearGradient id="new_1_" gradientUnits="userSpaceOnUse" x1="3.3333" y1="294.1667" x2="599.3333" y2="294.1667">
+		<stop  offset="0" style="stop-color:#1F448E"/>
+		<stop  offset="1" style="stop-color:#9E61A7"/>
+	</linearGradient>
+	<linearGradient id="new_2_" gradientUnits="userSpaceOnUse" x1="1.3333" y1="294.1667" x2="601.3333" y2="294.1667">
+		<stop  offset="0" style="stop-color:#1F448E"/>
+		<stop  offset="1" style="stop-color:#9E61A8"/>
+	</linearGradient>
+	<rect id="new" x="3.3" y="-3.3" class="st2" width="596" height="595"/>
+</g>
+<g id="box_x5F_logo">
+	<path id="BG_x5F_white_x5F_round_x5F_corners" class="st3" d="M446.9,595.3H148.4C66.4,595.3,0,528.8,0,446.9V148.4
+		C0,66.4,66.4,0,148.4,0h298.5c82,0,148.4,66.4,148.4,148.4v298.5C595.3,528.8,528.8,595.3,446.9,595.3z"/>
+	<linearGradient id="full_x5F_box_1_" gradientUnits="userSpaceOnUse" x1="63.244" y1="288.3017" x2="529.3183" y2="288.3017">
+		<stop  offset="0.2652" style="stop-color:#5761AC"/>
+		<stop  offset="1" style="stop-color:#C571AE"/>
+	</linearGradient>
+	<linearGradient id="full_x5F_box_2_" gradientUnits="userSpaceOnUse" x1="56.744" y1="288.3017" x2="535.8183" y2="288.3017">
+		<stop  offset="0.2652" style="stop-color:#5761AC"/>
+		<stop  offset="1" style="stop-color:#C571AE"/>
+	</linearGradient>
+	<path id="full_x5F_box" class="st4" d="M435.6,40H153.3c-3.9,0-6.9,3.5-6.3,7.3l18.3,119.8c0.5,3.5-1.9,6.8-5.5,7.3l-91,11.7
+		c-3.2,0.4-5.5,3.1-5.5,6.3v235.9c0,3.5,2.8,6.4,6.4,6.4h89.3c3.5,0,6.4,2.8,6.4,6.4v89.3c0,3.5,2.8,6.4,6.4,6.4H426
+		c3.5,0,6.4-2.9,6.4-6.4l-0.9-89.5c0-3.4,2.6-6.2,6-6.4l85.8-4.5c3.4-0.2,6-3,6-6.4V209.9c0-2.8-1.9-5.3-4.6-6.1l-90.4-26.7
+		c-2.9-0.9-4.8-3.7-4.5-6.7l12.1-123.4C442.3,43.2,439.4,40,435.6,40z"/>
+	<path id="outer_x5F_box" class="st5" d="M438.9,35h-288c-4,0-7,3.5-6.4,7.5l18.7,122.2c0.5,3.6-2,7-5.6,7.4l-92.8,11.9
+		c-3.2,0.4-5.7,3.2-5.7,6.4v240.6c0,3.6,2.9,6.5,6.5,6.5h91c3.6,0,6.5,2.9,6.5,6.5v91c0,3.6,2.9,6.5,6.5,6.5h259.5
+		c3.6,0,6.5-2.9,6.5-6.6l-0.9-91.3c0-3.5,2.7-6.4,6.2-6.5l87.5-4.6c3.4-0.2,6.2-3,6.2-6.5V208.4c0-2.9-1.9-5.4-4.6-6.2l-92.2-27.3
+		c-3-0.9-4.9-3.8-4.6-6.9l12.3-125.9C445.7,38.3,442.8,35,438.9,35z"/>
+	<g id="inner_x5F_box" class="st0">
+		<path id="XMLID_3_" class="st6" d="M182.3,200.5v220.5l23.4-20.7l184,0.9l24.4,19.8V192.9l-23.4,21.6l-183.1,2.7l-19.8-19
+			C185.8,196.2,182.3,197.7,182.3,200.5z"/>
+		<line id="XMLID_5_" class="st6" x1="206.7" y1="238" x2="205.8" y2="400.3"/>
+		<line id="XMLID_6_" class="st6" x1="349.2" y1="421.1" x2="182.3" y2="421.1"/>
+		<path id="XMLID_7_" class="st6" d="M182.3,200.5c0.2-5.6,5.2-8.1,15.1-7.6l175.2,0"/>
+		<line id="XMLID_8_" class="st6" x1="389.8" y1="401.2" x2="390.7" y2="214.5"/>
+	</g>
+	<linearGradient id="inner_x5F_fill_1_" gradientUnits="userSpaceOnUse" x1="427.7372" y1="304.9411" x2="169.7942" y2="304.9411">
+		<stop  offset="6.810044e-002" style="stop-color:#5761AC"/>
+		<stop  offset="0.8746" style="stop-color:#C571AE"/>
+	</linearGradient>
+	<linearGradient id="inner_x5F_fill_2_" gradientUnits="userSpaceOnUse" x1="434.2372" y1="304.9411" x2="163.2942" y2="304.9411">
+		<stop  offset="6.810044e-002" style="stop-color:#5761AC"/>
+		<stop  offset="0.8746" style="stop-color:#C571AE"/>
+	</linearGradient>
+	<polygon id="inner_x5F_fill" class="st7" points="169.8,431.6 169.8,178.3 425.9,180.2 427.7,431.6 	"/>
+	<polygon id="check" class="st8" points="210.9,344.3 266.9,392.9 403.3,260.7 360.2,214.5 266.9,344.3 237.9,315.5 	"/>
+</g>
+<g id="logo_x5F_mobile" class="st0">
+	<linearGradient id="XMLID_24_" gradientUnits="userSpaceOnUse" x1="-0.36" y1="297.64" x2="595.64" y2="297.64">
+		<stop  offset="0" style="stop-color:#5761AC"/>
+		<stop  offset="1" style="stop-color:#8E61A9"/>
+	</linearGradient>
+	<linearGradient id="XMLID_25_" gradientUnits="userSpaceOnUse" x1="-2.36" y1="297.64" x2="597.64" y2="297.64">
+		<stop  offset="0" style="stop-color:#5761AC"/>
+		<stop  offset="1" style="stop-color:#8E61A9"/>
+	</linearGradient>
+	<path id="XMLID_11_" class="st9" d="M525.1,595.1h-455c-38.9,0-70.5-31.6-70.5-70.5v-454c0-38.9,31.6-70.5,70.5-70.5h455
+		c38.9,0,70.5,31.6,70.5,70.5v454C595.6,563.6,564.1,595.1,525.1,595.1z"/>
+	<path id="outer_x5F_box_1_" class="st10" d="M176.7,251.5l-33.5,330.3c-0.5,4.6,3.2,8.5,7.8,8.2l142-7.2c4.2-0.2,7.7,3.1,7.8,7.3
+		l2.9,107.8c0.1,3.8,3,6.9,6.7,7.2L585.6,733c4.1,0.4,7.8-2.6,8.2-6.7l10.6-104.4c0.4-4.1,4.1-7.1,8.2-6.7l104.1,10.6
+		c4.1,0.4,7.8-2.6,8.2-6.7l30.2-297.6c0.4-4.1-2.6-7.8-6.7-8.2l-104.5-9.5c-4-0.4-7-3.8-6.8-7.8l5-100.9c0.2-4-2.7-7.4-6.7-7.8
+		L386.1,162c-3.3-0.3-6.4,1.5-7.7,4.6l-41.9,102.5c-1.4,3.3-4.9,5.2-8.4,4.5l-142.6-28.7C181.3,244.1,177.2,247.1,176.7,251.5z"/>
+	<g id="XMLID_9_">
+		<linearGradient id="XMLID_32_" gradientUnits="userSpaceOnUse" x1="-0.36" y1="297.64" x2="595.64" y2="297.64">
+			<stop  offset="0" style="stop-color:#5761AC"/>
+			<stop  offset="1" style="stop-color:#8E61A9"/>
+		</linearGradient>
+		<path id="XMLID_21_" class="st11" d="M522.9,28.1c24.7,0,44.8,20.1,44.8,44.8v449.5c0,24.7-20.1,44.8-44.8,44.8H72.4
+			c-24.7,0-44.8-20.1-44.8-44.8V72.9c0-24.7,20.1-44.8,44.8-44.8H522.9 M522.9,0.1H72.4C32.2,0.1-0.4,32.7-0.4,72.9v449.5
+			c0,40.2,32.6,72.8,72.8,72.8h450.5c40.2,0,72.8-32.6,72.8-72.8V72.9C595.6,32.7,563.1,0.1,522.9,0.1L522.9,0.1z"/>
+	</g>
+	<g id="XMLID_10_">
+		<path id="XMLID_35_" class="st12" d="M307.2,119.6l162.5,88.9l-162.5,77.2L135,208.5L307.2,119.6 M307.3,94.5
+			c-2.9,0-5.9,0.8-8.5,2.4l-190.5,98.3c-11,6.8-10,23.1,1.9,28.4l190.5,85.5c2.1,0.9,4.4,1.4,6.6,1.4c2.4,0,4.7-0.5,6.9-1.6
+			L494,223.5c11.4-5.4,12.4-21.2,1.9-28.1L316.2,97.1C313.5,95.3,310.4,94.5,307.3,94.5L307.3,94.5z"/>
+	</g>
+	<polygon id="XMLID_13_" class="st13" points="297.6,176.6 297.6,358.1 127.1,281.6 	"/>
+	<g id="XMLID_12_">
+		<polygon id="XMLID_39_" class="st12" points="79.6,279.9 101.2,207.3 306.8,310.7 268,383.8 		"/>
+		<path id="XMLID_33_" class="st12" d="M101.5,208.1l204.7,102.9l-38.3,72.2L80.2,279.6L101.5,208.1 M100.8,206.6L79,280.1
+			l189.3,104.4l39.3-74L100.8,206.6L100.8,206.6z"/>
+	</g>
+	<g id="XMLID_14_">
+		<polygon id="XMLID_43_" class="st12" points="308.2,310.7 502.2,204.8 527,276.9 351.5,383.8 		"/>
+		<path id="XMLID_40_" class="st12" d="M501.9,205.5l24.5,71.1L351.7,383.1l-42.8-72.2L501.9,205.5 M502.5,204.1L307.5,310.5
+			l43.8,74l176.3-107.3L502.5,204.1L502.5,204.1z"/>
+	</g>
+	<polyline id="XMLID_15_" class="st14" points="116.3,295.5 116.3,440.3 307.5,534.3 475,461.7 485.7,271 	"/>
+	<path id="XMLID_16_" class="st14" d="M472,689"/>
+</g>
+<g id="Warstwa_5" class="st0">
+	
+		<image style="overflow:visible;" width="64" height="64" id="XMLID_18_" xlink:href="C:\Users\Adrian\Downloads\icons8-empty-box-64.png"  transform="matrix(7.0847 0 0 7.0847 70.9295 24.4655)">
+	</image>
+	<polyline id="XMLID_26_" class="st15" points="126.6,247.1 127.3,400.5 297.6,462.8 469,400.1 470.2,247.1 	"/>
+	<line id="XMLID_31_" class="st15" x1="297.6" y1="360.7" x2="297.6" y2="462.8"/>
+	<polyline id="XMLID_20_" class="st15" points="129.4,188.9 86.6,260.8 253.5,319.2 297.6,247.1 340.3,319.2 510.1,259.5 
+		460.8,188.4 	"/>
+	<polygon id="XMLID_19_" class="st15" points="297.6,129.6 129.4,188.9 297.6,247.1 460.8,188.4 	"/>
+	<polygon id="box_x5F_inner_x5F_shadow" class="st16" points="129.4,188.4 297.6,129.6 297.6,247.1 	"/>
+	<path id="XMLID_30_" class="st17" d="M297.6,247.1"/>
+</g>
+<g id="Warstwa_6" class="st0">
+</g>
+</svg>

@@ -1,7 +1,8 @@
 import React from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View, Image, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import {signIn} from "../services/AuthService";
-import {Input} from "react-native-elements";
+import GradientButton from 'react-native-gradient-buttons';
+
 
 export default class LoginPage extends React.Component {
     state = {
@@ -12,71 +13,124 @@ export default class LoginPage extends React.Component {
 
     render() {
         return (
+            <ImageBackground source={require('../assets/images/bg_login.png')} style={styles.background}>
+            {/* i dont know what this thing does, so i leave it alone
             <ScrollView contentContainerStyle={{flexGrow: 1, alignItems: "center", justifyContent: "center"}}
                         keyboardShouldPersistTaps='handled'
-            >
-                <View style={styles.wrapper}>
-                <Text style={styles.header}>MAKERSPACE</Text>
-                    <Input
+            > */}
+                <KeyboardAvoidingView 
+                        behavior="padding"
+                        style={styles.wrapper}
+                        enabled>                    
+
+                    <Image source={require('../assets/images/logo.png')} style={styles.logo}/>
+                    <Text style={styles.title}>MAKERSPACE</Text>
+                    <Text style={styles.subtitle}>Manage supplies. Conquer space.</Text>
+
+                    <TextInput
+                        underlineColorAndroid="transparent"
                         placeholder='Login'
-                        leftIcon={{type: 'feather', name: 'user', size: 18, color: '#d0d0d0'}}
-                        leftIconContainerStyle={{paddingRight: 8}}
-                        inputStyle={{color: 'white'}}
-                        onChange={(e) => {
-                            this.setState({login: e.nativeEvent.text})
-                        }}
+                        style={styles.input}
+                        onChangeText={(text) => this.setState({login: text})}
                         value={this.state.login}
                     />
 
-                    <Input
+                    <TextInput
+                        underlineColorAndroid="transparent"
                         placeholder='Password'
-                        leftIcon={{type: 'feather', name: 'lock', size: 18, color: '#d0d0d0'}}
-                        leftIconContainerStyle={{paddingRight: 8}}
-                        inputStyle={{color: 'white'}}
+                        style={styles.input}
                         secureTextEntry
-                        onChange={(e) => {
-                            this.setState({password: e.nativeEvent.text})
-                        }}
+                        onChangeText={(text) => this.setState({password: text})}
                         value={this.state.password}
                         errorMessage={this.state.error ? "Wrong login or password" : null}
                     />
 
-                </View>
+                    <GradientButton 
+                        style={styles.button} 
+                        onPressAction={() => {
+                            signIn(this.state.login, this.state.password).then(
+                                (res) => res ? this.props.signIn()
+                                    : this.setState({login: null, password: null, error: true})
+                            )
+                            }} 
+                        text={"Sign in"}
+                        textStyle={{fontSize: 14}}
+                        gradientBegin={"#C570AE"}
+                        gradientEnd={"#9F6AAD"}
+                        gradientDirection={"vertical"}/>
+                    
+                    
+                </KeyboardAvoidingView>
 
-                <Button style={styles.button} onPress={() => {
-                    signIn(this.state.login, this.state.password).then(
-                        (res) => res ? this.props.signIn()
-                            : this.setState({login: null, password: null, error: true})
-                    )
-                }} title={"Log in"}
-                        color={"#40c1ac"}/>
-            </ScrollView>
+            </ImageBackground>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width: "100%",
+    background: {
+        width: '100%',
+        height: '100%',
         flex: 1,
     },
     wrapper: {
-        marginBottom: 8,
+        flex: 1,
         width: "100%",
-        maxWidth: 300,
+        flexDirection: "column",
+        alignItems: "center", 
+        justifyContent: "center",
     },
-    header: {
-        fontSize: 25,
-        alignItems: "center",
-        textAlign: "center",
-        color: 'white',
-        marginBottom: 10
+    logo: {
+        width: 130,
+        height: 130,
+    },
+    title: {
+        fontSize: 36,
+        color: '#C570AE',
+        marginBottom: -10,
+    },
+    subtitle: {
+        fontSize: 15,
+        color: '#C570AE',
+        marginBottom: 40,
+    },
+    input: {
+        color: 'black',
+        fontSize: 14,
+        backgroundColor: '#FFF',
+        height: 50,
+        width: 250,
+        borderRadius: 25,
+        borderColor: "#FFF",
+        borderWidth: 0,
+        paddingLeft: 36,
+        marginBottom: 18,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.16,
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowRadius: 6,
+        elevation: 3,
     },
     button: {
-        width: "100%",
-        maxWidth: 300,
-        borderWidth: 1,
-        borderColor: "red",
-        color: 'red'
+        color: 'white',
+        fontSize: 14,
+        height: 50,
+        width: 250,
+        borderRadius: 25,
+        borderColor: "#FFF",
+        borderWidth: 0,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.16,
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowRadius: 6,
+        elevation: 3,
     }
 })
