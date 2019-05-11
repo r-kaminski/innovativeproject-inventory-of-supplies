@@ -1,15 +1,31 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, View, Image, ImageBackground, KeyboardAvoidingView} from 'react-native';
-import {signIn} from "../services/AuthService";
+import { signIn } from "../services/AuthService";
 import GradientButton from 'react-native-gradient-buttons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default class LoginPage extends React.Component {
+    constructor(props){
+        super(props);
+
+        this.passwordInput = React.createRef();
+        //this.signIn = this.signIn.bind(this);
+    }
+
     state = {
         login: null,
         password: null,
         error: null
     }
+
+
+    signIn = () => {
+        signIn(this.state.login, this.state.password).then(
+            (res) => res ? this.props.onSignInSuccess()
+                : this.setState({login: null, password: null, error: true})
+        )
+    };
 
     render() {
         return (
@@ -21,49 +37,57 @@ export default class LoginPage extends React.Component {
                 <KeyboardAvoidingView 
                         behavior="padding"
                         style={styles.wrapper}
-                        enabled>                    
+                        enabled>        
+                <ScrollView contentContainerStyle={styles.wrapper}
+                    keyboardShouldPersistTaps='handled'>            
 
                     <Image source={require('../assets/images/logo.png')} style={styles.logo}/>
                     <Text style={styles.title}>MAKERSPACE</Text>
                     <Text style={styles.subtitle}>Manage supplies. Conquer space.</Text>
 
                     <TextInput
-                        underlineColorAndroid="transparent"
                         placeholder='Login'
                         style={styles.input}
-                        onChangeText={(text) => this.setState({login: text})}
+                        underlineColorAndroid="transparent"
+
                         value={this.state.login}
+                        onChangeText={(text) => this.setState({login: text})}
+
+                        autoFocus={true}
+                        returnKeyType="next"
+                        blurOnSubmit={false}
+                        onSubmitEditing={()=> this.passwordInput.current.focus()}
                     />
 
                     <TextInput
-                        underlineColorAndroid="transparent"
-                        placeholder='Password'
-                        style={styles.input}
                         secureTextEntry
-                        onChangeText={(text) => this.setState({password: text})}
+                        ref={this.passwordInput}
+                        placeholder='Password'
+
+                        underlineColorAndroid="transparent"
+                        style={styles.input}
+                        
                         value={this.state.password}
+                        onChangeText={(text) => this.setState({password: text})}
+                        onSubmitEditing={this.signIn}
                         errorMessage={this.state.error ? "Wrong login or password" : null}
                     />
 
                     <GradientButton 
                         style={styles.button} 
-                        onPressAction={() => {
-                            signIn(this.state.login, this.state.password).then(
-                                (res) => res ? this.props.signIn()
-                                    : this.setState({login: null, password: null, error: true})
-                            )
-                            }} 
+                        onPressAction={this.signIn} 
                         text={"Sign in"}
                         textStyle={{fontSize: 14}}
                         gradientBegin={"#C570AE"}
                         gradientEnd={"#9F6AAD"}
                         gradientDirection={"vertical"}/>
-                    
-                    
+                
+                </ScrollView>
                 </KeyboardAvoidingView>
 
             </ImageBackground>
         )
+
     }
 }
 

@@ -39,7 +39,7 @@ export default class App extends React.Component {
                                     <AppNavigator style={styles.appNavigator} key={"2"}/>]
                             )
                             : (
-                                <LoginPage signIn={this.onPressSignIn}/>
+                                <LoginPage onSignInSuccess={this.onSignInSuccess}/>
                             )}
                     </View>
                 </View>
@@ -51,7 +51,8 @@ export default class App extends React.Component {
         this.setState({signedIn: false})
     };
 
-    onPressSignIn = () => {
+    onSignInSuccess = () => {
+        console.log("onSignInSuccess");
         this.setState({
             signedIn: true,
         })

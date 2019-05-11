@@ -73,7 +73,7 @@ export const signIn = async (login, password) => {
 
 export const getToken = async () => {
     const token = await SecureStore.getItemAsync('secure_token');
-    return token
+    return token;
 }
 
 export const autoLogin = async () => {
@@ -81,9 +81,13 @@ export const autoLogin = async () => {
     if (token) {
         let newToken = null;
         return refreshToken(token).then(async (res) => {
-            newToken = res
-            await SecureStore.setItemAsync('secure_token', newToken)
-            return true;
+            newToken = await res;
+            if(newToken){
+                SecureStore.setItemAsync('secure_token', newToken);
+                return true;
+            }else{
+                return false;
+            }
         })
     }
 }
