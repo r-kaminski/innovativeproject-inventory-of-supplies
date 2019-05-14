@@ -2,12 +2,15 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
+from django.utils import timezone
 
 from .models import InventoryReport, InventorySupply
+from supplies.models import Supply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data, validate_order
+
 
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
@@ -74,7 +77,9 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
-            # ... update last_time_scanned
+            supply = Supply.objects.get(pk=self.kwargs.get('inventory_supply_id'))
+            supply.last_time_scanned = timezone.now().date()
+            supply.save()
             return super().patch(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -86,7 +91,9 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
-            # ... update last_time_scanned
+            supply = Supply.objects.get(pk=self.kwargs.get('inventory_supply_id'))
+            supply.last_time_scanned = timezone.now().date()
+            supply.save()
             return super().put(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -96,5 +103,4 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
             return Response('Supply does not exist', status=status.HTTP_404_NOT_FOUND)
 
     def get_queryset(self):
-        # ... filter to_be_scanned = True
         return InventorySupply.objects.filter(inventory_report_id=self.kwargs.get('inventory_id'))
