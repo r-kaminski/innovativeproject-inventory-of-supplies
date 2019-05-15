@@ -68,10 +68,15 @@ SettingsStack.navigationOptions = {
             name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
         />
     ),
+    style: {
+        color: "red"
+    }
 };
 
-export default createBottomTabNavigator({
-    ToolsStack,
-    StocktakingStack,
-    SettingsStack
-});
+export default createBottomTabNavigator(
+    {
+        ToolsStack,
+        StocktakingStack,
+        SettingsStack
+    }
+);
