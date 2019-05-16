@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   },
   appNavigator: {
     borderWidth: 1,
+    backgroundColor: "transparent",
     borderColor: "green",
     padding: 10,
     margin: 10
