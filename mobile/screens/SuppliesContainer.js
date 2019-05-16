@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { getSupplies } from "../services/SuppliesService";
 import { ListItem } from "react-native-elements";
+import SupplyListItem from "../components/SupplyListItem.js";
 
 export default class SuppliesContainer extends React.Component {
   state = {
@@ -95,26 +96,9 @@ export default class SuppliesContainer extends React.Component {
           }}
           keyExtractor={item => item.id.toString()}
           renderItem={({ item, index }) => (
-            <ListItem
-              containterStyle={{ backgroundColor: "transparent" }}
-              contentContainerStyle={{
-                backgroundColor: "transparent"
-              }}
-              style={styles.listItem}
+            <SupplyListItem
+              item={item}
               key={index}
-              leftAvatar={{
-                source: { uri: "https://via.placeholder.com/150" }
-              }}
-              title={item.name}
-              subtitle={
-                <Text
-                  style={styles.subtitle}
-                  ellipsizeMode={"tail"}
-                  numberOfLines={1}
-                >
-                  {item.description}
-                </Text>
-              }
               onPress={() => this._handlePressTool(item.id)}
             />
           )}
@@ -171,8 +155,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     borderBottomWidth: 1,
-    borderColor: "#d0d0d0",
-    backgroundColor: "transparent"
+    borderColor: "#d0d0d0"
   },
   subtitle: {
     color: "#d0d0d0"
