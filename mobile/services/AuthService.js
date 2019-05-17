@@ -69,7 +69,30 @@ export const signIn = async (login, password) => {
         console.error(error);
     }
 }
+export const registerIn = async (login, password1, password2,email) => {
+    try {
+        let response = await fetch(
+            `${API_URL}/rest-auth/registration/`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
 
+                body: JSON.stringify({username: login, password1: password1, password2: password2, email:email})
+            }
+        );
+        if (response.status >= 400) {
+            return false;
+        } else {
+            let responseJson = await response.json();
+            responseJson.token && await SecureStore.setItemAsync('secure_token', responseJson.token)
+            return true;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 export const getToken = async () => {
     const token = await SecureStore.getItemAsync('secure_token');
