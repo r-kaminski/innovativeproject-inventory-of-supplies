@@ -10,7 +10,7 @@ from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .renderers import ReportCSVRenderer
 from .validators import ParameterException, validate_input_data, validate_order
-
+from rest_framework_csv import renderers as r
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
@@ -100,7 +100,7 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
 
 
 class InventoryReportCSV(generics.RetrieveAPIView):
-    renderer_classes = (JSONRenderer, ReportCSVRenderer)
+    renderer_classes = (ReportCSVRenderer, )
     permission_classes = (permissions.IsAuthenticated,)
     queryset = InventoryReport.objects.all()
     serializer_class = InventoryReportSerializer
@@ -118,12 +118,20 @@ class InventoryReportCSV(generics.RetrieveAPIView):
                         }]
 
             for supply in report.inventory_supplies.all():
+                # First write checked supplies, then not checked
                 if supply.is_checked and supply.inventory_supply:
                     content.append({'Supply ID': supply.inventory_supply.id,
-                                    'Supply name': supply.inventory_supply.name})
+                                    'Supply name': supply.inventory_supply.name,
+                                    'Found': '1'})
+                if not supply.is_checked and supply.inventory_supply:
+                    content.append({'Supply ID': supply.inventory_supply.id,
+                                    'Supply name': supply.inventory_supply.name,
+                                    'Found': '0'})
+
             return Response(content)
         except InventoryReport.DoesNotExist:
-            return Response('Report does not exist', status=status.HTTP_404_NOT_FOUND)
+            # Cannot fall back to JSON Renderer to send 404 response, instead return empty CSV
+            return Response('')
 
 
 
