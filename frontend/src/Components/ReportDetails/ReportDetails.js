@@ -1,267 +1,299 @@
-import React from 'react';
-import styles from './ReportDetails.module.css';
+import React from "react";
+import styles from "./ReportDetails.module.css";
 
 import MUIDataTable from "mui-datatables";
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContentWrapper from "../Snackbar/SnackbarContentWrapper";
 
-import ButtonCheck from './ButtonCheck';
-import ButtonClear from './ButtonClear';
-import ConfirmSwitch from './ConfirmSwitch/ConfirmSwitch'
+import ButtonCheck from "./ButtonCheck";
+import ButtonGetCSV from "./ButtonGetCSV";
+import ButtonClear from "./ButtonClear";
+import ConfirmSwitch from "./ConfirmSwitch/ConfirmSwitch";
 
-import { getReportsItems, partialUpdateReportItem } from '../../services/inventoryService';
+import {
+  getReportsItems,
+  partialUpdateReportItem
+} from "../../services/inventoryService";
+import { getReportInCSV } from "../../services/inventoryService";
 
+export default class ReportDetails extends React.Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      data: [],
+      rowsSelected: [],
+      reportId: Number(this.props.match.params.report_id),
 
-export default class ReportDetails extends React.Component{
-    constructor(props){
-        super(props);
+      pageNumber: 1,
+      itemsPerPage: 10,
+      totalItemCount: 0,
 
-        this.state = {
-            data: [],
-            rowsSelected: [],
-            reportId: Number(this.props.match.params.report_id),
+      openSnackbar: false,
+      snackbarMessage: "",
+      snackbarVariant: "info"
+    };
+  }
 
-            pageNumber : 1,
-            itemsPerPage : 10,
-            totalItemCount: 0,
+  updateData = ({ pageNumber, itemsPerPage } = {}) => {
+    if (pageNumber === undefined) pageNumber = this.state.pageNumber;
+    if (itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-            openSnackbar : false,
-            snackbarMessage : "",
-            snackbarVariant : "info"
-        };
-    }
+    let { reportId } = this.state;
 
-    updateData = ({pageNumber, itemsPerPage}={}) => {
-        if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
-        if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
+    getReportsItems({ reportId, pageNumber, itemsPerPage })
+      .then(res => {
+        //console.log(res);
+        let data = [];
+        for (const elem of res.data.results) {
+          let { supply, is_checked } = elem;
+          let { id, name, state, description } = supply;
+          data.push({ id, name, state, description, is_checked });
+        }
 
-        let { reportId } = this.state;
-        
-        getReportsItems({reportId, pageNumber, itemsPerPage})
-                .then((res)=>{
-                    //console.log(res);
-                    let data = [];
-                    for (const elem of res.data.results) {
-                        let {supply, is_checked} = elem;
-                        let {id, name, state, description} = supply;
-                        data.push({id, name, state, description, is_checked});
-                    }
-                    
-                    this.setState({
-                        data : data,
-                        totalItemCount : res.data.count,
-                    });
-                }).catch((err)=>{
-                    if(err.response !== undefined){
-                        if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
-                            let prevPage = this.state.pageNumber - 1;
-                            this.setState({pageNumber: prevPage});
-                            this.updateData({pageNumber: prevPage});    
-                        }
-                    }else{
-                        console.error(err);
-                    }
-                });
-    }
-
-    onChangePage = (pageNumber) => {
-        pageNumber += 1;
         this.setState({
-            pageNumber : pageNumber
+          data: data,
+          totalItemCount: res.data.count
         });
-        this.updateData({pageNumber});
-    }
-
-    onChangeRowsPerPage = (changeRowsPerPage) => {
-        this.setState({
-            pageNumber : 1,
-            itemsPerPage : changeRowsPerPage
-        })
-        this.updateData({pageNumber: 1, itemsPerPage: changeRowsPerPage});
-    }
-
-    showSnackbar = (type, message) => {
-        switch (type){
-            case "success":
-                this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "success",
-                    openSnackbar : true
-                });
-                break;
-            case "error":
-                this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "error",
-                    openSnackbar : true
-                });
-                break;
-            default:
-                console.error(`Snackbar type: '${type}' not supported!`)
-                break;
-        }
-    };
-
-    componentDidMount(){
-        if(this.state.reportId === undefined) return;
-        
-        this.updateData();        
-    }
-
-    setCheckedUnchecked = (row, value) => {
-        let {reportId, data} = this.state;
-        let supplyId = data[row].id;
-        let newValue = !value;
-        partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
-            .then((res) => {
-                this.updateData();
-            }).catch((err) => {
-                console.error(err);
-                this.setState({
-                    openSnackbar: true,
-                    snackbarMessage: "An error occured!",
-                    snackbarVariant: "error"
-                });
-            });
-    };
-
-    setIsCheckedSelected = (newValue) => {
-        let {reportId, data, rowsSelected} = this.state;
-
-        let allOk = true;
-        let someOk = false;
-        for (let key in rowsSelected) {
-            //Ommit API call if already checked
-            if(data[rowsSelected[key].index].is_checked == newValue) continue;
-
-            let supplyId = data[rowsSelected[key].index].id;
-            partialUpdateReportItem({reportId, supplyId, is_checked: newValue})
-                .then((res) => {
-                    someOk = true;
-                    this.updateData();
-                }).catch((err) => {
-                    console.error(err);
-                    allOk = false;
-                });
-        }
-
-        
-
-        if (allOk) {
-            //nothing
-        } else if (someOk) {
-            this.setState({
-                snackbarMessage: "Wystąpił częściowy błąd!",
-                snackbarVariant: "error",
-                openSnackbar: true
-            })
+      })
+      .catch(err => {
+        if (err.response !== undefined) {
+          if (
+            err.response.data.detail === "Invalid page." &&
+            this.state.pageNumber > 1
+          ) {
+            let prevPage = this.state.pageNumber - 1;
+            this.setState({ pageNumber: prevPage });
+            this.updateData({ pageNumber: prevPage });
+          }
         } else {
-            this.setState({
-                snackbarMessage: "An error occured!",
-                snackbarVariant: "error",
-                openSnackbar: true
-            })
+          console.error(err);
         }
+      });
+  };
+
+  onChangePage = pageNumber => {
+    pageNumber += 1;
+    this.setState({
+      pageNumber: pageNumber
+    });
+    this.updateData({ pageNumber });
+  };
+
+  onChangeRowsPerPage = changeRowsPerPage => {
+    this.setState({
+      pageNumber: 1,
+      itemsPerPage: changeRowsPerPage
+    });
+    this.updateData({ pageNumber: 1, itemsPerPage: changeRowsPerPage });
+  };
+
+  showSnackbar = (type, message) => {
+    switch (type) {
+      case "success":
+        this.setState({
+          snackbarMessage: message,
+          snackbarVariant: "success",
+          openSnackbar: true
+        });
+        break;
+      case "error":
+        this.setState({
+          snackbarMessage: message,
+          snackbarVariant: "error",
+          openSnackbar: true
+        });
+        break;
+      default:
+        console.error(`Snackbar type: '${type}' not supported!`);
+        break;
+    }
+  };
+
+  componentDidMount() {
+    if (this.state.reportId === undefined) return;
+
+    this.updateData();
+  }
+
+  setCheckedUnchecked = (row, value) => {
+    let { reportId, data } = this.state;
+    let supplyId = data[row].id;
+    let newValue = !value;
+    partialUpdateReportItem({ reportId, supplyId, is_checked: newValue })
+      .then(res => {
+        this.updateData();
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          openSnackbar: true,
+          snackbarMessage: "An error occured!",
+          snackbarVariant: "error"
+        });
+      });
+  };
+
+  setIsCheckedSelected = newValue => {
+    let { reportId, data, rowsSelected } = this.state;
+
+    let allOk = true;
+    let someOk = false;
+    for (let key in rowsSelected) {
+      //Ommit API call if already checked
+      if (data[rowsSelected[key].index].is_checked == newValue) continue;
+
+      let supplyId = data[rowsSelected[key].index].id;
+      partialUpdateReportItem({ reportId, supplyId, is_checked: newValue })
+        .then(res => {
+          someOk = true;
+          this.updateData();
+        })
+        .catch(err => {
+          console.error(err);
+          allOk = false;
+        });
     }
 
-    columns = [
-        {
-            name: "is_checked",
-            label: "State",
-            options: {
-                customBodyRender: (value, tableMeta, updateValue)=> {
-                    return (
-                        <ConfirmSwitch 
-                            confirmed={value}
-                            onClick={()=>this.setCheckedUnchecked(tableMeta.rowIndex, value)}/>
-                    );
-                }
-            }
-        },
-        {
-            name: "id",
-            label: "ID",
-        },
-        {
-            name: "name",
-            label: "Name",
-        },
-        {
-            name: "state",
-            label: "Contidion",
-        },
-        {
-            name: "description",
-            label: "Description",
-        },
-    ];
+    if (allOk) {
+      //nothing
+    } else if (someOk) {
+      this.setState({
+        snackbarMessage: "Wystąpił częściowy błąd!",
+        snackbarVariant: "error",
+        openSnackbar: true
+      });
+    } else {
+      this.setState({
+        snackbarMessage: "An error occured!",
+        snackbarVariant: "error",
+        openSnackbar: true
+      });
+    }
+  };
 
+  getCSV = () => {
+    getReportInCSV(this.state.reportId)
+      .then(res => {
+        let blob = new Blob([res.data], { type: "text/csv" });
+        let a = window.document.createElement("a");
+        a.href = window.URL.createObjectURL(blob);
+        a.download = `report_${this.state.reportId}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })
+      .catch(err => console.error(err));
+  };
 
-    render(){
-        const {data, itemsPerPage, totalItemCount, reportId}  = this.state;
+  columns = [
+    {
+      name: "is_checked",
+      label: "State",
+      options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <ConfirmSwitch
+              confirmed={value}
+              onClick={() =>
+                this.setCheckedUnchecked(tableMeta.rowIndex, value)
+              }
+            />
+          );
+        }
+      }
+    },
+    {
+      name: "id",
+      label: "ID"
+    },
+    {
+      name: "name",
+      label: "Name"
+    },
+    {
+      name: "state",
+      label: "Contidion"
+    },
+    {
+      name: "description",
+      label: "Description"
+    }
+  ];
 
-        const options = {
-            filter: false,
-            sort: false,
-            search: false,
-            print: false,
-            download: false,
-            viewColumns: false,
+  render() {
+    const { data, itemsPerPage, totalItemCount, reportId } = this.state;
 
-            serverSide: true,
-            pagination: true,
-            count: totalItemCount,
-            rowsPerPage: itemsPerPage,
-            onChangePage: this.onChangePage,
-            onChangeRowsPerPage: this.onChangeRowsPerPage,
+    const options = {
+      filter: false,
+      sort: false,
+      search: false,
+      print: false,
+      download: false,
+      viewColumns: false,
 
-            customToolbarSelect: () => (
-                <div className={styles.toolbar}>
-                    <ButtonCheck 
-                        tooltip="Check all"
-                        onClick={()=>this.setIsCheckedSelected(true)}/>
-                    <ButtonClear 
-                        tooltip="Uncheck all"
-                        onClick={()=>this.setIsCheckedSelected(false)}/>
-                </div>
-            ),
-            onRowsSelect: (currentRowsSelected, allRowsSelected) => {
-                this.setState({rowsSelected: allRowsSelected})
-            },
-        };
+      serverSide: true,
+      pagination: true,
+      count: totalItemCount,
+      rowsPerPage: itemsPerPage,
+      onChangePage: this.onChangePage,
+      onChangeRowsPerPage: this.onChangeRowsPerPage,
 
-        return(
-            <div className={styles.wrapper}>
-                <header>
-                    MAKERSPACE
-                </header>
-                <MUIDataTable
-                    className={styles.table}
-                    title={`Details of report #${reportId}`}
-                    data={data}
-                    columns={this.columns}
-                    options={options} />
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={4000}
-                    onClose={()=>this.setState({openSnackbar : false})}
-                    >
-                        <SnackbarContentWrapper
-                            onClose={()=>this.setState({openSnackbar : false})}
-                            variant={this.state.snackbarVariant}
-                            message={this.state.snackbarMessage}
-                        />
-                </Snackbar>
-            </div>            
-        );
+      customToolbar: () => (
+        <div className={styles.toolbar}>
+          <ButtonGetCSV
+            tooltip="Download CSV"
+            onClick={() => this.getCSV(this.state.reportId)}
+          />
+        </div>
+      ),
+      customToolbarSelect: () => (
+        <div className={styles.toolbar}>
+          <ButtonCheck
+            tooltip="Check all"
+            onClick={() => this.setIsCheckedSelected(true)}
+          />
+          <ButtonClear
+            tooltip="Uncheck all"
+            onClick={() => this.setIsCheckedSelected(false)}
+          />
+        </div>
+      ),
+      onRowsSelect: (currentRowsSelected, allRowsSelected) => {
+        this.setState({ rowsSelected: allRowsSelected });
+      }
     };
+
+    return (
+      <div className={styles.wrapper}>
+        <header>MAKERSPACE</header>
+        <MUIDataTable
+          className={styles.table}
+          title={`Details of report #${reportId}`}
+          data={data}
+          columns={this.columns}
+          options={options}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          open={this.state.openSnackbar}
+          autoHideDuration={4000}
+          onClose={() => this.setState({ openSnackbar: false })}
+        >
+          <SnackbarContentWrapper
+            onClose={() => this.setState({ openSnackbar: false })}
+            variant={this.state.snackbarVariant}
+            message={this.state.snackbarMessage}
+          />
+        </Snackbar>
+      </div>
+    );
+  }
 }
 
 ReportDetails.defaultProps = {
-    reportId : -1,
-}
+  reportId: -1
+};
