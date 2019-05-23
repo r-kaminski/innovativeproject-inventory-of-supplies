@@ -1,9 +1,11 @@
+from django.http import Http404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from .models import Supply
 from .serializers import SupplySerializer
 from .permissions import IsAuthenticatedReadOnly
+from .forms import ImageForm
 from backend.pagination import ResultSetPagination
 
 
@@ -73,6 +75,33 @@ class SearchSupplyView(generics.ListAPIView):
             order = "name"
         name = self.request.query_params.get('name')
         return Supply.objects.filter(name__icontains=name).order_by(order)
+
+
+class SupplyImageView(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = SupplySerializer
+    pagination_class = ResultSetPagination
+
+    def get_object(self, id):
+        try:
+            return Supply.objects.get(id)
+        except Supply.DoesNotExist:
+            raise Http404
+
+    def get(self, request):
+        if 'id' not in self.request.query_params:
+            return Response('Parameter "id" expected', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            if request.method == 'POST':
+                form = ImageForm(request.POST, request.FILES)
+                if form.is_valid():
+                    newimg = Supply(image = request.FILES['image'])
+                    newimg.save()
+
+                    return Response('File transfer OK', status=status.HTTP_202_ACCEPTED)
+            else:
+                form = ImageForm()
+        return
 
 
 def validateOrder(order):
