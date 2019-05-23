@@ -56,5 +56,3 @@ class InventoryReportSerializer(serializers.ModelSerializer):
         report.save()
         return report
 
-
-

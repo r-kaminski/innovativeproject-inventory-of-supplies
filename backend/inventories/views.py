@@ -2,13 +2,15 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
+from rest_framework.renderers import JSONRenderer
 
 from .models import InventoryReport, InventorySupply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
+from .renderers import ReportCSVRenderer
 from .validators import ParameterException, validate_input_data, validate_order
-
+from rest_framework_csv import renderers as r
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
@@ -95,3 +97,41 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return InventorySupply.objects.filter(inventory_report_id=self.kwargs.get('inventory_id'))
+
+
+class InventoryReportCSV(generics.RetrieveAPIView):
+    renderer_classes = (ReportCSVRenderer, )
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = InventoryReport.objects.all()
+    serializer_class = InventoryReportSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            report = InventoryReport.objects.get(pk=self.kwargs.get('pk'))
+            serializer = self.serializer_class(report)
+            # Content has to be the same as header in renderers.py
+            content = [{'ID': report.id,
+                        'Date': report.date,
+                        'Name': report.name,
+                        'Supplies total': serializer.data['supplies_total'],
+                        'Supplies scanned': serializer.data['supplies_checked_out']
+                        }]
+
+            for supply in report.inventory_supplies.all():
+                # First write checked supplies, then not checked
+                if supply.is_checked and supply.inventory_supply:
+                    content.append({'Supply ID': supply.inventory_supply.id,
+                                    'Supply name': supply.inventory_supply.name,
+                                    'Found': '1'})
+                if not supply.is_checked and supply.inventory_supply:
+                    content.append({'Supply ID': supply.inventory_supply.id,
+                                    'Supply name': supply.inventory_supply.name,
+                                    'Found': '0'})
+
+            return Response(content)
+        except InventoryReport.DoesNotExist:
+            # Cannot fall back to JSON Renderer to send 404 response, instead return empty CSV
+            return Response('')
+
+
+
