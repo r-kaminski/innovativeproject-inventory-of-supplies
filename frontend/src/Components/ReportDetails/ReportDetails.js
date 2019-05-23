@@ -4,7 +4,7 @@ import styles from "./ReportDetails.module.css";
 import MUIDataTable from "mui-datatables";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContentWrapper from "../Snackbar/SnackbarContentWrapper";
-
+import ButtonGoBack from '../GoBackButton';
 import ButtonCheck from "./ButtonCheck";
 import ButtonGetCSV from "./ButtonGetCSV";
 import ButtonClear from "./ButtonClear";
@@ -241,10 +241,12 @@ export default class ReportDetails extends React.Component {
 
       customToolbar: () => (
         <div className={styles.toolbar}>
+          <ButtonGoBack history={this.props.history} />
           <ButtonGetCSV
             tooltip="Download CSV"
             onClick={() => this.getCSV(this.state.reportId)}
           />
+
         </div>
       ),
       customToolbarSelect: () => (

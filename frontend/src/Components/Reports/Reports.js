@@ -7,96 +7,98 @@ import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 import ButtonRemoveItem from '../Supplies/ButtonRemoveItem/ButtonRemoveItem';
 
 import { getReports, deleteReport } from '../../services/inventoryService';
+import { displayIfAdmin, isAdmin } from '../../services/authService';
+
+import ButtonGoBack from '../GoBackButton';
 
 
-
-export default class Reports extends React.Component{
-    constructor(props){
+export default class Reports extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
             data: [],
 
-            pageNumber : 1,
-            itemsPerPage : 10,
+            pageNumber: 1,
+            itemsPerPage: 10,
             totalItemCount: 0,
 
-            openSnackbar : false,
-            snackbarMessage : "",
-            snackbarVariant : "info"
+            openSnackbar: false,
+            snackbarMessage: "",
+            snackbarVariant: "info"
         };
     }
 
-    updateData = ({pageNumber, itemsPerPage}={}) => {
-        if(pageNumber === undefined) pageNumber = this.state.pageNumber;    
-        if(itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
+    updateData = ({ pageNumber, itemsPerPage } = {}) => {
+        if (pageNumber === undefined) pageNumber = this.state.pageNumber;
+        if (itemsPerPage === undefined) itemsPerPage = this.state.itemsPerPage;
 
-        getReports({pageNumber, itemsPerPage})
-                .then((res)=>{
-                    this.setState({
-                        data : res.data.results,
-                        totalItemCount : res.data.count,
-                    });
-                }).catch((err)=>{
-                    if(err.response.data.detail === "Invalid page." && this.state.pageNumber > 1){
-                        let prevPage = this.state.pageNumber - 1;
-                        this.setState({pageNumber: prevPage});
-                        this.updateData({pageNumber: prevPage});
-                    }else{
-                        console.error(err.response.data);
-                    }
+        getReports({ pageNumber, itemsPerPage })
+            .then((res) => {
+                this.setState({
+                    data: res.data.results,
+                    totalItemCount: res.data.count,
                 });
+            }).catch((err) => {
+                if (err.response.data.detail === "Invalid page." && this.state.pageNumber > 1) {
+                    let prevPage = this.state.pageNumber - 1;
+                    this.setState({ pageNumber: prevPage });
+                    this.updateData({ pageNumber: prevPage });
+                } else {
+                    console.error(err.response.data);
+                }
+            });
     }
 
     onChangePage = (pageNumber) => {
         pageNumber += 1;
         this.setState({
-            pageNumber : pageNumber
+            pageNumber: pageNumber
         });
-        this.updateData({pageNumber});
+        this.updateData({ pageNumber });
     }
 
     onChangeRowsPerPage = (changeRowsPerPage) => {
         this.setState({
-            pageNumber : 1,
-            itemsPerPage : changeRowsPerPage
+            pageNumber: 1,
+            itemsPerPage: changeRowsPerPage
         })
-        this.updateData({pageNumber: 1, itemsPerPage: changeRowsPerPage});
+        this.updateData({ pageNumber: 1, itemsPerPage: changeRowsPerPage });
     }
 
     onClickDeleteRow = (rowId) => {
         deleteReport(this.state.data[rowId].id)
-            .then((res)=>{
-                    this.updateData();
-                    this.setState({
-                        openSnackbar : true,
-                        snackbarMessage : "Usunięto pomyślnie!",
-                        snackbarVariant : "success"
-                    });
-            }).catch((err)=>{
+            .then((res) => {
+                this.updateData();
+                this.setState({
+                    openSnackbar: true,
+                    snackbarMessage: "Usunięto pomyślnie!",
+                    snackbarVariant: "success"
+                });
+            }).catch((err) => {
                 console.error(err);
                 this.setState({
-                    openSnackbar : true,
-                    snackbarMessage : "An error occured!",
-                    snackbarVariant : "error"
+                    openSnackbar: true,
+                    snackbarMessage: "An error occured!",
+                    snackbarVariant: "error"
                 });
             });
     }
 
     showSnackbar = (type, message) => {
-        switch (type){
+        switch (type) {
             case "success":
                 this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "success",
-                    openSnackbar : true
+                    snackbarMessage: message,
+                    snackbarVariant: "success",
+                    openSnackbar: true
                 });
                 break;
             case "error":
                 this.setState({
-                    snackbarMessage : message,
-                    snackbarVariant : "error",
-                    openSnackbar : true
+                    snackbarMessage: message,
+                    snackbarVariant: "error",
+                    openSnackbar: true
                 });
                 break;
             default:
@@ -105,7 +107,7 @@ export default class Reports extends React.Component{
         }
     };
 
-    componentDidMount(){
+    componentDidMount() {
 
         this.updateData();
     }
@@ -114,7 +116,7 @@ export default class Reports extends React.Component{
         {
             name: "id",
             label: "ID",
-        }, 
+        },
         {
             name: "date",
             label: "Date",
@@ -137,20 +139,17 @@ export default class Reports extends React.Component{
                 filter: false,
                 sort: false,
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <ButtonRemoveItem 
-                            onClick={()=>this.onClickDeleteRow(tableMeta.rowIndex)}
-                        />
+                    return displayIfAdmin(<ButtonRemoveItem onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)} />
                     );
-                }, 
+                },
             }
         }
     ];
-    
 
 
-    render(){
-        const {data, itemsPerPage, totalItemCount}  = this.state;
+
+    render() {
+        const { data, itemsPerPage, totalItemCount } = this.state;
 
         const options = {
             filter: false,
@@ -169,13 +168,15 @@ export default class Reports extends React.Component{
 
             onRowClick: (rowData, rowMeta, e) => {
                 let targetTag = e.target.tagName;
-                if(targetTag != "TD") return;
-                
+                if (targetTag !== "TD") return;
+
                 this.props.history.push(`/ReportDetails/${rowData[0]}`)
             },
+            selectableRows: isAdmin,
+            customToolbar: () => (<ButtonGoBack history={this.props.history} />)
         };
 
-        return(
+        return (
             <div className={styles.wrapper}>
                 <header>
                     MAKERSPACE
@@ -195,19 +196,19 @@ export default class Reports extends React.Component{
                     }}
                     open={this.state.openSnackbar}
                     autoHideDuration={4000}
-                    onClose={()=>this.setState({openSnackbar : false})}
-                    >
-                        <SnackbarContentWrapper
-                            onClose={()=>this.setState({openSnackbar : false})}
-                            variant={this.state.snackbarVariant}
-                            message={this.state.snackbarMessage}
-                        />
+                    onClose={() => this.setState({ openSnackbar: false })}
+                >
+                    <SnackbarContentWrapper
+                        onClose={() => this.setState({ openSnackbar: false })}
+                        variant={this.state.snackbarVariant}
+                        message={this.state.snackbarMessage}
+                    />
                 </Snackbar>
-            </div>            
+            </div>
         );
     };
 }
 
 Reports.defaultProps = {
-    reportId : -1,
+    reportId: -1,
 }
