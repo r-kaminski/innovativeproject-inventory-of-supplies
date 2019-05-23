@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 from .models import InventoryReport, InventorySupply
-from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer
+from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer, InventoryReportLastUpdateSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
 from .validators import ParameterException, validate_input_data, validate_order
@@ -55,10 +56,22 @@ class InventoryReportRemoveView(generics.DestroyAPIView):
     serializer_class = InventoryReportSerializer
 
 
+class InventoryReportLastUpdateView(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = InventoryReport.objects.all()
+    serializer_class = InventoryReportLastUpdateSerializer
+
+
 class InventorySupplyView(generics.RetrieveUpdateAPIView):
     serializer_class = InventorySupplySerializer
     permission_classes = (permissions.IsAuthenticated,)
     lookup_field = 'inventory_supply_id'
+
+    def update_timestamp(self, kwargs):
+        inventory_id = kwargs['inventory_id']
+        report = InventoryReport.objects.get(pk=inventory_id)
+        report.last_update = timezone.now()
+        report.save()
 
     def get(self, request, *args, **kwargs):
         try:
@@ -74,6 +87,7 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
+            self.update_timestamp(kwargs)
             return super().patch(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -85,6 +99,7 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
+            self.update_timestamp(kwargs)
             return super().put(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)

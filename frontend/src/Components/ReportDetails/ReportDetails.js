@@ -9,7 +9,7 @@ import ButtonCheck from './ButtonCheck';
 import ButtonClear from './ButtonClear';
 import ConfirmSwitch from './ConfirmSwitch/ConfirmSwitch'
 
-import { getReportsItems, partialUpdateReportItem } from '../../services/inventoryService';
+import { getReportsItems, partialUpdateReportItem, lastUpdated } from '../../services/inventoryService';
 
 import ButtonGoBack from '../GoBackButton';
 
@@ -29,7 +29,8 @@ export default class ReportDetails extends React.Component {
 
             openSnackbar: false,
             snackbarMessage: "",
-            snackbarVariant: "info"
+            snackbarVariant: "info",
+            last_update: null
         };
     }
 
@@ -64,6 +65,18 @@ export default class ReportDetails extends React.Component {
                     console.error(err);
                 }
             });
+    }
+
+    /*
+    Method for automatic refresh of table content
+    */
+    async refresh() {
+        let last_update = (await lastUpdated(this.state.reportId)).data.last_update
+        if (last_update !== this.state.last_update) {
+            this.setState({ last_update: last_update })
+            this.updateData()
+        }
+        setTimeout(() => this.refresh(), 1000)
     }
 
     onChangePage = (pageNumber) => {
@@ -107,7 +120,7 @@ export default class ReportDetails extends React.Component {
     componentDidMount() {
         if (this.state.reportId === undefined) return;
 
-        this.updateData();
+        this.refresh()
     }
 
     setCheckedUnchecked = (row, value) => {
