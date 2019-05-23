@@ -47,6 +47,9 @@ export default class SupplyScreen extends React.Component {
                                 style={styles.image}
                             />
                         </View>
+                        <Text style={styles.descriptionText}>
+                            Name:
+                        </Text>
                         <Text style={styles.optionsTitleText}>
                             {supply.name}
                         </Text>
@@ -56,27 +59,25 @@ export default class SupplyScreen extends React.Component {
                                 <Text style={styles.descriptionText}>
                                     Id:
                                 </Text>
-
-                                <Text style={styles.descriptionText}>
-                                    State:
-                                </Text>
-                                <Text style={styles.descriptionText}>
-                                    Description:
-                                </Text>
-                                <Text style={styles.descriptionText}>
-                                    {supply.localization}
-                                </Text>
-                            </View>
-                            <View>
                                 <Text style={styles.optionText}>
                                     {supply.id}
                                 </Text>
 
+                                <Text style={styles.descriptionText}>
+                                    State:
+                                </Text>
                                 <Text style={styles.optionText}>
                                     {supply.state}
                                 </Text>
+
+                                <Text style={styles.descriptionText}>
+                                    Description:
+                                </Text>
                                 <Text style={styles.optionText}>
                                     {supply.description}
+                                </Text>
+                                <Text style={styles.descriptionText}>
+                                    {supply.localization}
                                 </Text>
                                 <Text style={styles.optionText}>
                                     {supply.localization}
@@ -98,7 +99,8 @@ export default class SupplyScreen extends React.Component {
 const styles = StyleSheet.create({
     mainView: {
         paddingRight: 20,
-        paddingLeft: 20
+        paddingLeft: 20,
+        maxWidth: "100%"
     },
     imageContainer: {
         flexDirection: 'column',
@@ -113,7 +115,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        maxHeight: "100%"
+        maxHeight: "100%",
+        maxWidth: "100%",
     },
     optionsTitleText: {
         fontSize: 18,
@@ -129,6 +132,8 @@ const styles = StyleSheet.create({
         color: '#808080'
     },
     row: {
+        display: "flex",
         flexDirection: 'row',
+        maxWidth: "100%"
     }
 });
