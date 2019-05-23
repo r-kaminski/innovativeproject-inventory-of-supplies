@@ -1,8 +1,8 @@
 import React from 'react';
-import { BarCodeScanner, Permissions } from 'expo';
-import { Dimensions, LayoutAnimation, StatusBar, StyleSheet, Text, View, ToastAndroid } from 'react-native';
-import { Button } from "react-native-elements";
-import { updateStocktaking } from '../services/StocktakingService';
+import {BarCodeScanner, Permissions} from 'expo';
+import {Dimensions, LayoutAnimation, StatusBar, StyleSheet, Text, ToastAndroid, View} from 'react-native';
+import {Button} from "react-native-elements";
+import {updateStocktaking} from '../services/StocktakingService';
 
 
 export default class ScanScreen extends React.Component {
@@ -58,8 +58,6 @@ export default class ScanScreen extends React.Component {
             <View style={{
                 flex: 1,
                 backgroundColor: '#fff',
-                borderColor: 'red',
-                borderWidth: 1
             }}>
                 {this.state.hasCameraPermission === null
                     ? <View style={styles.container}>

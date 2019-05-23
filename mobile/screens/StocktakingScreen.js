@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { getStocktaking, updateStocktaking } from "../services/StocktakingService";
-import { CheckBox, ListItem, Icon } from "react-native-elements";
+import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {getStocktaking, updateStocktaking} from "../services/StocktakingService";
+import {CheckBox, Icon, ListItem} from "react-native-elements";
 
 
 export default class StocktakingScreen extends React.Component {
@@ -16,10 +16,15 @@ export default class StocktakingScreen extends React.Component {
     };
 
     componentDidMount() {
-        this.props.navigation.addListener(
+        this.willFocusSubscription = this.props.navigation.addListener(
             'willFocus',
-            payload => this._onRefresh(this.state.page)
+            payload => this._onRefresh(1)
         );
+        console.log(this.state)
+    }
+
+    componentWillUnmount() {
+        this.willFocusSubscription.remove();
     }
 
 
@@ -51,21 +56,26 @@ export default class StocktakingScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Icon
-                    name="qrcode"
-                    type='font-awesome'
-                    size={40}
-                    color="black"
-                    onPress={() => {
-                        this.props.navigation.navigate('StocktakingScanner', {
-                            stockId: this.props.navigation.getParam("id"),
-                        })
-                    }}
-                />
+                <View style={{
+                    paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1,
+                    borderColor: '#d0d0d0'
+                }}>
+                    <Icon
+                        name="qrcode"
+                        type='font-awesome'
+                        size={40}
+                        color="black"
+                        onPress={() => {
+                            this.props.navigation.navigate('StocktakingScanner', {
+                                stockId: this.props.navigation.getParam("id"),
+                            })
+                        }}
+                    />
+                </View>
                 <FlatList style={styles.container}
-                    data={this.state.results}
-                    keyExtractor={item => item.supply.id.toString()}
-                    renderItem={({ item, index }) => <ListItem
+                          data={this.state.results}
+                          keyExtractor={item => item.supply.id.toString()}
+                          renderItem={({ item, index }) => <ListItem
                         style={styles.listItem}
                         title={<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <View>
@@ -80,11 +90,16 @@ export default class StocktakingScreen extends React.Component {
                                         const res = this.state.results
                                         console.log(index)
                                         res[index].is_checked = !(res[index].is_checked)
-                                        updateStocktaking(this.props.navigation.getParam("id"), item.supply.id, (item.is_checked))
+                                        this.setState({
+                                            ...this.state,
+                                            refreshing: true
+                                        })
+                                        updateStocktaking(this.props.navigation.getParam("id"), item.supply.id, item.is_checked)
                                             .then(() => {
                                                 this.setState({
                                                     ...this.state,
-                                                    results: res
+                                                    results: res,
+                                                    refreshing: false
                                                 })
                                             })
                                     }}
@@ -100,13 +115,15 @@ export default class StocktakingScreen extends React.Component {
                     />}
 
 
-                    onEndReached={() => {
+                          onEndReached={() => {
                         if (this.state.page < this.state.count / this.state.pageSize) {
                             this._onRefresh(this.state.page + 1);
                         }
                     }}
-                    onEndReachedThreshold={0.5}
-                    initialNumToRender={this.state.pageSize}
+                          onEndReachedThreshold={0.5}
+                          initialNumToRender={this.state.pageSize}
+                          refreshing={this.state.refreshing}
+                          onRefresh={() => this._onRefresh(1, this.props.search)}
                 />
             </View>
         );
