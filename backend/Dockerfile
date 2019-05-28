@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.6-alpine
 
 ### Build-time variables
 
@@ -15,7 +15,12 @@ WORKDIR /backend
 
 COPY . ./
 
-RUN pip install -r $requirements
+RUN \
+ apk add --no-cache build-base python-dev py-pip jpeg-dev zlib-dev && \
+ apk add --no-cache postgresql-libs postgresql-dev && \
+ apk add --no-cache --virtual .build-deps gcc musl-dev && \
+ pip install -r $requirements --no-cache-dir && \
+ apk --purge del .build-deps
 
 RUN python manage.py collectstatic --noinput
 
