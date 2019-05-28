@@ -108,6 +108,15 @@ export const deleteReport = async (reportId) => {
     });
 }
 
+export const getReportInCSV = async reportId => {
+  if (reportId === undefined) throw Error("ReportId not provided!");
+
+  return axios({
+    method: "get",
+    url: `/api/inventories/csv/${reportId}`
+  });
+}
+
 export const lastUpdated = async (reportId) => {
     return axios.get(`/api/inventories/${reportId}/last_update`)
 }
