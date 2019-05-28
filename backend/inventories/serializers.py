@@ -6,7 +6,8 @@ from supplies.serializers import SupplySerializer, SupplyHeaderSerializer
 
 
 class InventorySupplySerializer(serializers.ModelSerializer):
-    supply = SupplySerializer(source='inventory_supply', many=False, read_only=True)
+    supply = SupplySerializer(
+        source='inventory_supply', many=False, read_only=True)
 
     class Meta:
         model = InventorySupply
@@ -20,7 +21,8 @@ class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
     The rest of details can be accessed by '/api/inventories/supplies/<int:pk>' with ID provided by this serializer
     This will future-proof that adding more details to supply (e.g. image) won't attach unnecessary data to InventoryReport details view
     """
-    supply = SupplyHeaderSerializer(source='inventory_supply', many=False, read_only=True)
+    supply = SupplyHeaderSerializer(
+        source='inventory_supply', many=False, read_only=True)
 
     class Meta:
         model = InventorySupply
@@ -37,7 +39,8 @@ class InventoryReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InventoryReport
-        fields = ('id', 'date', 'name', 'supplies_total', 'supplies_checked_out',)
+        fields = ('id', 'date', 'last_update', 'name',
+                  'supplies_total', 'supplies_checked_out',)
 
     def get_supplies_total(self, obj):
         return obj.inventory_supplies.all().count()
@@ -51,8 +54,14 @@ class InventoryReportSerializer(serializers.ModelSerializer):
         """
         report = InventoryReport.objects.create(**validated_data)
         for supply in Supply.objects.all():
-            inventory_supply = InventorySupply.objects.create(inventory_supply=supply, inventory_report=report, is_checked=False)
+            inventory_supply = InventorySupply.objects.create(
+                inventory_supply=supply, inventory_report=report, is_checked=False)
             inventory_supply.save()
         report.save()
         return report
 
+
+class InventoryReportLastUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InventoryReport
+        fields = ('id', 'last_update')
