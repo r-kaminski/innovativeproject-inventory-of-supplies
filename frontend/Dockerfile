@@ -1,4 +1,4 @@
-FROM node:10.15.3 as react-build
+FROM node:10.15.3-alpine as react-build
 WORKDIR /frontend
 COPY . ./
 RUN npm i
