@@ -9,9 +9,10 @@ from .models import InventoryReport, InventorySupply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer, InventoryReportLastUpdateSerializer
 from backend.pagination import ResultSetPagination
 from backend.permissions import IsAuthenticatedReadOnly
-from .renderers import ReportCSVRenderer
+from .renderers import ReportCSVRenderer, ReportPdfRenderer
 from .validators import ParameterException, validate_input_data, validate_order
 from rest_framework_csv import renderers as r
+
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
@@ -149,4 +150,24 @@ class InventoryReportCSV(generics.RetrieveAPIView):
             return Response('')
 
 
+class InventoryReportPDF(generics.RetrieveAPIView):
+    renderer_classes = (ReportPdfRenderer, )
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = InventoryReport.objects.all()
+    serializer_class = InventoryReportSerializer
 
+    def get(self, request, *args, **kwargs):
+        try:
+            report = self.get_queryset().get(pk=self.kwargs.get('pk'))
+            serializer = self.serializer_class(report)
+            data = {
+                'id': report.id,
+                'name': report.name,
+                'date': report.date,
+                'Supplies total': serializer.data['supplies_total'],
+                'Supplies scanned': serializer.data['supplies_checked_out'],
+                'data': report.inventory_supplies.order_by('-is_checked', 'inventory_supply__id')
+            }
+            return Response(data)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
