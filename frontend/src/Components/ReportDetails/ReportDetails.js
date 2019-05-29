@@ -6,16 +6,16 @@ import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContentWrapper from "../Snackbar/SnackbarContentWrapper";
 import ButtonGoBack from '../GoBackButton';
 import ButtonCheck from "./ButtonCheck";
-import ButtonGetCSV from "./ButtonGetCSV";
+import ButtonExport from "./ButtonExport";
 import ButtonClear from "./ButtonClear";
 import ConfirmSwitch from "./ConfirmSwitch/ConfirmSwitch";
+import ExportAsDialog from "./ExportAsDialog";
 
 import {
   getReportsItems,
   partialUpdateReportItem,
   lastUpdated
 } from "../../services/inventoryService";
-import { getReportInCSV } from "../../services/inventoryService";
 
 export default class ReportDetails extends React.Component {
   constructor(props) {
@@ -33,9 +33,13 @@ export default class ReportDetails extends React.Component {
       openSnackbar: false,
       snackbarMessage: "",
       snackbarVariant: "info",
-      last_update: null
+      last_update: null,
+      showExportDialog: false,
     };
   }
+
+  pdfLocation = '/api/inventories/pdf/';
+  csvLocation = '/api/inventories/csv/';
 
   updateData = ({ pageNumber, itemsPerPage } = {}) => {
     if (pageNumber === undefined) pageNumber = this.state.pageNumber;
@@ -78,12 +82,12 @@ export default class ReportDetails extends React.Component {
   Method for automatic refresh of table content
   */
   async refresh() {
-      let last_update = (await lastUpdated(this.state.reportId)).data.last_update
-      if (last_update !== this.state.last_update) {
-          this.setState({ last_update: last_update })
-          this.updateData()
-      }
-      setTimeout(() => this.refresh(), 1000)
+    let last_update = (await lastUpdated(this.state.reportId)).data.last_update
+    if (last_update !== this.state.last_update) {
+      this.setState({ last_update: last_update })
+      this.updateData()
+    }
+    setTimeout(() => this.refresh(), 1000)
   }
 
   onChangePage = pageNumber => {
@@ -186,19 +190,10 @@ export default class ReportDetails extends React.Component {
     }
   };
 
-  getCSV = () => {
-    getReportInCSV(this.state.reportId)
-      .then(res => {
-        let blob = new Blob([res.data], { type: "text/csv" });
-        let a = window.document.createElement("a");
-        a.href = window.URL.createObjectURL(blob);
-        a.download = `report_${this.state.reportId}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      })
-      .catch(err => console.error(err));
-  };
+
+  showExportAsDialog() {
+    this.setState({ showExportDialog: true });
+  }
 
   columns = [
     {
@@ -256,9 +251,9 @@ export default class ReportDetails extends React.Component {
       customToolbar: () => (
         <div className={styles.toolbar}>
           <ButtonGoBack history={this.props.history} />
-          <ButtonGetCSV
-            tooltip="Download CSV"
-            onClick={() => this.getCSV(this.state.reportId)}
+          <ButtonExport
+            tooltip="Export as..."
+            onClick={() => this.showExportAsDialog()}
           />
 
         </div>
@@ -305,6 +300,7 @@ export default class ReportDetails extends React.Component {
             message={this.state.snackbarMessage}
           />
         </Snackbar>
+        <ExportAsDialog reportId={this.state.reportId} open={this.state.showExportDialog} pdf={`${this.pdfLocation}${this.state.reportId}`} csv={`${this.csvLocation}${this.state.reportId}`} exit={() => this.setState({ showExportDialog: false })} />
       </div>
     );
   }
