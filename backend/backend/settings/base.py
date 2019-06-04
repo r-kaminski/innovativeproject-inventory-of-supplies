@@ -59,6 +59,13 @@ INSTALLED_APPS = [
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': '/var/backups'}
 
+
+def backup_filename(content_type, databasename, servername, datetime, extension):
+    return 'backup {}.{}'.format(datetime, extension)
+
+
+DBBACKUP_FILENAME_TEMPLATE = backup_filename
+
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
     'JWT_ALLOW_REFRESH': True,

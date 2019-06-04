@@ -34,14 +34,17 @@ class BackupView(generics.GenericAPIView):
         f.close()
 
         lines = txt.splitlines()
+        # raise Exception(lines)
         data = map(
             lambda x: re.match(
-                r'(.*)\.psql (\d\d/\d\d/\d\d \d\d:\d\d:\d\d)', x).groups(), lines
+                r'(.*\.psql) *(\d\d/\d\d/\d\d \d\d:\d\d:\d\d)', x).groups(), lines
         )
 
         data = map(
             lambda x: {'name': x[0], 'date': datetime.datetime.strptime(
                 x[1], '%m/%d/%y %H:%M:%S')}, data
         )
+
+        data = sorted(data, key=lambda x: x['date'], reverse=True)
         serializer = BackupsSerializer(data, many=True)
         return Response(serializer.data)
