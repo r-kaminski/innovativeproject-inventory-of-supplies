@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^api/supplies/', include('supplies.urls')),
     url(r'^api/printing/', include('printing.urls')),
     url(r'^api/inventories/', include('inventories.urls', namespace="inventories")),
+    url(r'^api/backup/', include('backup.urls', namespace="backup")),
 ]
 
 if settings.DEBUG:

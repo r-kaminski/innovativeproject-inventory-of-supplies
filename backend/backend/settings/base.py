@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.account',
     'rest_auth.registration',
+    'dbbackup',
 
     'rooms.apps.RoomsConfig',
     'supplies.apps.SuppliesConfig',
@@ -52,7 +53,11 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
     'inventories.apps.InventoriesConfig',
     'printing.apps.PrintingConfig',
+    'backup.apps.BackupConfig',
 ]
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': '/var/backups'}
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
