@@ -26,14 +26,14 @@ services:
       - ./frontend:/frontend
       - /frontend/node_modules
   db:
-    image: postgres
+    image: postgres:alpine
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
     networks:
       - main
   nginx:
-    image: nginx
+    image: nginx:alpine
     volumes:
       - ./nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
