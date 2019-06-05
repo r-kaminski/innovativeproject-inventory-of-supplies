@@ -1,61 +1,10 @@
 import React from 'react';
-// import  {CameraRoll, Modal, TouchableHighlight, Text, Alert, PermissionsAndroid} from "react-native";
-import {
-    Alert,
-    CameraRoll,
-    Image,
-    Modal,
-    PermissionsAndroid,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    View
-} from 'react-native';
+import {ImagePicker} from 'expo';
+
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Icon, Input} from "react-native-elements";
 import {updateSupply} from "../services/SuppliesService";
 
-async function requestCameraPermission() {
-    try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-            {
-                title: 'Camera Permission',
-                message:
-                    'App needs access to your camera ' +
-                    'so you can take pictures of supplies.',
-                buttonNeutral: 'Ask Me Later',
-                buttonNegative: 'Cancel',
-                buttonPositive: 'OK',
-            },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use the camera');
-        } else {
-            console.log('Camera permission denied');
-        }
-    } catch (err) {
-        console.warn(err);
-    }
-
-
-    try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            {
-                'title': 'Access Storage',
-                'message': 'Access Storage for the pictures'
-            }
-        )
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use read from the storage")
-        } else {
-            console.log("Storage permission denied")
-        }
-    } catch (err) {
-        console.warn(err)
-    }
-}
 
 export default class SupplyEdit extends React.Component {
 
@@ -63,24 +12,25 @@ export default class SupplyEdit extends React.Component {
         isShowingText: true,
         supply: this.props.navigation.getParam("supply"),
         modalVisible: false,
+        pickerResult: null
     };
 
-    // supply.image =  {
-    //   "node": Object {
-    //     "group_name": "Camera",
-    //     "image": Object {
-    //       "height": 3120,
-    //       "uri": "content://media/external/images/media/88966",
-    //       "width": 4160,
-    //     },
-    //     "location": Object {
-    //       "latitude": 51.11796144,
-    //       "longitude": 17.09299882,
-    //     },
-    //     "timestamp": 1558174895.197,
-    //     "type": "image/jpeg",
-    //   },
-    // },
+
+    _pickImg = async () => {
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+            base64: true,
+            allowsEditing: false,
+            aspect: [4, 3],
+        });
+
+        this.setState({
+            ...this.state,
+            supply: {
+                ...this.state.supply,
+                image: pickerResult ? `data:image/jpg;base64,${pickerResult.base64}` : null
+            },
+        });
+    };
 
 
     setModalVisible(visible) {
@@ -95,112 +45,29 @@ export default class SupplyEdit extends React.Component {
     onPressSave = () => {
         const {goBack} = this.props.navigation;
         this.props.navigation.state.params.onGoBack();
+
         const newSupply = {
             name: this.state.supply.name,
             state: this.state.supply.state,
-            description: this.state.supply.description
+            description: this.state.supply.description,
+            image: this.state.supply.image
         }
         updateSupply(this.state.supply.id, newSupply)
         goBack()
     }
 
-    _handleCameraButtonPress = async () => {
-        console.log("_handleCameraButtonPress")
-        requestCameraPermission().then(
-            () =>
-                CameraRoll.getPhotos({
-                    first: 20,
-                    // assetType: 'Photos',
-                })
-                    .then(r => {
-                        console.log("r: ", r, r.edges)
-                        this.setState({photos: r.edges});
-                    })
-                    .catch((err) => {
-                        console.log("error: ", err)
-                        //Error Loading Images
-                    })
-        )
-
-
-    };
-
-
-
-
 
     render() {
+
         const {supply} = this.state
         return (
             <View style={styles.container}>
-
-                <Modal
-                    animationType="slide"
-                    transparent={false}
-                    visible={this.state.modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                    }}>
-                    <View>
-                        <View style={styles.modalHeader}>
-                            <Text>Select photo</Text>
-                            <Button title={"Take a photo"} onPress={() => console.log("take a photo")}/>
-                            <Icon
-                                name="close"
-                                type='font-awesome'
-                                size={18}
-                                color="black"
-                                onPress={() => {
-                                    console.log("close")
-                                    this.setModalVisible(!this.state.modalVisible);
-                                }}
-                            />
-                        </View>
-                        <View>
-                            {this.state.photos && <ScrollView>
-
-                                <View style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                    justifyContent: "center",
-                                }}>
-                                    {this.state.photos.map((p, i) => {
-                                        return (
-                                            <TouchableHighlight key={i}
-                                                                onPress={() => {
-                                                                    this.setState({
-                                                                        ...this.state,
-                                                                        supply: {
-                                                                            ...this.state.supply,
-                                                                            image: this.state.photos[i]
-                                                                        }
-                                                                    })
-                                                                    this.setModalVisible(false)
-                                                                }
-                                                                }>
-                                                <Image
-
-                                                    style={{width: 150, height: 150, margin: 4}}
-                                                    source={{uri: p.node.image.uri}}
-
-                                                />
-                                            </TouchableHighlight>
-                                        );
-                                    })}
-                                </View>
-                            </ScrollView>}
-                        </View>
-                    </View>
-                </Modal>
-
-
                 <ScrollView style={styles.container}>
                     {this.state.supply && <View style={styles.mainView}>
                         <View style={styles.firstBlock}>
                             <View style={styles.imageContainer}>
                             <Image
-                                source={{uri: this.state.supply.image ? this.state.supply.image.node.image.uri : 'https://via.placeholder.com/150'}}
+                                source={{uri: this.state.supply.image ? this.state.supply.image : 'https://via.placeholder.com/150'}}
                                 resizeMode="contain"
                                 fadeDuration={0}
                                 style={styles.image}
@@ -211,13 +78,10 @@ export default class SupplyEdit extends React.Component {
                                 type='font-awesome'
                                 size={20}
                                 color="black"
-                                onPress={() => {
-                                    console.log("kliknięto")
-                                    this.setModalVisible(true);
-                                    this._handleCameraButtonPress();
-                                }}
+                                onPress={this._pickImg}
                             />
                         </View>
+
                         <Input inputStyle={styles.optionsTitleText}
                                onChange={(e) => {
                                    this.setState({supply: {...supply, name: e.nativeEvent.text}})
@@ -289,7 +153,6 @@ const styles = StyleSheet.create({
     },
     optionsTitleText: {
         fontSize: 18,
-        // marginBottom: 12,
     },
     optionText: {
         fontSize: 15,
