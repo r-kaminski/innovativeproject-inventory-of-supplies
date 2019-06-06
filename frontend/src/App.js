@@ -14,7 +14,7 @@ import Backup from './Components/Admin/Backup/Backup';
 class App extends Component {
     render() {
         return (
-            <SnackbarProvider maxSnack={3}>
+            <SnackbarProvider maxSnack={4}>
                 <Router>
                     <Switch>
                         <Route path="/Authentication" component={Authentication} />

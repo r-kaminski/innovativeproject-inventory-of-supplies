@@ -61,7 +61,7 @@ DBBACKUP_STORAGE_OPTIONS = {'location': '/var/backups'}
 
 
 def backup_filename(content_type, databasename, servername, datetime, extension):
-    return 'backup {}.{}'.format(datetime, extension)
+    return 'backup-{}.{}'.format(datetime, extension)
 
 
 DBBACKUP_FILENAME_TEMPLATE = backup_filename

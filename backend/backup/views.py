@@ -34,7 +34,6 @@ class BackupView(generics.GenericAPIView):
         f.close()
 
         lines = txt.splitlines()
-        # raise Exception(lines)
         data = map(
             lambda x: re.match(
                 r'(.*\.psql) *(\d\d/\d\d/\d\d \d\d:\d\d:\d\d)', x).groups(), lines
@@ -48,3 +47,14 @@ class BackupView(generics.GenericAPIView):
         data = sorted(data, key=lambda x: x['date'], reverse=True)
         serializer = BackupsSerializer(data, many=True)
         return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        if 'name' not in request.data:
+            return Response('you must specify \'name\' in url', status=status.HTTP_400_BAD_REQUEST)
+        try:
+            management.call_command(
+                'dbrestore', '--noinput', input_filename=request.data.get('name'))
+            txt = self.capture_log.getvalue()
+            return Response(txt)
+        except:
+            return Response('Error while restoring backup', status=status.HTTP_400_BAD_REQUEST)
