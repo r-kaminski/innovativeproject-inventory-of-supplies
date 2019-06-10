@@ -8,11 +8,13 @@ import Authentication from './Components/Authentication/Authentication';
 import Reports from './Components/Reports/Reports';
 import ReportDetails from './Components/ReportDetails/ReportDetails';
 import PrintView from './Components/Printing/PrintView';
+import AdminPanel from './Components/Admin/AdminPanel';
+import Backup from './Components/Admin/Backup/Backup';
 
 class App extends Component {
     render() {
         return (
-            <SnackbarProvider maxSnack={3}>
+            <SnackbarProvider maxSnack={4}>
                 <Router>
                     <Switch>
                         <Route path="/Authentication" component={Authentication} />
@@ -22,6 +24,8 @@ class App extends Component {
                     <Route exact path="/Reports" component={Reports} />
                     <Route exact path="/ReportDetails/:report_id" component={ReportDetails} />
                     <Route exact path="/Printing" component={PrintView} />
+                    <Route exact path="/Admin" component={AdminPanel} />
+                    <Route exact path="/Backup" component={Backup} />
                 </Router>
             </SnackbarProvider>
         );

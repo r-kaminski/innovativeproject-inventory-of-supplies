@@ -25,7 +25,8 @@ RUN \
                 | sort -u \
     )" \
  && apk add --virtual .rundeps $runDeps \
- && apk del .build-deps
+ && apk del .build-deps \
+ && apk add postgresql-client
 
 RUN \
  python manage.py collectstatic --noinput \
