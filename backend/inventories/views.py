@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.renderers import JSONRenderer
 
+from supplies.models import Supply
 from .models import InventoryReport, InventorySupply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer, InventoryReportLastUpdateSerializer
 from backend.pagination import ResultSetPagination
@@ -13,7 +14,10 @@ from .renderers import ReportCSVRenderer, ReportPdfRenderer
 from .validators import ParameterException, validate_input_data, validate_order
 from rest_framework_csv import renderers as r
 
-
+from rest_framework.views import APIView
+from rest_framework.parsers import FileUploadParser, MultiPartParser
+import csv
+import io
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
     queryset = InventoryReport.objects.all()
@@ -171,3 +175,35 @@ class InventoryReportPDF(generics.RetrieveAPIView):
             return Response(data)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class InventoryReportImportView(APIView):
+    parser_classes = (MultiPartParser, )
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, format=None):
+        csv_file = request.data['file']
+
+        if not csv_file.name.endswith('.csv'):
+            return Response('Wrong format. Input CSV file.', status=status.HTTP_400_BAD_REQUEST)
+
+        decoded_file = csv_file.read().decode('utf-8')
+        io_string = io.StringIO(decoded_file)
+        file_data = list(csv.reader(io_string))
+        
+        header = ReportCSVRenderer().header
+
+        if file_data[0] != header:
+            return Response('Wrong CSV header formatting.', status=status.HTTP_400_BAD_REQUEST)
+
+        name_index = header.index('Supply name')
+
+        for data in file_data[2:]:
+            name = data[name_index]
+            Supply.objects.create(name=name).save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
+
