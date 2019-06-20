@@ -11,7 +11,7 @@ class InventorySupplySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InventorySupply
-        fields = ('id', 'supply', 'is_checked')
+        fields = ('id', 'supply', 'is_checked', 'checked_by')
 
 
 class InventorySupplyHeaderSerializer(serializers.ModelSerializer):

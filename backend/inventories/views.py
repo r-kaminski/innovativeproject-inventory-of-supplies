@@ -91,6 +91,10 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
         try:
             validate_input_data(kwargs)
             self.update_timestamp(kwargs)
+            if request.data['is_checked']:
+                request.data['checked_by'] = request.user.id
+            else:
+                request.data['checked_by'] = None
             return super().patch(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -103,6 +107,10 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
         try:
             validate_input_data(kwargs)
             self.update_timestamp(kwargs)
+            if request.data['is_checked']:
+                request.data['checked_by'] = request.user.id
+            else:
+                request.data['checked_by'] = None
             return super().put(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -166,7 +174,7 @@ class InventoryReportPDF(generics.RetrieveAPIView):
                 'date': report.date,
                 'Supplies total': serializer.data['supplies_total'],
                 'Supplies scanned': serializer.data['supplies_checked_out'],
-                'data': report.inventory_supplies.order_by('-is_checked', 'inventory_supply__id')
+                'data': report.inventory_supplies.order_by('-is_checked', 'checked_by', 'inventory_supply__id')
             }
             return Response(data)
         except:

@@ -1,6 +1,7 @@
 from rest_framework_csv import renderers as r
 from rest_framework.renderers import BaseRenderer
 from fpdf import FPDF
+import re
 
 
 class ReportCSVRenderer(r.CSVRenderer):
@@ -34,11 +35,14 @@ class ReportPdfRenderer(BaseRenderer):
             self.set_xy(170, -20)
             self.cell(0, 10, txt='Signature', border='T', align='C')
 
+    def removeSpecialCharacters(self, text):
+        return re.sub(r"[^a-zA-Z0-9 ]+", '?', text)
+
     def table(self, pdf: FPDF, header: list, data):
         pdf.set_fill_color(200)
         pdf.set_line_width(.3)
         pdf.set_font('', 'B')
-        w = [10, 160, 15]
+        w = [15, 100, 45, 25]
         for i in range(len(header)):
             pdf.cell(w[i], 7, header[i], 1, 0, 'C')
         pdf.ln()
@@ -51,9 +55,14 @@ class ReportPdfRenderer(BaseRenderer):
                 border = 'LR'
             pdf.cell(w[0], 6, str(row.inventory_supply.id),
                      border, 0, 'L', fill)
-            pdf.cell(w[1], 6, row.inventory_supply.name, border, 0, 'L', fill)
-            pdf.cell(w[2], 6, 'yes' if row.is_checked else 'no',
-                     border, 0, 'L', fill)
+            pdf.cell(w[1], 6, self.removeSpecialCharacters(
+                row.inventory_supply.name), border, 0, 'L', fill)
+            username = " " if row.checked_by is None else self.removeSpecialCharacters(
+                row.checked_by.username)
+
+            pdf.cell(w[2], 6, username, border, 0, 'C', fill)
+            pdf.cell(w[3], 6, '', border, 0, 'C', fill)
+
             pdf.ln()
             fill = not fill
             if pdf.get_y() > 250:
@@ -76,7 +85,7 @@ class ReportPdfRenderer(BaseRenderer):
         pdf.cell(0, 10, txt='Supplies total: %d' % total, ln=1)
         pdf.cell(0, 10, txt='Supplies not found: %d' % (total - scanned), ln=1)
 
-        self.table(pdf, ['id', 'name', 'found'], supplies)
+        self.table(pdf, ['id', 'name', 'scanned by', 'signature'], supplies)
 
         buf = pdf.output(dest='S').encode('latin-1')
         return buf
