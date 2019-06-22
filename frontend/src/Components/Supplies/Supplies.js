@@ -19,8 +19,8 @@ import ButtonReport from './ButtonReport/ButtonReport';
 import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
 import DialogNewReport from './DialogNewReport/DialogNewReport';
 import ButtonPrintQueue from './ButtonPrintQueue';
+import ButtonImportCSV from './ButtonImportCSV/ButtonImportCSV';
 import authService, { displayIfAdmin } from '../../services/authService';
-
 
 class Supplies extends React.Component {
     constructor(props) {
@@ -94,6 +94,7 @@ class Supplies extends React.Component {
             openDialogAdd: true
         })
     }
+
 
     logout() {
         authService.logout().then(() => {
@@ -336,6 +337,7 @@ class Supplies extends React.Component {
                 <div className={styles.toolbar}>
                     {displayIfAdmin(<ButtonAdminPanel onClick={() => this.props.history.push('/admin')} />)}
                     {displayIfAdmin(<ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />)}
+                    {displayIfAdmin(<ButtonImportCSV />)}
                     {displayIfAdmin(<ButtonNewReport onClick={() => this.setState({ openDialogNewReport: true })} />)}
                     <ButtonReport onClick={() => { this.props.history.push('/reports'); }} />
                     <ButtonPrintQueue onClickPrint={() => this.props.history.push('/printing')} />

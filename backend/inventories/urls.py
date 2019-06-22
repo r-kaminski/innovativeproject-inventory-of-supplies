@@ -15,5 +15,5 @@ urlpatterns = [
          InventoryReportLastUpdateView.as_view(), name="last-update"),
     path('csv/<int:pk>', InventoryReportCSV.as_view(), name='report-csv'),
     path('pdf/<int:pk>', InventoryReportPDF.as_view(), name='report-pdf'),
-    path('import/', InventoryReportImportView.as_view(), name='import-csv'),
+    path('import', InventoryReportImportView.as_view(), name='import-csv'),
 ]

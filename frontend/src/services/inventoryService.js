@@ -120,3 +120,14 @@ export const getReportInCSV = async reportId => {
 export const lastUpdated = async (reportId) => {
     return axios.get(`/api/inventories/${reportId}/last_update`)
 }
+
+export const importCSV = async csvFile => {
+    if (csvFile === undefined) throw Error("File not provided");
+
+    return axios({
+        method: 'post',
+        url: `/api/inventories/import`,
+        // data: csvFile <- Unsupported Media Type error
+        // file: csvFile <- status code 500
+    })
+}
