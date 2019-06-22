@@ -10,6 +10,7 @@ import ReportDetails from './Components/ReportDetails/ReportDetails';
 import PrintView from './Components/Printing/PrintView';
 import AdminPanel from './Components/Admin/AdminPanel';
 import Backup from './Components/Admin/Backup/Backup';
+import CsvBackup from './Components/Admin/CsvBackup/CsvBackup';
 
 class App extends Component {
     render() {
@@ -26,6 +27,7 @@ class App extends Component {
                     <Route exact path="/Printing" component={PrintView} />
                     <Route exact path="/Admin" component={AdminPanel} />
                     <Route exact path="/Backup" component={Backup} />
+                    <Route exact path="/CsvBackup" component={CsvBackup} />
                 </Router>
             </SnackbarProvider>
         );

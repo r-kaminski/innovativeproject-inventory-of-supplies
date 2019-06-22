@@ -5,34 +5,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import BackupIcon from '@material-ui/icons/Backup';
+import ImportIcon from '@material-ui/icons/ImportExport';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import BackIcon from "@material-ui/icons/KeyboardBackspace";
-import ButtonImportCSV from '../Supplies/ButtonImportCSV/ButtonImportCSV';
+import ButtonImportCSV from './CsvBackup/ButtonImportCSV';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from '../Snackbar/SnackbarContentWrapper';
 
 class AdminPanel extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      openSnackbar: false,
-      snackbarMessage: "",
-      snackbarVariant: "",
-    }
-  }
-
-  snackbarMessage(message, variant) {
-    this.setState({
-      snackbarMessage: message,
-      snackbarVariant: variant,
-      openSnackbar: true
-    });
-  }
-
-
     render() {
-
         return (
             <div className={styles.wrapper}>
                 <header>
@@ -46,21 +27,11 @@ class AdminPanel extends React.Component {
                             <BackupIcon />
                         </ListItemIcon>
                     </ListItem>
-                    <ListItem >
+                    <ListItem button onClick={() => this.props.history.push('CsvBackup')}>
                         <ListItemText primary="Import CSV" />
-                        <ButtonImportCSV
-                            onFailure={ () => this.setState({
-                              snackbarMessage: 'Wrong file format! Input CSV.',
-                              snackbarVariant: 'error',
-                              openSnackbar: true
-                            })}
-                            onSuccess={ () => this.setState({
-                              snackbarMessage: 'Database populated!',
-                              snackbarVariant: 'success',
-                              openSnackbar: true
-                            })}
-                        />
-
+                        <ListItemIcon>
+                            <ImportIcon />
+                        </ListItemIcon>
                     </ListItem>
                     <ListItem button onClick={this.props.history.goBack}>
                         <ListItemIcon>
@@ -69,22 +40,6 @@ class AdminPanel extends React.Component {
                         <ListItemText primary="Go back" />
                     </ListItem>
                 </List>
-                
-                <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={this.state.openSnackbar}
-                autoHideDuration={4000}
-                onClose={() => this.setState({ openSnackbar: false })}
-                >
-                <SnackbarContentWrapper
-                    onClose={() => this.setState({ openSnackbar: false })}
-                    variant={this.state.snackbarVariant}
-                    message={this.state.snackbarMessage}
-                />
-                </Snackbar>
             </div>
         );
     };
