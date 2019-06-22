@@ -1,7 +1,8 @@
 from django.urls import path
+from django.urls import re_path
 from .views import InventoryReportListCreateView, InventoryReportDetailsView, InventoryReportRemoveView
 from .views import InventorySupplyView, InventoryReportCSV, InventoryReportLastUpdateView, InventoryReportPDF
-
+from .views import InventoryReportImportView
 app_name = "inventories"
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
          InventoryReportLastUpdateView.as_view(), name="last-update"),
     path('csv/<int:pk>', InventoryReportCSV.as_view(), name='report-csv'),
     path('pdf/<int:pk>', InventoryReportPDF.as_view(), name='report-pdf'),
+    path('import', InventoryReportImportView.as_view(), name='import-csv'),
 ]

@@ -120,3 +120,19 @@ export const getReportInCSV = async reportId => {
 export const lastUpdated = async (reportId) => {
     return axios.get(`/api/inventories/${reportId}/last_update`)
 }
+
+export const importCSV = async csvFile => {
+    if (csvFile === undefined) throw Error("File not provided");
+
+    const formData = new FormData();
+    formData.append('file', csvFile);
+  
+    return axios({
+        method: 'post',
+        url: `/api/inventories/import`,
+        data: formData,
+        headers: {
+        'Content-type': 'multipart/form-data'
+        }
+    });
+  };

@@ -21,7 +21,6 @@ import DialogNewReport from './DialogNewReport/DialogNewReport';
 import ButtonPrintQueue from './ButtonPrintQueue';
 import authService, { displayIfAdmin } from '../../services/authService';
 
-
 class Supplies extends React.Component {
     constructor(props) {
         super(props);
@@ -94,6 +93,7 @@ class Supplies extends React.Component {
             openDialogAdd: true
         })
     }
+
 
     logout() {
         authService.logout().then(() => {
