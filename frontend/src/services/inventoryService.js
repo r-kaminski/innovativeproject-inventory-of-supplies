@@ -124,6 +124,9 @@ export const lastUpdated = async (reportId) => {
 export const importCSV = async csvFile => {
     if (csvFile === undefined) throw Error("File not provided");
 
+    if (csvFile.type != 'text/csv') {
+        throw new Error("Wrong file format");
+    }
     const formData = new FormData();
     formData.append('file', csvFile);
   
