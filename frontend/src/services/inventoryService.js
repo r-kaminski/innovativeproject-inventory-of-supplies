@@ -124,10 +124,15 @@ export const lastUpdated = async (reportId) => {
 export const importCSV = async csvFile => {
     if (csvFile === undefined) throw Error("File not provided");
 
+    const formData = new FormData();
+    formData.append('file', csvFile);
+  
     return axios({
         method: 'post',
         url: `/api/inventories/import`,
-        // data: csvFile <- Unsupported Media Type error
-        // file: csvFile <- status code 500
-    })
-}
+        data: formData,
+        headers: {
+        'Content-type': 'multipart/form-data'
+        }
+    });
+  };
