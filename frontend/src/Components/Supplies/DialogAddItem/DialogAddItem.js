@@ -1,12 +1,27 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
 import Dialog from '@material-ui/core/Dialog';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import styles from './DialogAddItem.module.css';
 import { insertItem } from '../../../services/inventoryService';
+import { withStyles } from '@material-ui/core/styles';
+
+
+const VioletCheckbox = withStyles({
+  root: {
+    color: "#3f51b5",
+    '&$checked': {
+      color: "#3f51b5",
+    },
+  },
+  checked: {},
+})(props => <Checkbox color="default" {...props} />);
+
 
 export default class DialogAddItem extends React.Component {
   constructor(props) {
@@ -15,7 +30,8 @@ export default class DialogAddItem extends React.Component {
     this.state = {
       name: '',
       state: '',
-      description: ''
+      description: '',
+      to_be_scanned: true
     }
   }
 
@@ -33,6 +49,10 @@ export default class DialogAddItem extends React.Component {
         this.setState({ description: event.target.value })
         break;
 
+      case "to_be_scanned":
+        this.setState({ to_be_scanned: event.target.checked })
+        break;
+
       default:
         //do sth
         break;
@@ -43,7 +63,8 @@ export default class DialogAddItem extends React.Component {
     this.setState({
       name: '',
       state: '',
-      description: ''
+      description: '',
+      to_be_scanned: true
     })
   };
 
@@ -51,7 +72,8 @@ export default class DialogAddItem extends React.Component {
     let item = {
       name: this.state.name,
       state: this.state.state,
-      description: this.state.description
+      description: this.state.description,
+      to_be_scanned: this.state.to_be_scanned
     }
 
     insertItem(item)
@@ -100,6 +122,17 @@ export default class DialogAddItem extends React.Component {
               variant="outlined"
               value={this.state.description}
               onChange={(event) => this.onChangeHandler(event, "description")}
+            />
+            <FormControlLabel
+              component="legend"
+              control={
+                <VioletCheckbox
+                  id="to_be_scanned"
+                  checked={this.state.to_be_scanned}
+                  onChange={(event) => this.onChangeHandler(event, "to_be_scanned")}
+                />
+              }
+              label="Scannable"
             />
           </div>
         </DialogContent>
