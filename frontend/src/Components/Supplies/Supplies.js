@@ -286,6 +286,33 @@ class Supplies extends React.Component {
             }
         },
         {
+            name: "last_time_scanned",
+            label: "Last scanned",
+            options: {
+                filter: false,
+                sort: false,
+                customBodyRender: (value, tableMeta) => {
+                    if (value) {
+                        var current = new Date();
+                        var scanned = new Date(value);
+                        var days = Math.floor((current - scanned) / (1000*60*60*24))
+                        switch(days) {
+                            case 0:
+                                value = "Today"
+                                break;
+                            case 1:
+                                value = "Yesterday"
+                                break;
+                            default:
+                                value = days + " days ago"
+                                break;
+                        }
+                        return value
+                    }
+                }
+            }
+        },
+        {
             options: {
                 filter: false,
                 sort: false,

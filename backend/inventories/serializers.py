@@ -53,7 +53,7 @@ class InventoryReportSerializer(serializers.ModelSerializer):
         Automatically populates with InventorySupply
         """
         report = InventoryReport.objects.create(**validated_data)
-        for supply in Supply.objects.filter(deleted=False):
+        for supply in Supply.objects.filter(deleted=False).filter(to_be_scanned=True):
             inventory_supply = InventorySupply.objects.create(
                 inventory_supply=supply, inventory_report=report, is_checked=False)
             inventory_supply.save()

@@ -18,6 +18,8 @@ from rest_framework.views import APIView
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 import csv
 import io
+
+
 class InventoryReportListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
     queryset = InventoryReport.objects.all()
@@ -94,6 +96,9 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
+            supply = Supply.objects.get(pk=self.kwargs.get('inventory_supply_id'))
+            supply.last_time_scanned = timezone.now().date()
+            supply.save()
             self.update_timestamp(kwargs)
             return super().patch(request, args, kwargs)
         except ParameterException as pe:
@@ -106,6 +111,9 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         try:
             validate_input_data(kwargs)
+            supply = Supply.objects.get(pk=self.kwargs.get('inventory_supply_id'))
+            supply.last_time_scanned = timezone.now().date()
+            supply.save()
             self.update_timestamp(kwargs)
             return super().put(request, args, kwargs)
         except ParameterException as pe:
