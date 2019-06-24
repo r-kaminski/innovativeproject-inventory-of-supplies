@@ -12,6 +12,7 @@ from backend.permissions import IsAuthenticatedReadOnly
 from .renderers import ReportCSVRenderer, ReportPdfRenderer
 from .validators import ParameterException, validate_input_data, validate_order
 from rest_framework_csv import renderers as r
+from users.models import User
 
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
@@ -146,7 +147,8 @@ class InventoryReportCSV(generics.RetrieveAPIView):
                 if supply.is_checked and supply.inventory_supply:
                     content.append({'Supply ID': supply.inventory_supply.id,
                                     'Supply name': supply.inventory_supply.name,
-                                    'Found': '1'})
+                                    'Found': '1',
+                                    'Checked by': supply.checked_by.username if isinstance(supply.checked_by, User) else "Unknown user" })
                 if not supply.is_checked and supply.inventory_supply:
                     content.append({'Supply ID': supply.inventory_supply.id,
                                     'Supply name': supply.inventory_supply.name,

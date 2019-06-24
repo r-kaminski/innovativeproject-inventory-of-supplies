@@ -4,6 +4,7 @@ from .models import InventoryReport, InventorySupply
 from supplies.models import Supply
 from supplies.serializers import SupplySerializer, SupplyHeaderSerializer
 
+from users.serializers import UserSerializer
 
 class InventorySupplySerializer(serializers.ModelSerializer):
     supply = SupplySerializer(
@@ -24,9 +25,11 @@ class InventorySupplyHeaderSerializer(serializers.ModelSerializer):
     supply = SupplyHeaderSerializer(
         source='inventory_supply', many=False, read_only=True)
 
+    checked_by = UserSerializer()
+
     class Meta:
         model = InventorySupply
-        fields = ('supply', 'is_checked')
+        fields = ('supply', 'is_checked', 'checked_by')
 
 
 class InventoryReportSerializer(serializers.ModelSerializer):
