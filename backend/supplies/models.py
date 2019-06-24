@@ -6,6 +6,7 @@ class Supply(models.Model):
     description = models.TextField(default="")
     to_be_scanned = models.BooleanField(default=True)
     last_time_scanned = models.DateField(null=True, blank=True)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

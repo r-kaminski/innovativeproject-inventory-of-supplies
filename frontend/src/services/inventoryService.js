@@ -1,31 +1,31 @@
 import axios from 'axios';
 
-export const getItems = ({pageNumber : page, itemsPerPage : page_size}={}) => {
+export const getItems = ({ pageNumber: page, itemsPerPage: page_size } = {}) => {
     let params = {};
-    if(page !== undefined) params.page = page;
-    if(page_size !== undefined) params.page_size = page_size;
+    if (page !== undefined) params.page = page;
+    if (page_size !== undefined) params.page_size = page_size;
 
     return axios({
         method: 'get',
         url: '/api/supplies/',
-        params : params
+        params: params
     });
 }
 
-export const searchItems = ({searchPhase : name = "", pageNumber: page, itemsPerPage: page_size}={}) => {
+export const searchItems = ({ searchPhase: name = "", pageNumber: page, itemsPerPage: page_size } = {}) => {
     let params = {};
     params.name = name;
-    if(page !== undefined) params.page = page;
-    if(page_size !== undefined) params.page_size = page_size;
+    if (page !== undefined) params.page = page;
+    if (page_size !== undefined) params.page_size = page_size;
 
     return axios({
         method: 'get',
         url: '/api/supplies/search',
-        params : params
+        params: params
     });
 }
 
-export const insertItem = async (item) =>  {
+export const insertItem = async (item) => {
     return axios({
         method: 'post',
         url: '/api/supplies/',
@@ -48,48 +48,48 @@ export const partialUpdateItem = (itemId, itemBody) => {
     });
 }
 
-export const getReports = ({pageNumber : page, itemsPerPage : page_size}={}) => {
+export const getReports = ({ pageNumber: page, itemsPerPage: page_size } = {}) => {
     let params = {};
-    if(page !== undefined) params.page = page;
-    if(page_size !== undefined) params.page_size = page_size;
+    if (page !== undefined) params.page = page;
+    if (page_size !== undefined) params.page_size = page_size;
 
     return axios({
         method: 'get',
         url: '/api/inventories/',
-        params : params
+        params: params
     });
 }
 
-export const getReportsItems = ({reportId : id, pageNumber : page, itemsPerPage : page_size}={}) => {
-    if(id === undefined) throw Error("ReportId not provided!");
+export const getReportsItems = ({ reportId: id, pageNumber: page, itemsPerPage: page_size } = {}) => {
+    if (id === undefined) throw Error("ReportId not provided!");
 
     let params = {};
-    if(page !== undefined) params.page = page;
-    if(page_size !== undefined) params.page_size = page_size;
+    if (page !== undefined) params.page = page;
+    if (page_size !== undefined) params.page_size = page_size;
 
     return axios({
         method: 'get',
         url: `/api/inventories/${id}`,
-        params : params
+        params: params
     });
 }
 
-export const partialUpdateReportItem = ({reportId, supplyId, is_checked} = {}) => {
-    if(reportId === undefined)   throw Error("reportId not provided!");
-    if(supplyId === undefined)   throw Error("supplyId not provided!");
-    if(is_checked === undefined) throw Error("is_checked not provided!");
+export const partialUpdateReportItem = ({ reportId, supplyId, is_checked } = {}) => {
+    if (reportId === undefined) throw Error("reportId not provided!");
+    if (supplyId === undefined) throw Error("supplyId not provided!");
+    if (is_checked === undefined) throw Error("is_checked not provided!");
 
     return axios({
         method: 'patch',
         url: `/api/inventories/${reportId}/supplies/${supplyId}`,
-        data: {is_checked},
+        data: { is_checked },
     });
 }
 
-export const createReport = async ({name, date}) =>  {
+export const createReport = async ({ name, date }) => {
     if (name === undefined || name === "") throw Error("Name not provided!");
 
-    let data = {name};
+    let data = { name };
     if (date !== undefined) data.date = date;
 
     return axios({
@@ -100,10 +100,39 @@ export const createReport = async ({name, date}) =>  {
 }
 
 export const deleteReport = async (reportId) => {
-    if(reportId === undefined) throw Error("ReportId not provided!");
+    if (reportId === undefined) throw Error("ReportId not provided!");
 
     return axios({
         method: 'delete',
         url: `/api/inventories/remove/${reportId}`
     });
 }
+
+export const getReportInCSV = async reportId => {
+  if (reportId === undefined) throw Error("ReportId not provided!");
+
+  return axios({
+    method: "get",
+    url: `/api/inventories/csv/${reportId}`
+  });
+}
+
+export const lastUpdated = async (reportId) => {
+    return axios.get(`/api/inventories/${reportId}/last_update`)
+}
+
+export const importCSV = async csvFile => {
+    if (csvFile === undefined) throw Error("File not provided");
+
+    const formData = new FormData();
+    formData.append('file', csvFile);
+  
+    return axios({
+        method: 'post',
+        url: `/api/inventories/import`,
+        data: formData,
+        headers: {
+        'Content-type': 'multipart/form-data'
+        }
+    });
+  };

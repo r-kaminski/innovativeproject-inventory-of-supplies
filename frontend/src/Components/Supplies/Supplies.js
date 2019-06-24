@@ -6,6 +6,7 @@ import ButtonAddItem from './ButtonAddItem/ButtonAddItem'
 import ButtonRemoveItem from './ButtonRemoveItem/ButtonRemoveItem';
 import ButtonLogout from './ButtonLogout';
 import ButtonEditItem from './ButtonEditItem/ButtonEditItem';
+import ButtonAdminPanel from './ButtonAdminPanel/ButtonAdminPanel';
 import DialogEditItem from './DialogEditItem/DialogEditItem';
 import DialogAddItem from './DialogAddItem/DialogAddItem';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -19,7 +20,6 @@ import ButtonNewReport from './ButtonNewReport/ButtonNewReport';
 import DialogNewReport from './DialogNewReport/DialogNewReport';
 import ButtonPrintQueue from './ButtonPrintQueue';
 import authService, { displayIfAdmin } from '../../services/authService';
-
 
 class Supplies extends React.Component {
     constructor(props) {
@@ -93,6 +93,7 @@ class Supplies extends React.Component {
             openDialogAdd: true
         })
     }
+
 
     logout() {
         authService.logout().then(() => {
@@ -360,6 +361,7 @@ class Supplies extends React.Component {
 
             customToolbar: () => (
                 <div className={styles.toolbar}>
+                    {displayIfAdmin(<ButtonAdminPanel onClick={() => this.props.history.push('/admin')} />)}
                     {displayIfAdmin(<ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />)}
                     {displayIfAdmin(<ButtonNewReport onClick={() => this.setState({ openDialogNewReport: true })} />)}
                     <ButtonReport onClick={() => { this.props.history.push('/reports'); }} />
@@ -372,7 +374,6 @@ class Supplies extends React.Component {
                     <ButtonLogout onClick={this.logout.bind(this)} />
                 </div>
             ),
-            //onRowsDelete: (rows) => this.onClickDeleteSelected(rows.data),
             customToolbarSelect: () => (
                 <div className={styles.toolbar}>
                     {displayIfAdmin(<ButtonRemoveItem

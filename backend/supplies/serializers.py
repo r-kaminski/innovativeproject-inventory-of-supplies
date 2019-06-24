@@ -4,12 +4,13 @@ from .models import Supply
 
 class SupplySerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id', 'name', 'state', 'description', 'to_be_scanned', 'last_time_scanned')
+        fields = ('id', 'name', 'state', 'description', 'to_be_scanned', 'last_time_scanned', 'deleted')
         model = Supply
         extra_kwargs = {
             'state': {'required': False, 'allow_blank': True},
             'description': {'required': False, 'allow_blank': True},
         }
+
 
 class SupplyHeaderSerializer(serializers.ModelSerializer):
     class Meta:

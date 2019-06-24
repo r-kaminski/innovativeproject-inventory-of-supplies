@@ -7,3 +7,6 @@ django-allauth==0.39.1
 PyQRCode==1.2.1
 Pillow==5.1.0
 pypng==0.0.18
+djangorestframework-csv==2.1.0
+fpdf==1.7.2
+django-dbbackup==3.2.0

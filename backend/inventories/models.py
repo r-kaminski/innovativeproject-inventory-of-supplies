@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date as datetime_date
 from supplies.models import Supply
+from django.utils import timezone
 
 
 class InventoryReport(models.Model):
@@ -11,6 +12,7 @@ class InventoryReport(models.Model):
     """
     date = models.DateField(default=datetime_date.today)
     name = models.CharField(max_length=50)
+    last_update = models.DateTimeField(default=timezone.now)
 
 
 class InventorySupply(models.Model):

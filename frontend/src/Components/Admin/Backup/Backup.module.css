@@ -1,0 +1,25 @@
+
+.list {
+    width: 100%;
+    max-width:480px;
+    max-height: 500px;
+    min-width: 200px;
+    min-height: 100px;
+    background-color: white;
+    position: absolute !important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Roboto, sans-serif;
+    
+    overflow: auto;
+}
+
+.wrapper{
+    min-height: 100%;
+    background: #eee;
+}
+.button{
+    position: absolute !important;
+    right: 10px;
+}
