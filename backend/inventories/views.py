@@ -92,6 +92,8 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
         try:
             validate_input_data(kwargs)
             self.update_timestamp(kwargs)
+            # make sure data is mutable
+            request._full_data = request.data.copy()
             if request.data['is_checked']:
                 request.data['checked_by'] = request.user.id
             else:
@@ -108,6 +110,8 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
         try:
             validate_input_data(kwargs)
             self.update_timestamp(kwargs)
+            # make sure data is mutable
+            request._full_data = request.data.copy()
             if request.data['is_checked']:
                 request.data['checked_by'] = request.user.id
             else:
