@@ -20,11 +20,13 @@ from django.urls import include
 from django.conf.urls import url
 from rest_framework_jwt.views import refresh_jwt_token, obtain_jwt_token
 
-from authentication.views import NameRegisterView, LogoutView
+from authentication.views import NameRegisterView, LogoutView, GithubLogin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^rest-auth/github/$', GithubLogin.as_view(), name='github-login'),
     url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^accounts/', include('allauth.urls')),
     # Doesn't require first and last names:
     url(r'^rest-auth/registration/',
         include('rest_auth.registration.urls'), name="rest_register"),

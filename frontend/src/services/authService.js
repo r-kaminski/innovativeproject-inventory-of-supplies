@@ -24,7 +24,7 @@ class authService {
 }
 export default authService;
 
-export var isAdmin;
+export var isAdmin = false;
 export const validateAdmin = () => {
     authService.isCurrentUserAdmin().then(is_staff => isAdmin = is_staff);
 }

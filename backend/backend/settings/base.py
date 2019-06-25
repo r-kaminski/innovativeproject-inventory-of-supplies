@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', ]
 
-
+LOGIN_REDIRECT_URL = 'http://localhost/#/supplies'
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,13 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'rest_framework',
     'rest_auth',
-    'django.contrib.sites',
     'allauth',
     'allauth.socialaccount',
     'allauth.account',
+    'allauth.socialaccount.providers.github',
     'rest_auth.registration',
     'dbbackup',
 
@@ -81,9 +82,22 @@ REST_FRAMEWORK = {
     )
 }
 
-SITE_ID = 1
+SITE_ID = 4
 
 AUTH_USER_MODEL = 'users.User'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user'
+        ],
+    }
+}
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

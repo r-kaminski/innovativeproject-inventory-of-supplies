@@ -9,7 +9,10 @@ import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
 import Fade from '@material-ui/core/Fade';
 import { withSnackbar } from 'notistack';
+import GitHubLogin from 'react-github-login';
+import { Redirect } from 'react-router-dom';
 import './Authentication.css'
+import Axios from 'axios'
 
 class Authentication extends Component {
     constructor() {
@@ -106,31 +109,49 @@ class Authentication extends Component {
         }
     }
 
+
+    handleAuth = async (res) => {
+        //for some reason this is never called
+        console.log(res);
+    }
+
+    failedAuth = async (res) => {
+        //for some reason this in never called
+        console.error(res);
+    }
+
+
     currentMode() {
         return this.state.mode;
-    }
+    };
 
     renderForm() {
         if (this.currentMode() === 'login') {
             return (
-                <form onSubmit={this.handleLogin.bind(this)}>
-                    <FormControl className="fields" fullWidth>
-                        <InputLabel htmlFor="username">Username</InputLabel>
-                        <Input className="Input" autoComplete="section-login username" placeholder="Username" type="text" name="username" value={this.state.username} onChange={(event) => this.setState({ username: event.target.value })} />
-                    </FormControl>
-                    <FormControl className="fields" fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input placeholder="Password" autoComplete="section-login current-password" type="password" name="password" value={this.state.password1} onChange={(event) => this.setState({ password1: event.target.value })} />
-                    </FormControl>
+                <div>
+                    <form onSubmit={this.handleLogin.bind(this)}>
+                        <FormControl className="fields" fullWidth>
+                            <InputLabel htmlFor="username">Username</InputLabel>
+                            <Input className="Input" autoComplete="section-login username" placeholder="Username" type="text" name="username" value={this.state.username} onChange={(event) => this.setState({ username: event.target.value })} />
+                        </FormControl>
+                        <FormControl className="fields" fullWidth>
+                            <InputLabel htmlFor="password">Password</InputLabel>
+                            <Input placeholder="Password" autoComplete="section-login current-password" type="password" name="password" value={this.state.password1} onChange={(event) => this.setState({ password1: event.target.value })} />
+                        </FormControl>
 
-                    <Button type="submit" variant="contained" className="buttons" fullWidth color="primary" disabled={!this.validateLoginForm()}>Log in</Button>
-
-                    <Grid className="bottomFields" container item direction="row" justify="center" alignItems="center" alignContent="center" spacing={16}>
-                        <Grid item className="bottomButtons" onClick={(event) => this.changeScreen('register')}>I'm new here</Grid>
-                        <Grid item className="separator">|</Grid>
-                        <Grid item className="bottomButtons">Forgot password</Grid>
-                    </Grid>
-                </form>
+                        <Button type="submit" variant="contained" className="buttons" fullWidth color="primary" disabled={!this.validateLoginForm()}>Log in</Button>
+                        <Grid className="bottomFields" container item direction="row" justify="center" alignItems="center" alignContent="center" spacing={16}>
+                            <Grid item className="bottomButtons" onClick={(event) => this.changeScreen('register')}>I'm new here</Grid>
+                            <Grid item className="separator">|</Grid>
+                            <Grid item className="bottomButtons">Forgot password</Grid>
+                        </Grid>
+                    </form>
+                    <GitHubLogin 
+                        clientId="07d803d57b4b5488b2fa" 
+                        onSuccess={this.handleAuth} 
+                        onFailure={this.failedAuth} 
+                    />
+                </div>
             )
         } else {
             return (
