@@ -28,7 +28,11 @@ const StocktakingStack = createStackNavigator({
 StocktakingStack.navigationOptions = {
   tabBarLabel: "Reports",
   tabBarIcon: ({ focused }) => (
-    <Icon type="material" name="assignment" color="#FFF" />
+    <Icon
+      type="material"
+      name="assignment"
+      color={focused ? "#FFF" : "#95989A"}
+    />
   )
 };
 
@@ -42,7 +46,11 @@ const ToolsStack = createStackNavigator({
 ToolsStack.navigationOptions = {
   tabBarLabel: "Supplies",
   tabBarIcon: ({ focused }) => (
-    <Icon type="material" name="view-list" color="#FFF" />
+    <Icon
+      type="material"
+      name="view-list"
+      color={focused ? "#FFF" : "#95989A"}
+    />
   )
 };
 
@@ -53,7 +61,11 @@ const SettingsStack = createStackNavigator({
 SettingsStack.navigationOptions = {
   tabBarLabel: "Settings",
   tabBarIcon: ({ focused }) => (
-    <Icon type="material" name="account-circle" color="#FFF" />
+    <Icon
+      type="material"
+      name="account-circle"
+      color={focused ? "#FFF" : "#95989A"}
+    />
   ),
   style: {
     color: "red"

@@ -1,4 +1,5 @@
 import React from "react";
+import { Icon } from "react-native-elements";
 import {
   View,
   Text,
@@ -6,9 +7,20 @@ import {
   TouchableOpacity,
   Animated
 } from "react-native";
+import AnimatedTabButton from "../components/AnimatedTabButton.js";
 
 const styles = StyleSheet.create({
-  container: { flexDirection: "row", height: 52, elevation: 2 },
+  container: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+    right: 8,
+    borderRadius: 8,
+    flexDirection: "row",
+    height: 52,
+    elevation: 2,
+    backgroundColor: "#FFF"
+  },
   tabButton: {
     flex: 1,
     flexDirection: "row",
@@ -22,34 +34,8 @@ class AnimatedTabBar extends React.Component {
     super(props);
     this.state = {
       currRouteIndex: -1,
-      prevRouteIndex: -1,
-      fadeValA: new Animated.Value(0),
-      fadeValB: new Animated.Value(54),
-      currFaderIn: "A"
+      prevRouteIndex: -1
     };
-  }
-
-  swapFaders() {
-    this.setState({});
-  }
-
-  componentDidMount() {
-    if (this.state.currRouteIndex != this.props.navigation.state.index)
-      this.setState(
-        {
-          prevRouteIndex: this.state.currRouteIndex,
-          currRouteIndex: this.props.navigation.state.index,
-          fadeValA: new Animated.Value(0)
-        },
-        () => {
-          if (this.state.currRouteIndex != this.state.prevRouteIndex) {
-            Animated.timing(this.state.fadeValA, {
-              toValue: 54,
-              duration: 2000
-            }).start();
-          }
-        }
-      );
   }
 
   render() {
@@ -70,17 +56,10 @@ class AnimatedTabBar extends React.Component {
         {routes.map((route, routeIndex) => {
           const isRouteActive = routeIndex === activeRouteIndex;
           const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
-
-          let width = isRouteActive
-            ? this.state.fadeValA
-            : routeIndex === this.state.prevRouteIndex
-            ? this.state.fadeValB
-            : 0;
-
           return (
-            <TouchableOpacity
+            <AnimatedTabButton
               key={routeIndex}
-              style={styles.tabButton}
+              active={isRouteActive}
               onPress={() => {
                 onTabPress({ route });
               }}
@@ -88,20 +67,33 @@ class AnimatedTabBar extends React.Component {
                 onTabLongPress({ route });
               }}
               accessibilityLabel={getAccessibilityLabel({ route })}
-            >
-              {renderIcon({ route, focused: isRouteActive, tintColor })}
-
-              {isRouteActive ? (
-                <Animated.Text
-                  ellipsizeMode="clip"
-                  style={{ color: "#FFF", width }}
-                >
-                  {getLabelText({ route })}
-                </Animated.Text>
-              ) : null}
-            </TouchableOpacity>
+              renderIcon={() =>
+                renderIcon({ route, focused: isRouteActive, tintColor })
+              }
+              text={getLabelText({ route })}
+            />
           );
         })}
+        <View
+          style={{
+            alignSelf: "center",
+            height: 22,
+            width: 1,
+            backgroundColor: "#95989A"
+          }}
+        />
+        <TouchableOpacity
+          style={{ width: 58, alignSelf: "center" }}
+          accessibilityLabel="New"
+        >
+          <Icon type="material" name="add-circle" color="#95989A" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ width: 58, alignSelf: "center" }}
+          accessibilityLabel="Search"
+        >
+          <Icon type="material" name="search" color="#95989A" />
+        </TouchableOpacity>
       </View>
     );
   }
