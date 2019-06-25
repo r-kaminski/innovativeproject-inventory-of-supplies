@@ -13,6 +13,7 @@ from backend.permissions import IsAuthenticatedReadOnly
 from .renderers import ReportCSVRenderer, ReportPdfRenderer
 from .validators import ParameterException, validate_input_data, validate_order
 from rest_framework_csv import renderers as r
+from users.models import User
 
 from rest_framework.views import APIView
 from rest_framework.parsers import FileUploadParser, MultiPartParser
@@ -100,6 +101,12 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
             supply.last_time_scanned = timezone.now().date()
             supply.save()
             self.update_timestamp(kwargs)
+            # make sure data is mutable
+            request._full_data = request.data.copy()
+            if request.data['is_checked']:
+                request.data['checked_by'] = request.user.id
+            else:
+                request.data['checked_by'] = None
             return super().patch(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -115,6 +122,12 @@ class InventorySupplyView(generics.RetrieveUpdateAPIView):
             supply.last_time_scanned = timezone.now().date()
             supply.save()
             self.update_timestamp(kwargs)
+            # make sure data is mutable
+            request._full_data = request.data.copy()
+            if request.data['is_checked']:
+                request.data['checked_by'] = request.user.id
+            else:
+                request.data['checked_by'] = None
             return super().put(request, args, kwargs)
         except ParameterException as pe:
             return Response(pe.args[0], status=status.HTTP_400_BAD_REQUEST)
@@ -150,7 +163,8 @@ class InventoryReportCSV(generics.RetrieveAPIView):
                 if supply.is_checked and supply.inventory_supply:
                     content.append({'Supply ID': supply.inventory_supply.id,
                                     'Supply name': supply.inventory_supply.name,
-                                    'Found': '1'})
+                                    'Found': '1',
+                                    'Checked by': supply.checked_by.username if isinstance(supply.checked_by, User) else "Unknown user" })
                 if not supply.is_checked and supply.inventory_supply:
                     content.append({'Supply ID': supply.inventory_supply.id,
                                     'Supply name': supply.inventory_supply.name,
@@ -178,7 +192,7 @@ class InventoryReportPDF(generics.RetrieveAPIView):
                 'date': report.date,
                 'Supplies total': serializer.data['supplies_total'],
                 'Supplies scanned': serializer.data['supplies_checked_out'],
-                'data': report.inventory_supplies.order_by('-is_checked', 'inventory_supply__id')
+                'data': report.inventory_supplies.order_by('-is_checked', 'checked_by', 'inventory_supply__id')
             }
             return Response(data)
         except:

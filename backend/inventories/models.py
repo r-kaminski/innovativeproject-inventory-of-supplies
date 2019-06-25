@@ -2,6 +2,7 @@ from django.db import models
 from datetime import date as datetime_date
 from supplies.models import Supply
 from django.utils import timezone
+from users.models import User
 
 
 class InventoryReport(models.Model):
@@ -25,5 +26,7 @@ class InventorySupply(models.Model):
     inventory_supply = models.ForeignKey(
         Supply, on_delete=models.CASCADE, blank=True, null=True)
     is_checked = models.BooleanField(default=False)
+    checked_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, blank=True, null=True)
     inventory_report = models.ForeignKey(InventoryReport,
                                          on_delete=models.CASCADE, related_name="inventory_supplies", blank=True, null=True)

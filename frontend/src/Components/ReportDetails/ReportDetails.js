@@ -52,9 +52,10 @@ export default class ReportDetails extends React.Component {
         //console.log(res);
         let data = [];
         for (const elem of res.data.results) {
-          let { supply, is_checked } = elem;
+          let { is_checked, supply, checked_by } = elem;
+          checked_by = checked_by===null?"": checked_by.username;
           let { id, name, state, description } = supply;
-          data.push({ id, name, state, description, is_checked });
+          data.push({ id, name, state, description, is_checked, checked_by });
         }
 
         this.setState({
@@ -211,6 +212,10 @@ export default class ReportDetails extends React.Component {
           );
         }
       }
+    },
+    {
+      name: "checked_by",
+      label: "checked by"
     },
     {
       name: "id",
