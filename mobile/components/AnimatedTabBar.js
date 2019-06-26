@@ -8,6 +8,14 @@ import {
   Animated
 } from "react-native";
 import AnimatedTabButton from "../components/AnimatedTabButton.js";
+import { openSupplyModal } from "../redux/actions/index";
+import { connect } from "react-redux";
+
+function mapDispatchToProps(dispatch) {
+  return {
+    openSupplyModal: modal => dispatch(openSupplyModal(modal))
+  };
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -85,6 +93,18 @@ class AnimatedTabBar extends React.Component {
         <TouchableOpacity
           style={{ width: 58, alignSelf: "center" }}
           accessibilityLabel="New"
+          onPress={() => {
+            if (navigation.state.index === 0) {
+              const { navigate } = this.props.navigation;
+              navigate("SupplyAdd", { onRefresh: () => this._onRefresh() });
+            } else if (navigation.state.index === 1) {
+              const { navigate } = this.props.navigation;
+              navigate("StocktakingAdd", {
+                onRefresh: () => this._onRefresh()
+              });
+            }
+            //        this.props.openSupplyModal({ open: true, target: null });
+          }}
         >
           <Icon type="material" name="add-circle" color="#95989A" />
         </TouchableOpacity>
@@ -99,4 +119,9 @@ class AnimatedTabBar extends React.Component {
   }
 }
 
-export default props => <AnimatedTabBar {...props} />;
+const TabBar = connect(
+  null,
+  mapDispatchToProps
+)(AnimatedTabBar);
+export default TabBar;
+//export default props => <AnimatedTabBar {...props} />;

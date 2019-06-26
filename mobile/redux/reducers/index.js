@@ -1,4 +1,4 @@
-import { OPEN_SUPPLY_MODAL, OPEN_REPORT_MODAL } from "./action-types";
+import { OPEN_SUPPLY_MODAL, OPEN_REPORT_MODAL } from "../actions/action-types";
 
 const initialState = {
   openSupplyModal: false,
