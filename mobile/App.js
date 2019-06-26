@@ -5,6 +5,8 @@ import AppNavigator from "./navigation/AppNavigator";
 import LoginPage from "./screens/LoginPage";
 import { autoLogin } from "./services/AuthService";
 import ButtonsRow from "./components/ButtonsRow";
+import store from "./redux/index";
+import { Provider } from "react-redux";
 
 export default class App extends React.Component {
   state = {
@@ -38,20 +40,22 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <View style={styles.appContainer}>
-          <View style={styles.container}>
-            {this.state.fontLoaded ? (
-              this.state.signedIn ? (
-                [
-                  <ButtonsRow onPressLogout={this.logout} key={"1"} />,
-                  <AppNavigator style={styles.appNavigator} key={"2"} />
-                ]
-              ) : (
-                <LoginPage onSignInSuccess={this.onSignInSuccess} />
-              )
-            ) : null}
+        <Provider store={store}>
+          <View style={styles.appContainer}>
+            <View style={styles.container}>
+              {this.state.fontLoaded ? (
+                this.state.signedIn ? (
+                  [
+                    <ButtonsRow onPressLogout={this.logout} key={"1"} />,
+                    <AppNavigator style={styles.appNavigator} key={"2"} />
+                  ]
+                ) : (
+                  <LoginPage onSignInSuccess={this.onSignInSuccess} />
+                )
+              ) : null}
+            </View>
           </View>
-        </View>
+        </Provider>
       );
     }
   }
