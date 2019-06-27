@@ -4,12 +4,10 @@ import {
   StyleSheet,
   Text,
   View,
-  ImageBackground,
   Image,
   Dimensions
 } from "react-native";
 import { getSupplies } from "../services/SuppliesService";
-import { ListItem } from "react-native-elements";
 import SupplyListItem from "../components/SupplyListItem.js";
 
 export default class SuppliesContainer extends React.Component {

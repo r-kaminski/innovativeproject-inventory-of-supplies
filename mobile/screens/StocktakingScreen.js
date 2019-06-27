@@ -3,15 +3,17 @@ import {
   FlatList,
   StyleSheet,
   Text,
-  View
+  View,
+  Image,
+  Dimensions
 } from "react-native";
 import {
   getStocktaking,
   updateStocktaking
 } from "../services/StocktakingService";
-import { CheckBox, ListItem, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import { navBarConfig } from "../redux/actions/index";
+import ReportDetailsListItem from "../components/ReportDetailsListItem";
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -28,9 +30,12 @@ class StocktakingScreen extends React.Component {
     count: 0,
     refreshing: false,
     page: 1,
+    imgResizeRatio: 0
   };
 
   componentDidMount() {
+    this.setState({ imgResizeRatio: Dimensions.get("window").width / 560 });
+
     this.props.navigation.addListener("willFocus", payload =>
       this._onRefresh(this.state.page)
     );
@@ -83,55 +88,48 @@ class StocktakingScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Image
+          source={require("../assets/images/bg_header.png")}
+          resizeMode="contain"
+          style={{
+            position: "absolute",
+            top: 0,
+            width: 360,
+            height: 157 * this.state.imgResizeRatio,
+            flex: 1,
+            zIndex: 5
+          }}
+        />
+        <View style={styles.headerContainer}>
+          <Text>
+            <Text style={styles.headerTitle}>Report </Text>
+            <Text style={styles.headerSubtitle}>@MAKERSPACE</Text>
+          </Text>
+          <Text style={styles.headerItemCount}>total of X items</Text>
+        </View>
         <FlatList
-          style={styles.container}
           data={this.state.results}
+          contentContainerStyle={{
+            paddingTop: 157 * this.state.imgResizeRatio
+          }}
           keyExtractor={item => item.supply.id.toString()}
           renderItem={({ item, index }) => (
-            <ListItem
-              style={styles.listItem}
-              title={
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <View>
-                    <Text>{item.supply.name}</Text>
-                  </View>
-                  <View style={{ width: 40 }}>
-                    <CheckBox
-                      checked={item.is_checked}
-                      onPress={() => {
-                        const res = this.state.results;
-                        console.log(index);
-                        res[index].is_checked = !res[index].is_checked;
-                        updateStocktaking(
-                          this.props.navigation.getParam("id"),
-                          item.supply.id,
-                          item.is_checked
-                        ).then(() => {
-                          this.setState({
-                            ...this.state,
-                            results: res
-                          });
-                        });
-                      }}
-                    />
-                  </View>
-                </View>
-              }
-              subtitle={
-                <Text
-                  style={styles.subtitle}
-                  ellipsizeMode={"tail"}
-                  numberOfLines={1}
-                >
-                  {item.supply.description}
-                </Text>
-              }
-            />
+            <ReportDetailsListItem
+              item={item}
+              onCheckBoxPress={() => {
+                const res = this.state.results;
+                res[index].is_checked = !res[index].is_checked;
+                updateStocktaking(
+                  this.props.navigation.getParam("id"),
+                  item.supply.id,
+                  item.is_checked
+                ).then(() => {
+                  this.setState({
+                    ...this.state,
+                    results: res
+                  });
+                });
+              }}/>
           )}
           onEndReached={() => {
             if (this.state.page < this.state.count / this.state.pageSize) {
@@ -148,23 +146,50 @@ class StocktakingScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  headerContainer: {
     flex: 1,
-    backgroundColor: "transparent"
+    flexDirection: "column",
+    width: "100%",
+    position: "absolute",
+    paddingTop: 8,
+    paddingLeft: 16,
+    top: 0,
+    zIndex: 6
   },
-  searchbar: {
-    flexDirection: "row"
+  headerTitle: {
+    fontFamily: "nunito-extrabold",
+    fontSize: 38,
+    color: "white"
   },
-  search: {
-    maxWidth: 40
+  headerSubtitle: {
+    fontSize: 14,
+    fontFamily: "nunito-extrabold",
+    color: "#FFCE7B",
+    paddingLeft: 6
+  },
+  headerItemCount: {
+    fontFamily: "nunito-extralight",
+    fontSize: 12,
+    color: "#FFF"
   },
   listItem: {
     borderBottomWidth: 1,
-    borderColor: "#d0d0d0",
-    backgroundColor: "transparent"
+    borderColor: "#d0d0d0"
   },
   subtitle: {
     color: "#d0d0d0"
   },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    backgroundColor: "rgba(255,255,255,0.5)",
+    zIndex: 1
+  }
 });
 
 const Stocktaking = connect(
