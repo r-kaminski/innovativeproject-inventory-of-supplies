@@ -30,10 +30,6 @@ class StocktakingScreen extends React.Component {
     page: 1,
   };
 
-  static navigationOptions = {
-    header: null
-  };
-
   componentDidMount() {
     this.props.navigation.addListener("willFocus", payload =>
       this._onRefresh(this.state.page)

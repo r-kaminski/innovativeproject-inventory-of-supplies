@@ -3,19 +3,18 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableWithoutFeedback
 } from "react-native";
 import { Icon } from "react-native-elements";
 
-export default class SupplyListItem extends React.Component {
+export default class ReportListItem extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={() => this.props.onPress()}>
         <View style={styles.listItem} key={this.props.index}>
           <Icon
-            type="entypo"
-            name="dot-single"
+            type="material"
+            name="description"
             color="#70B1C5"
             iconStyle={{ fontSize: 26 }}
           />
@@ -24,15 +23,15 @@ export default class SupplyListItem extends React.Component {
               flex: 1,
               display: "flex",
               flexDirection: "column",
+              justifyContent: "space-between",
               lineHeight: 23,
-              marginLeft: 10
+              marginLeft: 20,
             }}
           >
             <View
               style={{
-    
                 flexDirection: "row",
-                alignItems: "baseline"
+                alignItems: "baseline",             
               }}
             >
               <Text
@@ -42,16 +41,17 @@ export default class SupplyListItem extends React.Component {
               >
                 {this.props.item.name}
               </Text>
-              <Text>
-                <Text style={styles.textBig}>1</Text>
-                <Text style={[styles.textSmall, { lineHeight: 22 }]}>pc.</Text>
+            </View>
+            <View style={{ 
+              marginTop: -4,
+              flexDirection: "row",
+              alignItems: "baseline",
+            }}>
+              <Text style={[styles.textSmall, { color: "rgba(0,0,0,0.3)", marginRight: "auto" }]}>
+                {this.props.item.date}
               </Text>
             </View>
-            <View style={{ marginTop: -4, }}>
-              <Text style={[styles.textSmall, { color: "rgba(0,0,0,0.3)" }]}>
-                #012345678912
-              </Text>
-            </View>
+
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "stretch",
-    height: 48,
-    marginLeft: 14,
+    height: 40,
+    marginLeft: 20,
     marginRight: 22,
     marginTop: 15,
-    marginBottom: 15
+    marginBottom: 15,
   },
   textBig: {
     fontFamily: "nunito-extralight",
