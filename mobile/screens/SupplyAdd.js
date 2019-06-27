@@ -17,7 +17,8 @@ export default class SupplyEdit extends React.Component {
 
 
     static navigationOptions = {
-        header: null
+        header: null,
+        tabBarVisible: false
     };
 
     onPressSave = () => {

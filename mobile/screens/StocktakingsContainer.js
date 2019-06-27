@@ -26,8 +26,7 @@ export default class StocktakingsScreen extends React.Component {
     async fetchData(page) {
         await getStocktakings({
             page: page,
-            page_size: this.state.pageSize,
-            name: this.props.search
+            page_size: this.state.pageSize
         }).then((res) => {
             {
                 page === 1 ?
@@ -36,6 +35,7 @@ export default class StocktakingsScreen extends React.Component {
 
             }
         })
+        .catch(err => console.log("error: ", err));
     }
 
 

@@ -19,40 +19,68 @@ import StocktakingScreen from "../screens/StocktakingScreen";
 import StocktakingAdd from "../screens/StocktakingAdd";
 
 const StocktakingStack = createStackNavigator({
-  StocktakingsScreen: StocktakingsScreen,
-  StocktakingScreen: StocktakingScreen,
-  StocktakingAdd: StocktakingAdd,
-  StocktakingScanner: ScanScreen
+  'StocktakingsScreen': StocktakingsScreen,
+  'StocktakingScreen': StocktakingScreen,
+  'StocktakingAdd': StocktakingAdd,
+  'StocktakingScanner': ScanScreen
 });
 
-StocktakingStack.navigationOptions = {
-  tabBarLabel: "Reports",
-  tabBarIcon: ({ focused }) => (
-    <Icon
-      type="material"
-      name="assignment"
-      color={focused ? "#FFF" : "#95989A"}
-    />
-  )
+StocktakingStack.navigationOptions = ({navigation})=>{
+  let { routeName } = navigation.state.routes[navigation.state.index];
+  let navigationOptions = {
+    tabBarLabel: "Reports",
+    tabBarIcon: ({ focused }) => (
+      <Icon
+        type="material"
+        name="assignment"
+        color={focused ? "#FFF" : "#95989A"}
+      />
+    )
+  }
+
+  if(
+    routeName === 'StocktakingAdd' ||
+    routeName === 'StocktakingScanner')
+    {
+      navigationOptions.tabBarVisible = false;
+    }
+    else{
+      navigationOptions.tabBarVisible = true;
+    }
+
+  return navigationOptions;
 };
 
 const ToolsStack = createStackNavigator({
-  Supplies: SuppliesScreen,
-  Supply: { screen: SupplyScreen },
-  SupplyEdit: { screen: SupplyEdit },
-  SupplyAdd: { screen: SupplyAdd }
+  'Supplies': SuppliesScreen,
+  'Supply': { screen: SupplyScreen },
+  'SupplyEdit': { screen: SupplyEdit },
+  'SupplyAdd': { screen: SupplyAdd }
 });
 
-ToolsStack.navigationOptions = {
-  tabBarLabel: "Supplies",
-  tabBarIcon: ({ focused }) => (
-    <Icon
-      type="material"
-      name="view-list"
-      color={focused ? "#FFF" : "#95989A"}
-    />
-  )
+ToolsStack.navigationOptions = ({navigation})=>{
+  let { routeName } = navigation.state.routes[navigation.state.index];
+  let navigationOptions = {
+    tabBarLabel: "Supplies",
+    tabBarIcon: ({ focused }) => (
+      <Icon
+        type="material"
+        name="view-list"
+        color={focused ? "#FFF" : "#95989A"}
+      />
+    )
+  }
+
+  if(routeName === 'Supplies')
+    navigationOptions.tabBarVisible = true;
+  else
+    navigationOptions.tabBarVisible = false;
+
+
+  return navigationOptions;
 };
+
+
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen

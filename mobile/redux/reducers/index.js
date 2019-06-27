@@ -1,9 +1,23 @@
-import { OPEN_SUPPLY_MODAL, OPEN_REPORT_MODAL } from "../actions/action-types";
+import {
+  OPEN_SUPPLY_MODAL,
+  OPEN_REPORT_MODAL,
+  SHOW_SEARCH_BAR,
+  NAV_BAR_CONFIG
+} from "./../actions/action-types";
 
 const initialState = {
   openSupplyModal: false,
   supplyModalTarget: null,
-  openReportModal: false
+  openReportModal: false,
+  showSearchBar: false,
+  navBarConfig: {
+    showNavBar: true,
+    showButtonNew: true,
+    buttonNewAction: ()=>void(0),
+    showButtonSearch: true,
+    showButtonQr: false,
+    buttonQrAction: ()=>void(0),
+  }
 };
 
 export default function rootReducer(state = initialState, action) {
@@ -18,6 +32,14 @@ export default function rootReducer(state = initialState, action) {
     let open = action.payload.open || false;
     return Object.assign({}, state, {
       openReportModal: open
+    });
+  } else if (action.type === SHOW_SEARCH_BAR) {
+    return Object.assign({}, state, {
+      showSearchBar: action.payload.show
+    });
+  } else if (action.type === NAV_BAR_CONFIG) {
+    return Object.assign({}, state, {
+      navBarConfig: action.payload
     });
   }
   return state;

@@ -20,55 +20,50 @@ const styles = StyleSheet.create({
 export default class AnimatedTabButton extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props.text + " constructor");
     this.state = {
-      width: new Animated.Value(this.props.active ? 54 : 0),
-      bg_width: new Animated.Value(this.props.active ? 92 : 0)
+      txtWidth: new Animated.Value(this.props.active ? this.props.minWidth : 0),
+      backgroundWidth: new Animated.Value(this.props.active ? 92 : 0),
     };
   }
 
   expand = () => {
-    Animated.timing(this.state.width, {
+    Animated.timing(this.state.txtWidth, {
       toValue: 54,
       duration: 300
     }).start();
 
-    Animated.timing(this.state.bg_width, {
+    Animated.timing(this.state.backgroundWidth, {
       toValue: 92,
       duration: 300
     }).start();
   };
 
   contract = () => {
-    Animated.timing(this.state.width, {
+    Animated.timing(this.state.txtWidth, {
       toValue: 0,
       duration: 300
     }).start();
 
-    Animated.timing(this.state.bg_width, {
+    Animated.timing(this.state.backgroundWidth, {
       toValue: 0,
       duration: 300
     }).start();
   };
 
   componentDidUpdate({ active }) {
-    console.log(this.props.text + " update");
     if (active != this.props.active) {
       if (!active) {
-        console.log(this.props.text + "expand");
         this.setState(
           { width: new Animated.Value(0), bg_width: new Animated.Value(0) },
           () => this.expand()
         );
       } else {
-        console.log(this.props.text + "contract");
         this.setState(
           { width: new Animated.Value(54), bg_width: new Animated.Value(92) },
           () => this.contract()
         );
       }
     }
-    //	  this.setState({ width: new Animated.Value(this.props.active ? 0 : 54)})
   }
 
   render() {
@@ -77,13 +72,17 @@ export default class AnimatedTabButton extends React.Component {
       <Animated.View
         style={{
           ...styles.tabButton,
-          minWidth: active ? this.state.bg_width : 54
+          minWidth: (this.props.minWidth > 92 ? this.props.minWidth :
+            this.state.backgroundWidth.interpolate({
+              inputRange: [0, this.props.minWidth, 92],
+              outputRange: [this.props.minWidth, this.props.minWidth, 92]
+            })),
         }}
       >
         <TouchableOpacity style={styles.tabButton} {...otherProps}>
           {renderIcon()}
 
-          <Animated.View style={{ width: this.state.width }}>
+          <Animated.View style={{ width: this.state.txtWidth }}>
             <Animated.Text
               numberOfLines={1}
               ellipsizeMode="clip"
@@ -95,8 +94,12 @@ export default class AnimatedTabButton extends React.Component {
 
           <Animated.View
             style={{
-              width: this.state.bg_width,
+              width: this.state.backgroundWidth,
               backgroundColor: "#FFCE7B",
+              opacity: this.state.backgroundWidth.interpolate({
+                inputRange: [0, 92],
+                outputRange: [0, 1]
+              }),
               position: "absolute",
               zIndex: -1,
               height: 30,
@@ -107,4 +110,9 @@ export default class AnimatedTabButton extends React.Component {
       </Animated.View>
     );
   }
+}
+
+
+AnimatedTabButton.defaultProps = {
+  minWidth: 54,
 }
