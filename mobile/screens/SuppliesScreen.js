@@ -103,7 +103,9 @@ class SuppliesScreen extends React.Component {
           >
             <FloatingSearchBar 
               onPressQr={()=>{
-                this.props.navigation.navigate("Scanner");
+                this.props.navigation.navigate("Scanner", {
+                  origin: 'Supplies'
+                });
               }}
               onChangeText={(text)=>{
                 this.setState({search: text});

@@ -1,8 +1,11 @@
 import React from 'react';
 import { BarCodeScanner, Permissions } from 'expo';
-import { Dimensions, LayoutAnimation, StatusBar, StyleSheet, Text, View, ToastAndroid } from 'react-native';
-import { Button } from "react-native-elements";
+import { Dimensions, LayoutAnimation, StatusBar, StyleSheet, Text, View, ToastAndroid, TouchableOpacity, BackHandler } from 'react-native';
+import { Button, Icon } from "react-native-elements";
 import { updateStocktaking } from '../services/StocktakingService';
+//import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NavigationActions } from 'react-navigation';
+import Colors from "../constants/Colors";
 
 
 export default class ScanScreen extends React.Component {
@@ -10,6 +13,7 @@ export default class ScanScreen extends React.Component {
         hasCameraPermission: null,
         stocktaking: null,
         supplyId: null,
+        backScreen: null,
     };
 
     constructor(props) {
@@ -21,6 +25,14 @@ export default class ScanScreen extends React.Component {
 
     componentDidMount() {
         this._requestCameraPermission();
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackButton);
+        this.setState({
+            prevScreen: this.props.navigation.getParam('origin', null)
+        });
+    }
+
+    componentWillUnmount(){
+        this.backHandler.remove();
     }
 
     _requestCameraPermission = () => {
@@ -53,6 +65,19 @@ export default class ScanScreen extends React.Component {
         }
     };
 
+    _handleBackButton = () => {
+        this.goBack();
+        return true;
+    }
+
+    goBack = async () => {
+        this.props.navigation.navigate(this.state.prevScreen);
+    }
+
+    static navigationOptions = {
+        header: null
+      };
+
     render() {
         return (
             <View style={{
@@ -83,6 +108,12 @@ export default class ScanScreen extends React.Component {
                             }}
                         />}
                 <StatusBar hidden />
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={this.goBack}
+                >
+                    <Icon type="material" name="clear" color={Colors.primaryColor} />
+                </TouchableOpacity>
             </View>
         )
     }
@@ -94,5 +125,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    backButton: {
+        position: "absolute",
+        bottom: 16,
+        end: 16,
+        width: 52,
+        height: 52,
+        backgroundColor: "#FFF",
+        elevation: 2,
+        zIndex: 5,
+        borderRadius: 26,
+        alignItems: "center",
+        justifyContent: "center"
     }
 });
