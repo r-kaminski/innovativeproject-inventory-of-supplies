@@ -92,6 +92,10 @@ export const autoLogin = async () => {
     }
 }
 
+export const logout = () => {
+    SecureStore.setItemAsync('secure_token', "");
+}
+
 export const clearSession = async () => {
     try {
         await SecureStore.deleteItemAsync('secure_token');

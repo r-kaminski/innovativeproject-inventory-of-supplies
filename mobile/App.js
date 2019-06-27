@@ -3,10 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { AppLoading, Font, Icon } from "expo";
 import AppNavigator from "./navigation/AppNavigator";
 import LoginPage from "./screens/LoginPage";
-import { autoLogin } from "./services/AuthService";
-import ButtonsRow from "./components/ButtonsRow";
+import { autoLogin, logout } from "./services/AuthService";
 import store from "./redux/index";
 import { Provider } from "react-redux";
+import { LOG_OUT } from "./redux/actions/action-types";
+
 
 export default class App extends React.Component {
   state = {
@@ -27,6 +28,11 @@ export default class App extends React.Component {
     autoLogin().then(res => {
       this.setState({ signedIn: res });
     });
+
+    store.dispatch({
+      type: LOG_OUT, 
+      payload: this.logout
+    });
   }
 
   render() {
@@ -45,10 +51,10 @@ export default class App extends React.Component {
             <View style={styles.container}>
               {this.state.fontLoaded ? (
                 this.state.signedIn ? (
-                  [
-                    <ButtonsRow onPressLogout={this.logout} key={"1"} />,
-                    <AppNavigator style={styles.appNavigator} key={"2"} />
-                  ]
+                  <AppNavigator 
+                    style={styles.appNavigator}
+                    screenProps={this.logout} 
+                  />
                 ) : (
                   <LoginPage onSignInSuccess={this.onSignInSuccess} />
                 )
@@ -60,7 +66,10 @@ export default class App extends React.Component {
     }
   }
 
+  
+
   logout = () => {
+    logout();
     this.setState({ signedIn: false });
   };
 
@@ -96,7 +105,6 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   appContainer: {
-    // marginTop: 20,
     backgroundColor: "#00295c",
     flex: 1
   },

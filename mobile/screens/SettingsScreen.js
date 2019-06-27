@@ -1,7 +1,13 @@
 import React from 'react';
 import { ExpoConfigView } from '@expo/samples';
 import { connect } from "react-redux";
-import { navBarConfig } from "../redux/actions/index";
+import { navBarConfig, logout } from "../redux/actions/index";
+
+const mapStateToProps = state => {
+  return {
+    logout: state.logout
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -15,14 +21,16 @@ class SettingsScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.props.navigation.addListener('willFocus', (route)=>{
-      this.props.setNavBarConfig({
-        showNavBar: true,
-        showButtonNew: false,
-        showButtonSearch: false,
-        showButtonQr: false
-      });
-    })
+    this.props.logout();
+
+    // this.props.navigation.addListener('willFocus', (route)=>{
+    //   this.props.setNavBarConfig({
+    //     showNavBar: true,
+    //     showButtonNew: false,
+    //     showButtonSearch: false,
+    //     showButtonQr: false
+    //   });
+    // })
   }
 
   render() {
@@ -33,7 +41,7 @@ class SettingsScreen extends React.Component {
 }
 
 const Settings = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SettingsScreen);
 export default Settings;

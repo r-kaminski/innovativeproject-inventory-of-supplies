@@ -2,3 +2,4 @@ export const OPEN_SUPPY_MODAL = "OPEN_SUPPLY_MODAL";
 export const OPEN_REPORT_MODAL = "OPENR_REPORT_MODAL";
 export const SHOW_SEARCH_BAR = "SHOW_SEARCH_BAR";
 export const NAV_BAR_CONFIG = "NAV_BAR_CONFIG";
+export const LOG_OUT = "LOG_OUT";

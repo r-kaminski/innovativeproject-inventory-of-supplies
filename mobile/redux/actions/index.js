@@ -2,7 +2,8 @@ import {
   OPEN_SUPPLY_MODAL,
   OPEN_REPORT_MODAL,
   SHOW_SEARCH_BAR,
-  NAV_BAR_CONFIG
+  NAV_BAR_CONFIG,
+  LOG_OUT,
 } from "./action-types";
 
 export const openSupplyModal = payload => {
@@ -19,4 +20,8 @@ export const showSearchBar = payload => {
 
 export const navBarConfig = payload => {
   return { type: NAV_BAR_CONFIG, payload };
+};
+
+export const logout = payload => {
+  return { type: LOG_OUT, payload };
 };
