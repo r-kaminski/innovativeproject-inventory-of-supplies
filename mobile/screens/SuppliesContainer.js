@@ -26,7 +26,7 @@ export default class SuppliesContainer extends React.Component {
     this.setState({ imgResizeRatio: Dimensions.get("window").width / 560 });
   }
 
-  _onRefresh = (page, search) => {
+  _onRefresh = (page, search = "") => {
     if (search !== undefined) {
       this.setState({ refreshing: true, page: page ? page : 1 });
       this.fetchData(page ? page : 1, search).then(() => {
@@ -97,7 +97,7 @@ export default class SuppliesContainer extends React.Component {
             <SupplyListItem
               item={item}
               key={index}
-              onPress={() => this._handlePressTool(item.id)}
+              onPress={() => this.props.onClickSupply(item.id)}
             />
           )}
           onEndReached={() => {
@@ -114,11 +114,7 @@ export default class SuppliesContainer extends React.Component {
     );
   }
 
-  _handlePressTool = id => {
-    const { navigate } = this.props.nav;
 
-    navigate("Supply", { id: id });
-  };
 }
 
 const styles = StyleSheet.create({
@@ -168,3 +164,7 @@ const styles = StyleSheet.create({
     zIndex: 1
   }
 });
+
+SuppliesContainer.defaultProps = {
+  onClickSupply: ()=>void(0),
+}

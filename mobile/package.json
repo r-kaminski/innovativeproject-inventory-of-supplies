@@ -16,6 +16,7 @@
     "querystring": "^0.2.0",
     "react": "16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-native-camera": "^2.11.0",
     "react-native-elements": "^1.1.0",
     "react-native-gradient-buttons": "https://github.com/thomaswangio/react-native-gradient-buttons",
     "react-navigation": "^3.11.0",

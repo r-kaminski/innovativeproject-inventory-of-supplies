@@ -30,6 +30,7 @@ export async function postSupply(supply) {
                 body: JSON.stringify(supply)
             }
         );
+        console.log(responseJson);
         let responseJson = await response.json();
         return responseJson;
     } catch (error) {

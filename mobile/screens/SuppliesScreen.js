@@ -9,6 +9,7 @@ import SuppliesContainer from "./SuppliesContainer";
 import { connect } from "react-redux";
 import { showSearchBar, navBarConfig } from "../redux/actions/index";
 import FloatingSearchBar from "../components/FloatingSearchBar";
+import SupplyModal from "../components/SupplyModal";
 
 const mapStateToProps = state => {
   return { showSearchBar: state.showSearchBar };
@@ -25,13 +26,20 @@ class SuppliesScreen extends React.Component {
   constructor(props) {
     super(props);
     this.child = React.createRef();
+    this.state = {
+      search: "",
+      keyboardOffset: new Animated.Value(0),
+      modalVisible: false,
+      modalSupplyId: -1,
+    };
   }
-  state = {
-    search: "",
-    keyboardOffset: new Animated.Value(0)
-  };
+  
 
   componentDidMount() {
+    const supplyId = this.props.navigation.getParam('id', -1);
+    if(supplyId > -1)
+      this.setState({modalVisible: true, modalSupplyId: supplyId});
+
     this.keyboardDidShowSub = Keyboard.addListener(
       "keyboardDidShow",
       this._keyboardDidShow
@@ -46,8 +54,9 @@ class SuppliesScreen extends React.Component {
         showNavBar: true,
         showButtonNew: true,
         buttonNewAction: ()=>{
-          const { navigate } = this.props.navigation;
-          navigate("SupplyAdd", { onRefresh: () => this._onRefresh() });
+          this.setState({modalVisible: true, modalSupplyId: -1});
+          // const { navigate } = this.props.navigation;
+          // navigate("SupplyAdd", { onRefresh: () => this._onRefresh() });
         },
         showButtonSearch: true,
         showButtonQr: false
@@ -88,10 +97,24 @@ class SuppliesScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        {this.state.modalVisible &&
+          <SupplyModal 
+            visible={this.state.modalVisible}
+            supplyId={this.state.modalSupplyId}
+            onClose={()=>{
+              this.setState({modalVisible: false, modalSupplyId: -1});
+              this.child.current._onRefresh(1);
+            }}/>
+        }
         <SuppliesContainer
           nav={this.props.navigation}
           search={this.state.search}
           ref={this.child}
+          onClickSupply={(id)=>{
+            this.setState({
+              modalVisible: true, 
+              modalSupplyId: id});
+          }}
         />
 
         {this.props.showSearchBar && (

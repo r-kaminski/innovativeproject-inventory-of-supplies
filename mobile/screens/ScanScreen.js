@@ -1,4 +1,5 @@
 import React from 'react';
+import { RNCamera } from 'react-native-camera';
 import { BarCodeScanner, Permissions } from 'expo';
 import { Dimensions, LayoutAnimation, StatusBar, StyleSheet, Text, View, ToastAndroid, TouchableOpacity, BackHandler } from 'react-native';
 import { Button, Icon } from "react-native-elements";
@@ -13,7 +14,7 @@ export default class ScanScreen extends React.Component {
         hasCameraPermission: null,
         stocktaking: null,
         supplyId: null,
-        backScreen: null,
+        prevScreen: null,
     };
 
     constructor(props) {
@@ -29,6 +30,7 @@ export default class ScanScreen extends React.Component {
         this.setState({
             prevScreen: this.props.navigation.getParam('origin', null)
         });
+        //console.log(this.state.stocktaking);
     }
 
     componentWillUnmount(){
@@ -60,10 +62,12 @@ export default class ScanScreen extends React.Component {
                     ToastAndroid.show(`Error while scanning`, ToastAndroid.SHORT);
                 }
             } else {
-                this.props.navigation.navigate('Supply', { id: id })
+                this.props.navigation.navigate('Supplies', { id: id })
             }
         }
     };
+
+    
 
     _handleBackButton = () => {
         this.goBack();
@@ -81,11 +85,9 @@ export default class ScanScreen extends React.Component {
     render() {
         return (
             <View style={{
-                flex: 1,
-                backgroundColor: '#fff',
-                borderColor: 'red',
-                borderWidth: 1
+                flex: 1
             }}>
+                
                 {this.state.hasCameraPermission === null
                     ? <View style={styles.container}>
                         <Text>Requesting for camera permission</Text>
@@ -101,13 +103,13 @@ export default class ScanScreen extends React.Component {
 
                         </View>
                         : <BarCodeScanner
-                            onBarCodeRead={this._handleBarCodeRead}
+                            onBarCodeScanned={this._handleBarCodeRead}
                             style={{
                                 height: Dimensions.get('window').height,
                                 width: Dimensions.get('window').width,
                             }}
-                        />}
-                <StatusBar hidden />
+/>}
+                
                 <TouchableOpacity
                     style={styles.backButton}
                     onPress={this.goBack}

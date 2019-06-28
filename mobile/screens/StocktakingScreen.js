@@ -116,6 +116,20 @@ class StocktakingScreen extends React.Component {
           renderItem={({ item, index }) => (
             <ReportDetailsListItem
               item={item}
+              onPress={()=>{
+                const res = this.state.results;
+                res[index].is_checked = !res[index].is_checked;
+                updateStocktaking(
+                  this.props.navigation.getParam("id"),
+                  item.supply.id,
+                  item.is_checked
+                ).then(() => {
+                  this.setState({
+                    ...this.state,
+                    results: res
+                  });
+                });
+              }}
               onCheckBoxPress={() => {
                 const res = this.state.results;
                 res[index].is_checked = !res[index].is_checked;
