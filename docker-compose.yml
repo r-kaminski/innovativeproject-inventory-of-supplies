@@ -8,6 +8,8 @@ services:
         # default requirements set to development (will override Dockerfile's default value)
     environment:
       - DJANGO_SETTINGS_MODULE=backend.settings.development
+    env_file:
+      - ./env/.env
     volumes:
       - ./backend:/backend
       # reload server on code changes -- user doesn't have to manually restart Django server each time they make changes
