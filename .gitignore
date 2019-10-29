@@ -2,3 +2,4 @@
 .vscode/
 backend/sqlite3.db
 mobile/.expo/
+env/.env.prod.db
