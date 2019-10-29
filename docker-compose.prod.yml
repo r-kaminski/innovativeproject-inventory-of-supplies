@@ -7,6 +7,8 @@ services:
       args:
         requirements: requirements/production.txt
         # default requirements set to production (will override Dockerfile's default value)
+    env_file:
+        - ./env/.env
     environment:
       - DJANGO_SETTINGS_MODULE=backend.settings.production
     networks:
