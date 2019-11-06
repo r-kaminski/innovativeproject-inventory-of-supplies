@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [[ ! "${DJANGO_SETTINGS_MODULE}" =~ "testing" ]]; then
+if ! echo "${DJANGO_SETTINGS_MODULE}" | grep -q "testing"; then
     echo "Waiting for $DB_HOST"
     while ! nc -z $DB_HOST $DB_PORT; do
         sleep 0.1
