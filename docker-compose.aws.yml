@@ -1,0 +1,42 @@
+version: "3.2"
+services:
+  backend_prod:
+    container_name: backend_prod
+    build:
+      context: ./backend
+      args:
+        requirements: requirements/production.txt
+        # default requirements set to production (will override Dockerfile's default value)
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8001
+    env_file:
+        - ./env/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=backend.settings.production
+    networks:
+      - main
+    depends_on:
+      - db
+  db:
+    container_name: db_prod
+    image: postgres:alpine
+    networks:
+      - main
+    environment:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+  web:
+    container_name: web_prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.aws
+    ports:
+      - 80:80
+      - 8080:8080
+    networks:
+      - main
+    depends_on:
+      - backend_prod
+networks:
+  main:

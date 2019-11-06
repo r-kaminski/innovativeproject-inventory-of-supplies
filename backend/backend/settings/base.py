@@ -26,8 +26,9 @@ SECRET_KEY = 'g9@ns(3lf9i&0i5#r5^zt5el8@01ws$kqk-+u2@dplim!a&3-s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', ]
+ALLOWED_HOSTS = ['18.185.47.102', '0.0.0.0', 'localhost']
 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Application definition
 INSTALLED_APPS = [

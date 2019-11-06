@@ -1,0 +1,20 @@
+FROM node:10.15.3-alpine as react-build
+
+WORKDIR /app
+
+COPY package*.json /app/
+
+RUN npm i
+RUN npm install react-scripts -g --silent
+
+COPY ./ /app/
+
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY --from=react-build /app/build/ /app/frontend/
+
+RUN chmod -R 755 /app/frontend/ 
+
+COPY ./nginx.aws.conf /etc/nginx/conf.d/default.conf
