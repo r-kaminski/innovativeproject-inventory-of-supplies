@@ -9,7 +9,6 @@ from supplies.models import Supply
 from .models import InventoryReport, InventorySupply
 from .serializers import InventoryReportSerializer, InventorySupplySerializer, InventorySupplyHeaderSerializer, InventoryReportLastUpdateSerializer
 from backend.pagination import ResultSetPagination
-from backend.permissions import IsAuthenticatedReadOnly
 from .renderers import ReportCSVRenderer, ReportPdfRenderer
 from .validators import ParameterException, validate_input_data, validate_order
 from rest_framework_csv import renderers as r
@@ -22,7 +21,7 @@ import io
 
 
 class InventoryReportListCreateView(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = InventoryReport.objects.all()
     serializer_class = InventoryReportSerializer
     pagination_class = ResultSetPagination
@@ -177,7 +176,7 @@ class InventoryReportCSV(generics.RetrieveAPIView):
 
 
 class InventoryReportPDF(generics.RetrieveAPIView):
-    renderer_classes = (ReportPdfRenderer, )
+    renderer_classes = (ReportPdfRenderer,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = InventoryReport.objects.all()
     serializer_class = InventoryReportSerializer
@@ -201,7 +200,7 @@ class InventoryReportPDF(generics.RetrieveAPIView):
 
 
 class InventoryReportImportView(APIView):
-    parser_classes = (MultiPartParser, )
+    parser_classes = (MultiPartParser,)
     permission_classes = (permissions.IsAdminUser,)
 
     def post(self, request, format=None):

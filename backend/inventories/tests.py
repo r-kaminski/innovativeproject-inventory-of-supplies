@@ -64,7 +64,7 @@ class InventoryReportCreateTests(APITestCase):
 
     def test_create_report_user(self):
         """
-        Test incorrectly creating new report with user account
+        Test correctly creating new report with user account
         Report name is given as a parameter
         """
         request = self.factory.post(
@@ -72,21 +72,25 @@ class InventoryReportCreateTests(APITestCase):
         force_authenticate(request, user=self.test_user)
         response = InventoryReportListCreateView.as_view()(request)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(len(InventoryReport.objects.all()), 0)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        try:
+            report = InventoryReport.objects.get(name=self.report_name)
+            self.assertEqual(report.name, self.report_name)
+            self.assertTrue(len(report.inventory_supplies.all()) > 0)
+        except:
+            self.fail()
 
     def test_create_invalid_report_user(self):
         """
         Test incorrectly creating new report with user account
         Required name paramater is not given
-        Authorization check is performed firstly, therefore 'forbidden' response should be returned
         """
         request = self.factory.post(
             '/api/inventories/', {})
         force_authenticate(request, user=self.test_user)
         response = InventoryReportListCreateView.as_view()(request)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(InventoryReport.objects.all()), 0)
 
     def test_create_report_unauthorized(self):

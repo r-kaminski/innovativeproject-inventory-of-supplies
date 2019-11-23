@@ -319,16 +319,12 @@ class Supplies extends React.Component {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
                         <React.Fragment>
-                            {displayIfAdmin(
-                                <ButtonRemoveItem
-                                    onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
-                                />
-                            )}
-                            {displayIfAdmin(
-                                <ButtonEditItem
-                                    onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
-                                />
-                            )}
+                            <ButtonRemoveItem
+                                onClick={() => this.onClickDeleteRow(tableMeta.rowIndex)}
+                            />
+                            <ButtonEditItem
+                                onClick={() => this.onClickEditRow(tableMeta.rowIndex)}
+                            />
                             <ButtonAddToPrintQueue
                                 onClick={() => this.onClickPrint(tableMeta.rowIndex)}
                             />
@@ -362,8 +358,8 @@ class Supplies extends React.Component {
             customToolbar: () => (
                 <div className={styles.toolbar}>
                     {displayIfAdmin(<ButtonAdminPanel onClick={() => this.props.history.push('/admin')} />)}
-                    {displayIfAdmin(<ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />)}
-                    {displayIfAdmin(<ButtonNewReport onClick={() => this.setState({ openDialogNewReport: true })} />)}
+                    <ButtonAddItem onClickAddItem={() => this.onClickAddItem()} />
+                    <ButtonNewReport onClick={() => this.setState({ openDialogNewReport: true })} />
                     <ButtonReport onClick={() => { this.props.history.push('/reports'); }} />
                     <ButtonPrintQueue onClickPrint={() => this.props.history.push('/printing')} />
                     <SearchTool
@@ -376,9 +372,9 @@ class Supplies extends React.Component {
             ),
             customToolbarSelect: () => (
                 <div className={styles.toolbar}>
-                    {displayIfAdmin(<ButtonRemoveItem
+                    <ButtonRemoveItem
                         onClick={this.onClickDeleteSelected}
-                    />)}
+                    />
                     <ButtonAddToPrintQueue
                         onClick={this.onClickPrintSelected}
                     />
