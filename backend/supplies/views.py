@@ -4,7 +4,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Supply
 from .serializers import SupplySerializer
-from backend.permissions import IsAuthenticatedReadOnly
 from backend.pagination import ResultSetPagination
 
 
@@ -18,7 +17,7 @@ class SupplyListView(generics.ListCreateAPIView):
         - page: page to display
         - max_page: size of page
     """
-    permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = SupplySerializer
     pagination_class = ResultSetPagination
 
@@ -38,7 +37,7 @@ class SupplyListView(generics.ListCreateAPIView):
 
 
 class SupplyDetailsView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedReadOnly | permissions.IsAdminUser,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Supply.objects.all()
     serializer_class = SupplySerializer
 

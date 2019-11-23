@@ -52,16 +52,16 @@ class CRUDSupplyTests(APITestCase):
         Test creating supply authenticated as user
         """
         request = self.factory.post(
-            '/api/supplies/', {'name': '3d printer 2', 'state': 'good state', 'description': 'prints 3d objects'})
+            '/api/supplies/', {'name': '3d printer', 'state': 'good state', 'description': 'prints 3d objects'})
         force_authenticate(request, user=self.testuser1)
         response = SupplyListView.as_view()(request)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         try:
-            Supply.objects.get(name='3d printer')
-            self.fail()
+            supply = Supply.objects.get(name='3d printer')
         except Supply.DoesNotExist:
-            pass
+            self.fail()
+            
 
     def test_creating_supply_unauthenticated(self):
         """
@@ -128,13 +128,11 @@ class CRUDSupplyTests(APITestCase):
         id = self.testsupply.id
         oldstate = self.testsupply.state
         request = self.factory.put(
-            '/api/supplies/%s/' % id, {'name': '3d printer', 'state': 'aaa'})
+            '/api/supplies/%s/' % id, {'name': '3d printer', 'state': 'broken'})
         force_authenticate(request, user=self.testuser1)
         response = SupplyDetailsView.as_view()(request, pk=id)
-        # normal user should get forbidden error
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        # data should not change
-        self.assertEqual(Supply.objects.get(id=id).state, oldstate)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Supply.objects.get(id=id).state, 'broken')
 
     def test_editing_supplies_unauthenticated(self):
         """
